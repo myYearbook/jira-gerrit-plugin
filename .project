@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-  <name>jira-gerrit-plugin</name>
-  <comment>This is the com.meetme.plugins.jira:jira-gerrit-plugin plugin for Atlassian JIRA. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
+  <name>gerrit-plugin</name>
+  <comment>Integrates Atlassian JIRA with Gerrit code review. NO_M2ECLIPSE_SUPPORT: Project files created with the maven-eclipse-plugin are not supported in M2Eclipse.</comment>
   <projects/>
   <buildSpec>
     <buildCommand>

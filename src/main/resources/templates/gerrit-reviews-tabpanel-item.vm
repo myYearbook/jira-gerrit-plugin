@@ -1,0 +1,117 @@
+<!--#*
+    Copyright 2012 MeetMe, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the
+    License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See
+    the License for the specific language governing permissions and
+    limitations under the License.
+    *#
+-->
+<div class="issue-data-block twixi-block collapsed">
+
+    ## The concise version:
+    <div class="actionContainer twixi-wrap concise">
+        <a href="#" class="twixi">
+            <span class="icon twixi-closed">
+                <span>Show</span>
+            </span>
+        </a>
+
+        <div class="action-details flooded">
+            $i18n.getText("gerrit.tabpanel.Review"):
+            <a href="$url" target="gerrit-review-$change,$patchset">$subject</a>
+            -
+            <span class="subText">
+                <span class="date user-tz" title="$lastUpdated">
+                    <time datetime="$isoLastUpdated">$lastUpdated</time>
+                </span>
+            </span>
+
+            #if ($mostSignificantScore)
+            <span class="#if ($mostSignificantScore.valueAsInt > 0)review-positive#else review-negative #end gerrit-review-score">
+                #if ($mostSignificantScore.valueAsInt > 0)
+                +$mostSignificantScore.valueAsInt
+                #else
+                $mostSignificantScore.valueAsInt
+                #end
+            </span>
+            #else
+            <span>$i18n.getText("gerrit.tabpanel.no_reviews")</span>
+            #end
+        </div>
+    </div>
+
+
+    ## The verbose version:
+    <div class="actionContainer twixi-wrap verbose">
+        <a href="#" class="twixi">
+            <span class="icon twixi-opened">
+                <span>Hide</span>
+            </span>
+        </a>
+        <div class="action-links">
+            ## Top-right links that show up while hovering
+            <a href="$url" target="gerrit-review-$change,$patchset" title="$i18n.getText('gerrit.tabpanel.permalink')" class="icon icon-perma">
+                <span>Permalink</span>
+            </a>
+        </div>
+
+        ## Main action detail
+        <div class="action-details">
+            $i18n.getText("gerrit.tabpanel.Review"):
+            <a href="$url" target="gerrit-review-$change,$patchset">$change,$patchset</a>
+            $subject -
+            <span class="subText">
+                <span class="date user-tz" title="$lastUpdated">
+                    <time datetime="$isoLastUpdated">$lastUpdated</time>
+                </span>
+            </span>
+        </div>
+
+        <div>$i18n.getText("gerrit.tabpanel.Project"): $project</div>
+
+        <table width="300" border="0" padding="3" class="gerrit-review-approvals">
+            <tr>
+                <th>$i18n.getText("gerrit.tabpanel.Approver")</th>
+                <th>$i18n.getText("gerrit.tabpanel.Type")</th>
+                <th>$i18n.getText("gerrit.tabpanel.Score")</th>
+            </tr>
+
+            #if ($approvals.size() == 0)
+            <tr>
+                <td colspan="3">$i18n.getText("gerrit.tabpanel.no_approvals")</td>
+            </tr>
+            #end
+
+            #foreach( $approval in $approvals )
+            <tr>
+                <td>
+                    #if ($approval.user)
+                    <a class="user-hover" rel="$approval.user.name" href="$baseurl/secure/ViewProfile.jspa?name=$approval.user.name">$approval.user.displayName</a>
+                    #else
+                    $approval.by
+                    #end
+                </td>
+                <td>$approval.type</td>
+                <td width="40" class="#if ($approval.valueAsInt > 0)review-positive#else review-negative #end gerrit-review-score">
+                    #if ($approval.valueAsInt > 0)
+                    +$approval.valueAsInt
+                    #else
+                    $approval.valueAsInt
+                    #end
+                </td>
+            </tr>
+            #end
+        </table>
+    </div>
+</div>
