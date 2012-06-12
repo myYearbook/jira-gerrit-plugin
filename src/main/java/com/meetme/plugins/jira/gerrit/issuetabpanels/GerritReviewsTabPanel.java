@@ -13,7 +13,6 @@
  */
 package com.meetme.plugins.jira.gerrit.issuetabpanels;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -33,12 +32,12 @@ import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel2;
 import com.atlassian.jira.plugin.issuetabpanel.ShowPanelReply;
 import com.atlassian.jira.plugin.issuetabpanel.ShowPanelRequest;
 import com.atlassian.jira.user.util.UserManager;
+import com.atlassian.jira.util.InjectableComponent;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
+import com.meetme.plugins.jira.gerrit.data.IssueReviewsImpl;
+import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryHandler;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshException;
 
 /**
  * An {@link IssueTabPanel2 issue tab panel} for displaying all Gerrit code reviews related to this
@@ -48,19 +47,21 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshException;
  */
 public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements IssueTabPanel2 {
     private static final Logger log = LoggerFactory.getLogger(GerritReviewsTabPanel.class);
-    private static final String GERRIT_SEARCH = "message:%1$s";
 
     private final DateTimeFormatterFactory dateTimeFormatterFactory;
     private final UserManager userManager;
     private final ApplicationProperties applicationProperties;
     private final GerritConfiguration configuration;
+    private final IssueReviewsManager reviewsManager;
 
     public GerritReviewsTabPanel(UserManager userManager, DateTimeFormatterFactory dateTimeFormatterFactory,
-            ApplicationProperties applicationProperties, GerritConfiguration configuration) {
+            ApplicationProperties applicationProperties, GerritConfiguration configuration,
+            IssueReviewsManager reviewsManager) {
         this.userManager = userManager;
         this.dateTimeFormatterFactory = dateTimeFormatterFactory;
         this.applicationProperties = applicationProperties;
         this.configuration = configuration;
+        this.reviewsManager = reviewsManager;
     }
 
     @Override
@@ -114,7 +115,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
         List<JSONObject> reviews;
 
         try {
-            reviews = getReviews(issueKey);
+            reviews = reviewsManager.getReviews(issueKey);
         } catch (GerritQueryException exc) {
             exc.printStackTrace();
             issueActions.add(new GenericMessageAction(exc.getMessage()));
@@ -126,34 +127,12 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
                 continue;
             }
 
-            issueActions.add(new GerritReviewIssueAction(obj, userManager, dateTimeFormatterFactory, applicationProperties.getBaseUrl()));
+            issueActions.add(new GerritReviewIssueAction(descriptor(), obj,
+                    userManager, dateTimeFormatterFactory, applicationProperties.getBaseUrl()));
             // issueActions.add(new GenericMessageAction("<pre>" + obj.toString(4) + "</pre>"));
         }
 
         return issueActions;
-    }
-
-    /**
-     * Get all Gerrit reviews related to the {@link Issue#getKey() issue key}.
-     * 
-     * @param issueKey
-     * @return A list of {@link JSONObject}s, as retrieved from Gerrit.
-     * @throws GerritQueryException If any failure occurs while querying the Gerrit server.
-     * @see GerritQueryHandler
-     */
-    private List<JSONObject> getReviews(String issueKey) throws GerritQueryException {
-        Authentication auth = new Authentication(configuration.getSshPrivateKey(), configuration.getSshUsername());
-        GerritQueryHandler h = new GerritQueryHandler(configuration.getSshHostname(), configuration.getSshPort(), auth);
-
-        try {
-            return h.queryJava(String.format(GERRIT_SEARCH, issueKey), false, true, false);
-        } catch (SshException e) {
-            e.printStackTrace();
-            throw new GerritQueryException("An ssh error occurred while querying for reviews.", e);
-        } catch (IOException e) {
-            e.printStackTrace();
-            throw new GerritQueryException("An error occurred while querying for reviews.", e);
-        }
     }
 
     private boolean isConfigurationReady() {

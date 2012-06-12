@@ -13,11 +13,11 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
  * @author jhansche
  * 
  */
-public class GerritConfigurationManager implements GerritConfiguration {
-    private static final String PLUGIN_STORAGE_KEY = "com.meetme.plugins.jira.gerrit:";
+public class GerritConfigurationImpl implements GerritConfiguration {
+    private static final String PLUGIN_STORAGE_KEY = "com.meetme.plugins.jira.gerrit.data";
     private final PluginSettings settings;
 
-    public GerritConfigurationManager(PluginSettingsFactory pluginSettingsFactory) {
+    public GerritConfigurationImpl(PluginSettingsFactory pluginSettingsFactory) {
         this.settings = pluginSettingsFactory.createSettingsForKey(PLUGIN_STORAGE_KEY);
     }
 
@@ -168,7 +168,7 @@ public class GerritConfigurationManager implements GerritConfiguration {
 
     @Override
     public String toString() {
-        return String.format("GerritConfigurationManager[ssh://{0}@{1}:{2}/, {3}; http://{4}:{5}@{6}/]",
+        return String.format("GerritConfigurationImpl[ssh://{0}@{1}:{2}/, {3}; http://{4}:{5}@{6}/]",
                 getSshUsername(), getSshHostname(), getSshPort(), getSshPrivateKey(), getHttpUsername(), getHttpPassword(), getHttpBaseUrl());
     }
 }

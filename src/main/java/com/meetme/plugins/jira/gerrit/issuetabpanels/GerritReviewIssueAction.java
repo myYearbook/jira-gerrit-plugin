@@ -34,20 +34,18 @@ import java.util.NoSuchElementException;
 
 import net.sf.json.JSONObject;
 
-import org.apache.velocity.exception.VelocityException;
-
 import com.atlassian.core.util.map.EasyMap;
 import com.atlassian.crowd.embedded.api.User;
-import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.datetime.DateTimeFormatter;
 import com.atlassian.jira.datetime.DateTimeFormatterFactory;
 import com.atlassian.jira.datetime.DateTimeStyle;
+import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
+import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
 import com.atlassian.jira.user.util.UserManager;
-import com.atlassian.velocity.VelocityManager;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
 
-public class GerritReviewIssueAction implements IssueAction {
+public class GerritReviewIssueAction extends AbstractIssueAction implements IssueAction {
     private static final String TEMPLATE_DIRECTORY = "templates/";
     private static final String TEMPLATE_NAME = "gerrit-reviews-tabpanel-item.vm";
 
@@ -62,11 +60,39 @@ public class GerritReviewIssueAction implements IssueAction {
     private UserManager userManager;
     private String baseUrl;
 
-    public GerritReviewIssueAction(JSONObject review, UserManager userManager, DateTimeFormatterFactory dateTimeFormatterFactory, String baseUrl) {
+    public GerritReviewIssueAction(IssueTabPanelModuleDescriptor descriptor, JSONObject review, UserManager userManager,
+            DateTimeFormatterFactory dateTimeFormatterFactory, String baseUrl) {
+        super(descriptor);
         this.userManager = userManager;
         this.dateTimeFormatterFactory = dateTimeFormatterFactory;
-        this.fromJson(review);
         this.baseUrl = baseUrl;
+        this.fromJson(review);
+    }
+
+    @Override
+    @SuppressWarnings("unchecked")
+    protected void populateVelocityParams(@SuppressWarnings("rawtypes") Map params) {
+        DateTimeFormatter formatter = dateTimeFormatterFactory.formatter();
+        params.putAll(EasyMap.build(URL, url,
+                SUBJECT, subject,
+                PROJECT, project,
+                CHANGE, changeId,
+                PATCHSET, patchSet,
+                LAST_UPDATED, formatter.format(lastUpdated),
+                "isoLastUpdated", formatter.withStyle(DateTimeStyle.ISO_8601_DATE_TIME).format(lastUpdated),
+                APPROVALS, approvals,
+                "mostSignificantScore", getMostSignificantScore(approvals),
+                "baseurl", this.baseUrl));
+    }
+
+    @Override
+    public Date getTimePerformed() {
+        return lastUpdated;
+    }
+
+    @Override
+    public boolean isDisplayActionAllTab() {
+        return true;
     }
 
     /**
@@ -97,53 +123,6 @@ public class GerritReviewIssueAction implements IssueAction {
         }
     }
 
-    /**
-     * Returns the JIRA {@link User} object associated with the given email address.
-     * 
-     * @param email
-     * @return
-     */
-    private User getUserByEmail(String email) {
-        User user = null;
-
-        if (email != null) {
-            for (User iUser : userManager.getUsers()) {
-                if (email.equalsIgnoreCase(iUser.getEmailAddress()))
-                {
-                    user = iUser;
-                    break;
-                }
-            }
-        }
-
-        return user;
-    }
-
-    @Override
-    public String getHtml() {
-        VelocityManager vm = ComponentAccessor.getVelocityManager();
-        DateTimeFormatter formatter = dateTimeFormatterFactory.formatter();
-
-        @SuppressWarnings("rawtypes")
-        Map params = EasyMap.build(URL, url,
-                SUBJECT, subject,
-                PROJECT, project,
-                CHANGE, changeId,
-                PATCHSET, patchSet,
-                LAST_UPDATED, formatter.format(lastUpdated),
-                "isoLastUpdated", formatter.withStyle(DateTimeStyle.ISO_8601_DATE_TIME).format(lastUpdated),
-                APPROVALS, approvals,
-                "mostSignificantScore", getMostSignificantScore(approvals),
-                "baseurl", this.baseUrl);
-
-        try {
-            return vm.getBody(TEMPLATE_DIRECTORY, TEMPLATE_NAME, params);
-        } catch (VelocityException e) {
-            e.printStackTrace();
-            return "Velocity template generation failed: " + e.getMessage();
-        }
-    }
-
     private PatchSetApproval getMostSignificantScore(final ArrayList<PatchSetApproval> approvals) {
         try {
             PatchSetApproval min = Collections.min(approvals);
@@ -167,14 +146,26 @@ public class GerritReviewIssueAction implements IssueAction {
         return null;
     }
 
-    @Override
-    public Date getTimePerformed() {
-        return lastUpdated;
-    }
+    /**
+     * Returns the JIRA {@link User} object associated with the given email address.
+     * 
+     * @param email
+     * @return
+     */
+    private User getUserByEmail(String email) {
+        User user = null;
 
-    @Override
-    public boolean isDisplayActionAllTab() {
-        return true;
+        if (email != null) {
+            for (User iUser : userManager.getUsers()) {
+                if (email.equalsIgnoreCase(iUser.getEmailAddress()))
+                {
+                    user = iUser;
+                    break;
+                }
+            }
+        }
+
+        return user;
     }
 
     /**

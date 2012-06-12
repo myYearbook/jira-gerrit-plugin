@@ -1,0 +1,11 @@
+<span>
+    #if ($reversed)
+    The issue must have
+    <b>at least one</b>
+    open Gerrit review.
+    #else
+    The issue must have
+    <b>zero</b>
+    open Gerrit reviews.
+    #end
+</span>

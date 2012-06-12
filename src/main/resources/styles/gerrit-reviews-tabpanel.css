@@ -27,3 +27,12 @@ div.flooded span.review-positive
 {
   color: #08A400;
 }
+
+span.gerrit-review
+{
+  display: inline-block;
+  text-indent: -9999px;
+  width: 16px;
+  height: 16px;
+  background: transparent url(gerrit-images/gerrit-icon16.png) no-repeat 50% 50%;
+}

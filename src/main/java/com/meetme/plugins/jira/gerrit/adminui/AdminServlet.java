@@ -100,17 +100,17 @@ public class AdminServlet extends HttpServlet {
         map.put(FIELD_SSH_USERNAME, config.getSshUsername());
         map.put(FIELD_SSH_PRIVATE_KEY, config.getSshPrivateKey());
 
-        map.put(FIELD_HTTP_BASE_URL, config.getHttpBaseUrl());
+        map.put(FIELD_HTTP_BASE_URL, config.getHttpBaseUrl().toASCIIString());
         map.put(FIELD_HTTP_USERNAME, config.getHttpUsername());
         map.put(FIELD_HTTP_PASSWORD, config.getHttpPassword());
 
         return map;
     }
 
+    @SuppressWarnings("unchecked")
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp)
             throws ServletException, IOException {
-        log.warn("IN DOPOST!");
         try {
             String username = userManager.getRemoteUsername(req);
 

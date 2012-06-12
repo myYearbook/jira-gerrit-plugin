@@ -1,0 +1,17 @@
+<tr bgcolor="#ffffff">
+    <td align="right" valign="top" bgcolor="#fffff0">
+        <span class="label">Open Reviews Logic:</span>
+    </td>
+    <td bgcolor="#ffffff" nowrap="nowrap">
+        <select name="reversed" id="reversed">
+            <option value="false" selected="#if (!$reversed) selected#end">
+                Require NO open reviews
+            </option>
+            <option value="true" selected="#if ($reversed) selected#end">
+                Require at least ONE open review
+            </option>
+        </select>
+        <br />
+        <font size="1">Choose forward or reversed logic.</font>
+    </td>
+</tr>

@@ -28,7 +28,8 @@
         </a>
 
         <div class="action-details flooded">
-            $i18n.getText("gerrit.tabpanel.Review"):
+            <span class="gerrit-review" title="$i18n.getText('gerrit.tabpanel.Review')">$i18n.getText('gerrit.tabpanel.Review'): </span>
+            $change,$patchset
             <a href="$url" target="gerrit-review-$change,$patchset">$subject</a>
             -
             <span class="subText">
@@ -46,7 +47,7 @@
                 #end
             </span>
             #else
-            <span>$i18n.getText("gerrit.tabpanel.no_reviews")</span>
+            <span>$i18n.getText("gerrit.tabpanel.no_approvals")</span>
             #end
         </div>
     </div>
@@ -68,9 +69,10 @@
 
         ## Main action detail
         <div class="action-details">
-            $i18n.getText("gerrit.tabpanel.Review"):
-            <a href="$url" target="gerrit-review-$change,$patchset">$change,$patchset</a>
-            $subject -
+            <span class="gerrit-review" title="$i18n.getText('gerrit.tabpanel.Review')">$i18n.getText('gerrit.tabpanel.Review'): </span>
+            $change,$patchset
+            <a href="$url" target="gerrit-review-$change,$patchset">$subject</a>
+            -
             <span class="subText">
                 <span class="date user-tz" title="$lastUpdated">
                     <time datetime="$isoLastUpdated">$lastUpdated</time>
@@ -89,7 +91,12 @@
 
             #if ($approvals.size() == 0)
             <tr>
-                <td colspan="3">$i18n.getText("gerrit.tabpanel.no_approvals")</td>
+                <td colspan="3">
+                    <div class="aui-message warning">
+                        <span class="aui-icon icon-warning"></span>
+                        $i18n.getText("gerrit.tabpanel.no_approvals")
+                    </div>
+                </td>
             </tr>
             #end
 
