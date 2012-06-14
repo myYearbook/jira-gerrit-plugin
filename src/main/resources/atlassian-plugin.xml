@@ -82,6 +82,20 @@
         <resource type="i18n" name="i18n" location="i18n.workflow" />
     </workflow-condition>
 
+    <!-- Workflow Functions -->
+    <workflow-function key="gerrit-approve" i18n-name-key="gerrit.workflow.approve.label" class="com.meetme.plugins.jira.gerrit.workflow.ApproveReviewFactoryImpl">
+        <description>Perform Gerrit Review Approval</description>
+        <function-class>com.meetme.plugins.jira.gerrit.workflow.function.ApprovalFunction</function-class>
+
+        <orderable>true</orderable>
+        <unique>false</unique>
+        <deletable>true</deletable>
+
+        <resource type="velocity" name="view" location="templates/workflow/approve-function-view.vm" />
+        <resource type="velocity" name="input-parameters" location="templates/workflow/approve-function-edit.vm" />
+        <resource type="velocity" name="edit-parameters" location="templates/workflow/approve-function-edit.vm" />
+    </workflow-function>
+
     <!--
         Future ideas:
         1. Workflow precondition - DONE

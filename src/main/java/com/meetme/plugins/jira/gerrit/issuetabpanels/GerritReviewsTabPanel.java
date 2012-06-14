@@ -16,11 +16,10 @@ package com.meetme.plugins.jira.gerrit.issuetabpanels;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.sf.json.JSONObject;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.datetime.DateTimeFormatterFactory;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
@@ -32,11 +31,11 @@ import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel2;
 import com.atlassian.jira.plugin.issuetabpanel.ShowPanelReply;
 import com.atlassian.jira.plugin.issuetabpanel.ShowPanelRequest;
 import com.atlassian.jira.user.util.UserManager;
-import com.atlassian.jira.util.InjectableComponent;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
-import com.meetme.plugins.jira.gerrit.data.IssueReviewsImpl;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 /**
@@ -112,7 +111,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
         log.debug("Getting actions for issue: {0}", issueKey);
 
         List<IssueAction> issueActions = new ArrayList<IssueAction>();
-        List<JSONObject> reviews;
+        List<GerritChange> reviews;
 
         try {
             reviews = reviewsManager.getReviews(issueKey);
@@ -122,17 +121,33 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
             return issueActions;
         }
 
-        for (JSONObject obj : reviews) {
-            if (obj.has("type") && "stats".equalsIgnoreCase(obj.getString("type"))) {
-                continue;
+        for (GerritChange change : reviews) {
+            for (GerritApproval approval : change.getPatchSet().getApprovals()) {
+                String byEmail = approval.getByEmail();
+                approval.setUser(getUserByEmail(byEmail));
             }
-
-            issueActions.add(new GerritReviewIssueAction(descriptor(), obj,
+            issueActions.add(new GerritReviewIssueAction(descriptor(), change,
                     userManager, dateTimeFormatterFactory, applicationProperties.getBaseUrl()));
             // issueActions.add(new GenericMessageAction("<pre>" + obj.toString(4) + "</pre>"));
         }
 
         return issueActions;
+    }
+
+    private User getUserByEmail(String email) {
+        User user = null;
+
+        if (email != null) {
+            for (User iUser : userManager.getUsers()) {
+                if (email.equalsIgnoreCase(iUser.getEmailAddress()))
+                {
+                    user = iUser;
+                    break;
+                }
+            }
+        }
+
+        return user;
     }
 
     private boolean isConfigurationReady() {

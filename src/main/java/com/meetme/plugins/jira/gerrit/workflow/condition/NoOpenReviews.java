@@ -11,6 +11,7 @@ import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Change;
 
 // TODO: make this into a "Must have <operator> <number> review(s) in status <status>" condition ??
 public class NoOpenReviews extends AbstractJiraCondition {
@@ -27,7 +28,7 @@ public class NoOpenReviews extends AbstractJiraCondition {
             throws WorkflowException {
         Issue issue = getIssue(transientVars);
         String issueKey = issue.getKey();
-        List<JSONObject> reviews;
+        List<Change> reviews;
 
         try {
             reviews = reviewsManager.getReviews(issueKey);

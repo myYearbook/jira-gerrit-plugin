@@ -1,10 +1,12 @@
 package com.meetme.plugins.jira.gerrit.data;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import net.sf.json.JSONObject;
 
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryHandler;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
@@ -20,18 +22,32 @@ public class IssueReviewsImpl implements IssueReviewsManager {
     }
 
     @Override
-    public List<JSONObject> getReviews(String issueKey) throws GerritQueryException {
+    public List<GerritChange> getReviews(String issueKey) throws GerritQueryException {
         Authentication auth = new Authentication(configuration.getSshPrivateKey(), configuration.getSshUsername());
         GerritQueryHandler h = new GerritQueryHandler(configuration.getSshHostname(), configuration.getSshPort(), auth);
+        List<JSONObject> reviews;
 
         try {
-            return h.queryJava(String.format(GERRIT_SEARCH, issueKey), false, true, false);
+            reviews = h.queryJava(String.format(GERRIT_SEARCH, issueKey), false, true, false);
         } catch (SshException e) {
-            e.printStackTrace();
             throw new GerritQueryException("An ssh error occurred while querying for reviews.", e);
         } catch (IOException e) {
-            e.printStackTrace();
             throw new GerritQueryException("An error occurred while querying for reviews.", e);
         }
+
+        List<GerritChange> changes = new ArrayList<GerritChange>(reviews.size());
+
+        for (JSONObject obj : reviews) {
+            if (obj.has("type") && "stats".equalsIgnoreCase(obj.getString("type"))) {
+                continue;
+            }
+
+            changes.add(new GerritChange(obj));
+        }
+
+        return changes;
+    }
+
+    public void runCommand() {
     }
 }

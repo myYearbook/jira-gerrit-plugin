@@ -13,29 +13,21 @@
  */
 package com.meetme.plugins.jira.gerrit.issuetabpanels;
 
-import static com.meetme.plugins.jira.gerrit.issuetabpanels.GerritEventKeys.BY;
-import static com.meetme.plugins.jira.gerrit.issuetabpanels.GerritEventKeys.CURRENT_PATCH_SET;
 import static com.meetme.plugins.jira.gerrit.issuetabpanels.GerritEventKeys.LAST_UPDATED;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.APPROVALS;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.CHANGE;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.EMAIL;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.NAME;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.NUMBER;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.PATCHSET;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.PROJECT;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.SUBJECT;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.URL;
 
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
 
-import net.sf.json.JSONObject;
-
 import com.atlassian.core.util.map.EasyMap;
-import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.datetime.DateTimeFormatter;
 import com.atlassian.jira.datetime.DateTimeFormatterFactory;
 import com.atlassian.jira.datetime.DateTimeStyle;
@@ -43,51 +35,46 @@ import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
 import com.atlassian.jira.user.util.UserManager;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 
 public class GerritReviewIssueAction extends AbstractIssueAction implements IssueAction {
     private static final String TEMPLATE_DIRECTORY = "templates/";
     private static final String TEMPLATE_NAME = "gerrit-reviews-tabpanel-item.vm";
 
-    private String url;
-    private String subject;
-    private String changeId;
-    private String patchSet;
-    private ArrayList<PatchSetApproval> approvals = new ArrayList<PatchSetApproval>();;
-    private Object project;
-    private Date lastUpdated;
     private DateTimeFormatterFactory dateTimeFormatterFactory;
     private UserManager userManager;
     private String baseUrl;
+    private GerritChange change;
 
-    public GerritReviewIssueAction(IssueTabPanelModuleDescriptor descriptor, JSONObject review, UserManager userManager,
+    public GerritReviewIssueAction(IssueTabPanelModuleDescriptor descriptor, GerritChange change, UserManager userManager,
             DateTimeFormatterFactory dateTimeFormatterFactory, String baseUrl) {
         super(descriptor);
         this.userManager = userManager;
         this.dateTimeFormatterFactory = dateTimeFormatterFactory;
         this.baseUrl = baseUrl;
-        this.fromJson(review);
+        this.change = change;
     }
 
     @Override
     @SuppressWarnings("unchecked")
     protected void populateVelocityParams(@SuppressWarnings("rawtypes") Map params) {
         DateTimeFormatter formatter = dateTimeFormatterFactory.formatter();
-        params.putAll(EasyMap.build(URL, url,
-                SUBJECT, subject,
-                PROJECT, project,
-                CHANGE, changeId,
-                PATCHSET, patchSet,
-                LAST_UPDATED, formatter.format(lastUpdated),
-                "isoLastUpdated", formatter.withStyle(DateTimeStyle.ISO_8601_DATE_TIME).format(lastUpdated),
-                APPROVALS, approvals,
-                "mostSignificantScore", getMostSignificantScore(approvals),
+        params.putAll(EasyMap.build(URL, change.getUrl(),
+                SUBJECT, change.getSubject(),
+                PROJECT, change.getProject(),
+                CHANGE, change.getNumber(),
+                PATCHSET, change.getPatchSet().getNumber(),
+                LAST_UPDATED, formatter.format(change.getLastUpdated()),
+                "isoLastUpdated", formatter.withStyle(DateTimeStyle.ISO_8601_DATE_TIME).format(change.getLastUpdated()),
+                APPROVALS, change.getPatchSet().getApprovals(),
+                "mostSignificantScore", getMostSignificantScore(change.getPatchSet().getApprovals()),
                 "baseurl", this.baseUrl));
     }
 
     @Override
     public Date getTimePerformed() {
-        return lastUpdated;
+        return change.getLastUpdated();
     }
 
     @Override
@@ -95,38 +82,10 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
         return true;
     }
 
-    /**
-     * Initializes the review action from a {@link JSONObject}.
-     * 
-     * @param review The {@link JSONObject}, as returned from the Gerrit server.
-     */
-    private void fromJson(JSONObject review) {
-        this.url = review.getString(URL);
-        this.subject = review.getString(SUBJECT);
-        this.changeId = review.getString(NUMBER);
-        this.project = review.getString(PROJECT);
-        this.lastUpdated = new Date(1000 * review.getLong(LAST_UPDATED));
-
-        JSONObject currentPatchSet = review.getJSONObject(CURRENT_PATCH_SET);
-
-        this.patchSet = currentPatchSet.getString(NUMBER);
-
-        if (currentPatchSet.containsKey(APPROVALS)) {
-            for (Object obj : currentPatchSet.getJSONArray(APPROVALS)) {
-                if (obj instanceof JSONObject) {
-                    PatchSetApproval approval = new PatchSetApproval((JSONObject) obj);
-                    approval.setUser(getUserByEmail(approval.getByEmail()));
-
-                    approvals.add(approval);
-                }
-            }
-        }
-    }
-
-    private PatchSetApproval getMostSignificantScore(final ArrayList<PatchSetApproval> approvals) {
+    private GerritApproval getMostSignificantScore(final List<GerritApproval> approvals) {
         try {
-            PatchSetApproval min = Collections.min(approvals);
-            PatchSetApproval max = Collections.max(approvals);
+            GerritApproval min = Collections.min(approvals);
+            GerritApproval max = Collections.max(approvals);
 
             if (min == max) {
                 // Means there was only 1 vote, so show that one.
@@ -144,124 +103,5 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
         }
 
         return null;
-    }
-
-    /**
-     * Returns the JIRA {@link User} object associated with the given email address.
-     * 
-     * @param email
-     * @return
-     */
-    private User getUserByEmail(String email) {
-        User user = null;
-
-        if (email != null) {
-            for (User iUser : userManager.getUsers()) {
-                if (email.equalsIgnoreCase(iUser.getEmailAddress()))
-                {
-                    user = iUser;
-                    break;
-                }
-            }
-        }
-
-        return user;
-    }
-
-    /**
-     * Extension of {@link Approval} that includes the approver's name.
-     * 
-     * @author jhansche
-     */
-    public static class PatchSetApproval extends Approval implements Comparable<PatchSetApproval>
-    {
-        /**
-         * The approver's name
-         */
-        private String by;
-        private String byEmail;
-        private User user;
-
-        /**
-         * Creates the PatchSetApproval from a {@link JSONObject}.
-         * 
-         * @param json
-         */
-        public PatchSetApproval(JSONObject json) {
-            this.fromJson(json);
-        }
-
-        public void setUser(User user) {
-            this.user = user;
-        }
-
-        public User getUser() {
-            return this.user;
-        }
-
-        @Override
-        public void fromJson(JSONObject json) {
-            super.fromJson(json);
-
-            if (json.containsKey(BY)) {
-                JSONObject by = json.getJSONObject(BY);
-
-                if (by.containsKey(NAME))
-                {
-                    this.setBy(by.getString(NAME));
-                }
-
-                if (by.containsKey(EMAIL)) {
-                    this.setByEmail(by.getString(EMAIL));
-                }
-            }
-        }
-
-        /**
-         * Returns the approver's name.
-         * 
-         * @return Approver's name as a string.
-         */
-        public String getBy() {
-            return by;
-        }
-
-        /**
-         * Sets the approver's name.
-         * 
-         * @param by Approver's name
-         */
-        public void setBy(String by) {
-            this.by = by;
-        }
-
-        /**
-         * Returns the approval score as an integer.
-         * 
-         * @return
-         */
-        public int getValueAsInt() {
-            return Integer.parseInt(getValue(), 10);
-        }
-
-        public String getByEmail() {
-            return byEmail;
-        }
-
-        public void setByEmail(String byEmail) {
-            this.byEmail = byEmail;
-        }
-
-        @Override
-        public int compareTo(PatchSetApproval o) {
-            int lhs = getValueAsInt();
-            int rhs = o.getValueAsInt();
-
-            if (lhs == rhs) {
-                return 0;
-            }
-
-            return lhs > rhs ? 1 : -1;
-        }
     }
 }
