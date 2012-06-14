@@ -14,7 +14,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 // TODO: make this into a "Must have <operator> <number> review(s) in status <status>" condition ??
 public class NoOpenReviews extends AbstractJiraCondition {
-    private static final String KEY_REVERSE = "reverse";
+    public static final String KEY_REVERSED = "reversed";
 
     private IssueReviewsManager reviewsManager;
 
@@ -36,7 +36,7 @@ public class NoOpenReviews extends AbstractJiraCondition {
             throw new WorkflowException(e);
         }
 
-        String value = (String) args.get(KEY_REVERSE);
+        String value = (String) args.get(KEY_REVERSED);
         boolean isReversed = Boolean.parseBoolean(value);
 
         // Confirm that reviews contains no *open* reviews

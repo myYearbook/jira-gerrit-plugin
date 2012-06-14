@@ -71,16 +71,20 @@
         <resource type="download" name="images/" location="images/" />
     </web-resource>
 
-    <!-- Workflow Conditions: 1. Must have zero open reviews -->
-    <workflow-condition key="no-open-reviews" class="com.meetme.plugins.jira.gerrit.workflow.NoOpenReviewsConditionFactoryImpl">
+    <!-- Workflow Conditions: 1. Must have zero (/at least one) open reviews -->
+    <workflow-condition key="no-open-reviews" i18n-name-key="gerrit.workflow.no-open-reviews.label"
+        class="com.meetme.plugins.jira.gerrit.workflow.NoOpenReviewsConditionFactoryImpl">
         <description>Condition to allow a workflow transition ONLY if there are no open Gerrit reviews.</description>
         <condition-class>com.meetme.plugins.jira.gerrit.workflow.condition.NoOpenReviews</condition-class>
         <resource type="velocity" name="view" location="templates/workflow/no-open-reviews-condition-view.vm" />
+        <resource type="velocity" name="edit-parameters" location="templates/workflow/no-open-reviews-condition-edit.vm" />
+        <resource type="velocity" name="input-parameters" location="templates/workflow/no-open-reviews-condition-edit.vm" />
+        <resource type="i18n" name="i18n" location="i18n.workflow" />
     </workflow-condition>
 
     <!--
         Future ideas:
-        1. Workflow precondition
+        1. Workflow precondition - DONE
         2. Workflow event listener / post-functions
         3. Gerrit events-stream listener?
         4. Gadget on dashboard?

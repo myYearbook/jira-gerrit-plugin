@@ -1,11 +1,7 @@
 <span>
     #if ($reversed)
-    The issue must have
-    <b>at least one</b>
-    open Gerrit review.
+    $i18n.getText("gerrit.workflow.no-open-reviews.view.reversed-true")
     #else
-    The issue must have
-    <b>zero</b>
-    open Gerrit reviews.
+    $i18n.getText("gerrit.workflow.no-open-reviews.view.reversed-false")
     #end
 </span>

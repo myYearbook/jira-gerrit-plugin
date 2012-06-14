@@ -4,18 +4,19 @@ import java.util.Map;
 
 import com.atlassian.core.util.map.EasyMap;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
+import com.atlassian.jira.plugin.workflow.WorkflowPluginConditionFactory;
+import com.meetme.plugins.jira.gerrit.workflow.condition.NoOpenReviews;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.ConditionDescriptor;
 
-public class NoOpenReviewsConditionFactoryImpl extends AbstractWorkflowPluginFactory {
-    private static final String KEY_REVERSE = "reverse";
+public class NoOpenReviewsConditionFactoryImpl extends AbstractWorkflowPluginFactory implements WorkflowPluginConditionFactory {
 
     @SuppressWarnings("unchecked")
     @Override
     public Map<String, ?> getDescriptorParams(Map<String, Object> conditionParams) {
-        if (conditionParams != null && conditionParams.containsKey(KEY_REVERSE))
+        if (conditionParams != null && conditionParams.containsKey(NoOpenReviews.KEY_REVERSED))
         {
-            return EasyMap.build(KEY_REVERSE, extractSingleParam(conditionParams, KEY_REVERSE));
+            return EasyMap.build(NoOpenReviews.KEY_REVERSED, extractSingleParam(conditionParams, NoOpenReviews.KEY_REVERSED));
         }
 
         return EasyMap.build();
@@ -23,7 +24,7 @@ public class NoOpenReviewsConditionFactoryImpl extends AbstractWorkflowPluginFac
 
     @Override
     protected void getVelocityParamsForEdit(Map<String, Object> velocityParams, AbstractDescriptor descriptor) {
-        velocityParams.put(KEY_REVERSE, isReversed(descriptor));
+        velocityParams.put(NoOpenReviews.KEY_REVERSED, isReversed(descriptor));
     }
 
     @Override
@@ -33,7 +34,7 @@ public class NoOpenReviewsConditionFactoryImpl extends AbstractWorkflowPluginFac
 
     @Override
     protected void getVelocityParamsForView(Map<String, Object> velocityParams, AbstractDescriptor descriptor) {
-        velocityParams.put(KEY_REVERSE, isReversed(descriptor));
+        velocityParams.put(NoOpenReviews.KEY_REVERSED, isReversed(descriptor));
     }
 
     private boolean isReversed(AbstractDescriptor descriptor) {
@@ -43,7 +44,7 @@ public class NoOpenReviewsConditionFactoryImpl extends AbstractWorkflowPluginFac
 
         ConditionDescriptor conditionDescriptor = (ConditionDescriptor) descriptor;
 
-        String value = (String) conditionDescriptor.getArgs().get(KEY_REVERSE);
+        String value = (String) conditionDescriptor.getArgs().get(NoOpenReviews.KEY_REVERSED);
         return Boolean.parseBoolean(value);
     }
 }

@@ -1,17 +1,21 @@
 <tr bgcolor="#ffffff">
     <td align="right" valign="top" bgcolor="#fffff0">
-        <span class="label">Open Reviews Logic:</span>
+        <span class="label">$i18n.getText("gerrit.workflow.no-open-reviews.edit.label"):</span>
     </td>
     <td bgcolor="#ffffff" nowrap="nowrap">
         <select name="reversed" id="reversed">
-            <option value="false" selected="#if (!$reversed) selected#end">
-                Require NO open reviews
-            </option>
-            <option value="true" selected="#if ($reversed) selected#end">
-                Require at least ONE open review
-            </option>
+            ## The XML editor doesn't like velocity control blocks in the middle of XML tags, and the existence of @selected causes it to be selected.
+            ## So instead, just duplicate both options, depending on which value is selected.
+
+            #if (!$reversed)
+            <option value="false" selected="selected">$i18n.getText("gerrit.workflow.no-open-reviews.edit.reversed-false")</option>
+            <option value="true">$i18n.getText("gerrit.workflow.no-open-reviews.edit.reversed-true")</option>
+            #else
+            <option value="false">$i18n.getText("gerrit.workflow.no-open-reviews.edit.reversed-false")</option>
+            <option value="true" selected="selected">$i18n.getText("gerrit.workflow.no-open-reviews.edit.reversed-true")</option>
+            #end
         </select>
         <br />
-        <font size="1">Choose forward or reversed logic.</font>
+        <font size="1">$i18n.getText("gerrit.workflow.no-open-reviews.edit.description")</font>
     </td>
 </tr>
