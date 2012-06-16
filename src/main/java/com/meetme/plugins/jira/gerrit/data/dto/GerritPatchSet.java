@@ -10,7 +10,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.PatchSet;
 
 public class GerritPatchSet extends PatchSet {
-    private List<GerritApproval> approvals = new ArrayList<GerritApproval>();
+    private List<GerritApproval> approvals;
 
     public GerritPatchSet(JSONObject json) {
         super(json);
@@ -22,8 +22,10 @@ public class GerritPatchSet extends PatchSet {
 
         if (json.containsKey(GerritEventKeys.APPROVALS)) {
             JSONArray eventApprovals = json.getJSONArray(GerritEventKeys.APPROVALS);
+            approvals = new ArrayList<GerritApproval>(eventApprovals.size());
+
             for (int i = 0; i < eventApprovals.size(); i++) {
-                getApprovals().add(new GerritApproval(eventApprovals.getJSONObject(i)));
+                approvals.add(new GerritApproval(eventApprovals.getJSONObject(i)));
             }
         }
     }

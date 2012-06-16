@@ -29,6 +29,7 @@ public class GerritCommand {
         StringBuilder sb = new StringBuilder(BASE_COMMAND);
         sb.append(' ');
         sb.append(change.getNumber()).append(',').append(change.getPatchSet().getNumber());
+
         // TODO: escape args? Or build manually with String reviewType,int reviewScore,etc..?
         sb.append(' ').append(args);
         return sb.toString();
@@ -36,18 +37,21 @@ public class GerritCommand {
 
     private void runCommand(String command) throws IOException {
         SshConnection ssh = null;
+        logger.info("Running command: " + command);
+
         try {
             Authentication auth = new Authentication(config.getSshPrivateKey(), config.getSshUsername());
             ssh = SshConnectionFactory.getConnection(config.getSshHostname(), config.getSshPort(), auth);
             BufferedReader reader = new BufferedReader(ssh.executeCommandReader(command));
             String incomingLine = null;
 
-            // We don't expect any response anyway..
             while ((incomingLine = reader.readLine()) != null) {
-                logger.trace("Incoming line: {}", incomingLine);
+                // We don't expect any response anyway..
+                // But we can get the response and return it if we need to
+                logger.info("Incoming line: " + incomingLine);
             }
 
-            logger.trace("Closing reader.");
+            logger.info("Closing reader.");
             reader.close();
         } finally {
             if (ssh != null) {

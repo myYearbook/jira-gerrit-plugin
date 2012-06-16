@@ -1,5 +1,6 @@
 package com.meetme.plugins.jira.gerrit.data;
 
+import java.io.IOException;
 import java.util.List;
 
 import net.sf.json.JSONObject;
@@ -20,5 +21,7 @@ public interface IssueReviewsManager {
      * @see GerritQueryHandler
      */
     public abstract List<GerritChange> getReviews(String issueKey) throws GerritQueryException;
+
+    public abstract void doApproval(String issueKey, GerritChange change, String args) throws IOException;
 
 }

@@ -1,0 +1,1 @@
+<span>$i18n.getText("gerrit.workflow.approve.view", [$cmdArgs])</span>

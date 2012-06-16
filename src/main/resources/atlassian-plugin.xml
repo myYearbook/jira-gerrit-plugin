@@ -71,14 +71,26 @@
         <resource type="download" name="images/" location="images/" />
     </web-resource>
 
-    <!-- Workflow Conditions: 1. Must have zero (/at least one) open reviews -->
+    <!-- Workflow Conditions -->
+    <!-- 1. Must have zero open reviews (or reversed logic) -->
     <workflow-condition key="no-open-reviews" i18n-name-key="gerrit.workflow.no-open-reviews.label"
         class="com.meetme.plugins.jira.gerrit.workflow.NoOpenReviewsConditionFactoryImpl">
-        <description>Condition to allow a workflow transition ONLY if there are no open Gerrit reviews.</description>
+        <description>Condition to allow a workflow transition based on whether there are open Gerrit reviews.</description>
         <condition-class>com.meetme.plugins.jira.gerrit.workflow.condition.NoOpenReviews</condition-class>
         <resource type="velocity" name="view" location="templates/workflow/no-open-reviews-condition-view.vm" />
         <resource type="velocity" name="edit-parameters" location="templates/workflow/no-open-reviews-condition-edit.vm" />
         <resource type="velocity" name="input-parameters" location="templates/workflow/no-open-reviews-condition-edit.vm" />
+        <resource type="i18n" name="i18n" location="i18n.workflow" />
+    </workflow-condition>
+
+    <!-- 2. Must [or not] have [ operator ] N score for [type] -->
+    <workflow-condition i18n-name-key="gerrit.workflow.score-condition.label" key="score-condition"
+        class="com.meetme.plugins.jira.gerrit.workflow.ApprovalScoreConditionFactoryImpl">
+        <description>Condition to allow a workflow transition based on existing approval scores.</description>
+        <condition-class>com.meetme.plugins.jira.gerrit.workflow.condition.ApprovalScore</condition-class>
+        <resource type="velocity" name="view" location="templates/workflow/score-condition-view.vm" />
+        <resource type="velocity" name="edit-parameters" location="templates/workflow/score-condition-edit.vm" />
+        <resource type="velocity" name="input-parameters" location="templates/workflow/score-condition-edit.vm" />
         <resource type="i18n" name="i18n" location="i18n.workflow" />
     </workflow-condition>
 

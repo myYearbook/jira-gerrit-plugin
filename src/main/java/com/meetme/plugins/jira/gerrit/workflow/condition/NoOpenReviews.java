@@ -3,15 +3,13 @@ package com.meetme.plugins.jira.gerrit.workflow.condition;
 import java.util.List;
 import java.util.Map;
 
-import net.sf.json.JSONObject;
-
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.workflow.condition.AbstractJiraCondition;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Change;
 
 // TODO: make this into a "Must have <operator> <number> review(s) in status <status>" condition ??
 public class NoOpenReviews extends AbstractJiraCondition {
@@ -28,7 +26,7 @@ public class NoOpenReviews extends AbstractJiraCondition {
             throws WorkflowException {
         Issue issue = getIssue(transientVars);
         String issueKey = issue.getKey();
-        List<Change> reviews;
+        List<GerritChange> reviews;
 
         try {
             reviews = reviewsManager.getReviews(issueKey);

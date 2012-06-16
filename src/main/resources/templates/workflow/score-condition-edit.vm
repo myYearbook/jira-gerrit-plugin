@@ -1,0 +1,74 @@
+<tbody>
+    #macro( option $value $isSelected $label )
+    #if ($isSelected)
+    <option value="$value" selected="selected">$label</option>
+    #else
+    <option value="$value">$label</option>
+    #end
+    #end
+
+    <tr bgcolor="#ffffff">
+        <td align="right" valign="top" bgcolor="#fffff0">
+            <span class="label">$i18n.getText("gerrit.workflow.score-condition.edit.negative.label"):</span>
+        </td>
+        <td bgcolor="#ffffff" nowrap="nowrap">
+            <select name="negative" id="negative">
+                #set( $isSelected = !$negative )
+                #option( "false" $isSelected $i18n.getText("gerrit.workflow.score-condition.edit.negative-false.label") )
+                #set( $isSelected = $negative )
+                #option( "true" $isSelected $i18n.getText("gerrit.workflow.score-condition.edit.negative-true.label") )
+            </select>
+            <br />
+            <font size="1">$i18n.getText("gerrit.workflow.score-condition.edit.negative.description")</font>
+        </td>
+    </tr>
+
+    <tr bgcolor="#ffffff">
+        <td align="right" valign="top" bgcolor="#fffff0">
+            <span class="label">$i18n.getText("gerrit.workflow.score-condition.edit.comparison.label"):</span>
+        </td>
+        <td bgcolor="#ffffff" nowrap="nowrap">
+            #set( $comparisonName = $comparison.name() )
+            <select name="comparison" id="comparison">
+                #set $isSelected = $comparisonName == "LESS_THAN")
+                #option("LESS_THAN" $isSelected "&lt;" )
+
+                #set($isSelected = $comparisonName == "LESS_OR_EQUAL")
+                #option("LESS_OR_EQUAL" $isSelected "&lt;=" )
+
+                #set( $isSelected = $comparisonName == "EQUAL_TO")
+                #option("EQUAL_TO" $isSelected "==" )
+
+                #set($isSelected = $comparisonName == "GREATER_OR_EQUAL")
+                #option("GREATER_OR_EQUAL" $isSelected "&gt;=" )
+
+                #set( $isSelected = $comparisonName == "GREATER_THAN")
+                #option("GREATER_THAN" $isSelected "&gt;")
+            </select>
+            <br />
+            <font size="1">$i18n.getText("gerrit.workflow.score-condition.edit.comparison.description")</font>
+        </td>
+    </tr>
+
+    <tr bgcolor="#ffffff">
+        <td align="right" valign="top" bgcolor="#fffff0">
+            <span class="label">$i18n.getText("gerrit.workflow.score-condition.edit.approval-category.label"):</span>
+        </td>
+        <td bgcolor="#ffffff" nowrap="nowrap">
+            <input type="text" name="label" value="$label" />
+            <br />
+            <font size="1">$i18n.getText("gerrit.workflow.score-condition.edit.approval-category.description")</font>
+        </td>
+    </tr>
+
+    <tr bgcolor="#ffffff">
+        <td align="right" valign="top" bgcolor="#fffff0">
+            <span class="label">$i18n.getText("gerrit.workflow.score-condition.edit.target-score.label"):</span>
+        </td>
+        <td bgcolor="#ffffff" nowrap="nowrap">
+            <input type="text" name="target" value="$target" />
+            <br />
+            <font size="1">$i18n.getText("gerrit.workflow.score-condition.edit.target-score.description")</font>
+        </td>
+    </tr>
+    <tbody>

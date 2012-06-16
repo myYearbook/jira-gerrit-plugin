@@ -1,0 +1,9 @@
+<span>
+    #* Must [or not] have score [ operator ] [ target ] for [ label ] *#
+
+    #if ($negative)
+    $i18n.getText("gerrit.workflow.score-condition.view.negative", [$comparison, $target, $label])
+    #else
+    $i18n.getText("gerrit.workflow.score-condition.view.positive", [$comparison, $target, $label])
+    #end
+</span>

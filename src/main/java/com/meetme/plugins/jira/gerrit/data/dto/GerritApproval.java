@@ -9,13 +9,13 @@ import com.atlassian.crowd.embedded.api.User;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
 
 public class GerritApproval extends Approval implements Comparable<GerritApproval> {
-    /**
-     * The approver's name
-     */
+    /** The approver's name */
     private String by;
+    /** The approver's email */
     private String byEmail;
+    /** The JIRA user associated with the same email */
     private User user;
-    
+
     /**
      * Creates the PatchSetApproval from a {@link JSONObject}.
      * 
@@ -96,5 +96,10 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
         }
 
         return lhs > rhs ? 1 : -1;
+    }
+
+    @Override
+    public String toString() {
+        return super.toString() + " by " + getBy();
     }
 }
