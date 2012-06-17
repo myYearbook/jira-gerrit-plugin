@@ -42,7 +42,7 @@
     <!-- Admin panel -->
     <web-resource name="Admin Web Resources" key="admin-resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
-        <resource type="download" name="admin.js" location="scripts/admin.js" />
+        <!-- <resource type="download" name="admin.js" location="scripts/admin.js" /> -->
     </web-resource>
     <web-item key="jira-menu-item" name="Gerrit Admin" section="system.admin/globalsettings" weight="10" application="jira">
         <description>Link to Gerrit site configuration page.</description>
@@ -66,7 +66,7 @@
     <web-resource key="gerritReviewsTabPanel" name="GerritTabPanelResources">
         <context>jira.view.issue</context>
         <dependency>jira.webresources:viewissue</dependency>
-        <resource type="download" name="tabpanel.js" location="scripts/gerrit-reviews-tabpanel.js" />
+        <!-- <resource type="download" name="tabpanel.js" location="scripts/gerrit-reviews-tabpanel.js" /> -->
         <resource type="download" name="tabpanel.css" location="styles/gerrit-reviews-tabpanel.css" />
         <resource type="download" name="images/" location="images/" />
     </web-resource>

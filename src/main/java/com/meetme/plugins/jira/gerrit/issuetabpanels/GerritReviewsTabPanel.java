@@ -126,8 +126,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
                 String byEmail = approval.getByEmail();
                 approval.setUser(getUserByEmail(byEmail));
             }
-            issueActions.add(new GerritReviewIssueAction(descriptor(), change,
-                    userManager, dateTimeFormatterFactory, applicationProperties.getBaseUrl()));
+            issueActions.add(new GerritReviewIssueAction(descriptor(), change, dateTimeFormatterFactory, applicationProperties.getBaseUrl()));
             // issueActions.add(new GenericMessageAction("<pre>" + obj.toString(4) + "</pre>"));
         }
 

@@ -1,3 +1,16 @@
+/*
+ * Copyright 2012 MeetMe, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.meetme.plugins.jira.gerrit.workflow.condition;
 
 import java.util.List;
@@ -11,7 +24,12 @@ import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
-// TODO: make this into a "Must have <operator> <number> review(s) in status <status>" condition ??
+/**
+ * Workflow condition that can be used to enforce that an issue "MUST", or "MUST NOT" have any open
+ * Gerrit reviews.
+ * 
+ * @author Joe Hansche <jhansche@myyearbook.com>
+ */
 public class NoOpenReviews extends AbstractJiraCondition {
     public static final String KEY_REVERSED = "reversed";
 
@@ -38,8 +56,7 @@ public class NoOpenReviews extends AbstractJiraCondition {
         String value = (String) args.get(KEY_REVERSED);
         boolean isReversed = Boolean.parseBoolean(value);
 
-        // Confirm that reviews contains no *open* reviews
-        // XXX: is reviews made up of *only* open reviews?
+        // The ReviewsManager will only return issues that are "status:open" by default.
         int numOpenReviews = reviews.size();
 
         return isReversed ? numOpenReviews > 0 : numOpenReviews == 0;

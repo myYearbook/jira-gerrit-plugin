@@ -1,3 +1,16 @@
+/*
+ * Copyright 2012 MeetMe, Inc.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package com.meetme.plugins.jira.gerrit.workflow.condition;
 
 import java.util.List;
@@ -15,6 +28,15 @@ import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
+/**
+ * A workflow condition that requires (or rejects) a certain Gerrit approval score.
+ * 
+ * An example use case might be to require, for example, "MUST have a CRVW score >= 2", or
+ * "Must NOT have a CRVW score < 0" (these could even be combined into a single transition to
+ * require both conditions be met).
+ * 
+ * @author Joe Hansche <jhansche@myyearbook.com>
+ */
 public class ApprovalScore extends AbstractJiraCondition {
     private static final Logger logger = LoggerFactory.getLogger(ApprovalScore.class);
 
@@ -94,6 +116,14 @@ public class ApprovalScore extends AbstractJiraCondition {
         return "isReverse=" + isReverse + ", label=" + label + ", op=" + op.name() + ", targetScore=" + targetScore;
     }
 
+    /**
+     * Compare two scores using the provided {@link ComparisonOperator}
+     * 
+     * @param oper
+     * @param score
+     * @param target
+     * @return
+     */
     private boolean compareScore(ComparisonOperator oper, int score, int target)
     {
         logger.debug("Comparing score: " + score + oper + target);
@@ -114,6 +144,11 @@ public class ApprovalScore extends AbstractJiraCondition {
         throw new IllegalArgumentException("Unknown operator: " + oper);
     }
 
+    /**
+     * Text-based selection of comparison operators.
+     * 
+     * @author Joe Hansche <jhansche@myyearbook.com>
+     */
     public static enum ComparisonOperator
     {
         LESS_THAN("<"),

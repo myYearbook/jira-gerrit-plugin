@@ -34,30 +34,25 @@ import com.atlassian.jira.datetime.DateTimeStyle;
 import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
-import com.atlassian.jira.user.util.UserManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 
 public class GerritReviewIssueAction extends AbstractIssueAction implements IssueAction {
-    private static final String TEMPLATE_DIRECTORY = "templates/";
-    private static final String TEMPLATE_NAME = "gerrit-reviews-tabpanel-item.vm";
 
     private DateTimeFormatterFactory dateTimeFormatterFactory;
-    private UserManager userManager;
     private String baseUrl;
     private GerritChange change;
 
-    public GerritReviewIssueAction(IssueTabPanelModuleDescriptor descriptor, GerritChange change, UserManager userManager,
+    public GerritReviewIssueAction(IssueTabPanelModuleDescriptor descriptor, GerritChange change,
             DateTimeFormatterFactory dateTimeFormatterFactory, String baseUrl) {
         super(descriptor);
-        this.userManager = userManager;
         this.dateTimeFormatterFactory = dateTimeFormatterFactory;
         this.baseUrl = baseUrl;
         this.change = change;
     }
 
     @Override
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings({ "unchecked", "deprecation" })
     protected void populateVelocityParams(@SuppressWarnings("rawtypes") Map params) {
         DateTimeFormatter formatter = dateTimeFormatterFactory.formatter();
         params.putAll(EasyMap.build(URL, change.getUrl(),
@@ -82,6 +77,12 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
         return true;
     }
 
+    /**
+     * Returns the lowest score below 0 if available; otherwise the highest score above 0.
+     * 
+     * @param approvals
+     * @return
+     */
     private GerritApproval getMostSignificantScore(final List<GerritApproval> approvals) {
         try {
             GerritApproval min = Collections.min(approvals);
@@ -100,6 +101,7 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
                 return max;
             }
         } catch (NoSuchElementException nsee) {
+            // Collection was empty
         }
 
         return null;
