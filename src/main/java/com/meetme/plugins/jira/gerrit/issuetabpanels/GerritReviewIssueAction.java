@@ -54,17 +54,26 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
     @Override
     @SuppressWarnings({ "unchecked", "deprecation" })
     protected void populateVelocityParams(@SuppressWarnings("rawtypes") Map params) {
-        DateTimeFormatter formatter = dateTimeFormatterFactory.formatter();
         params.putAll(EasyMap.build(URL, change.getUrl(),
                 SUBJECT, change.getSubject(),
                 PROJECT, change.getProject(),
                 CHANGE, change.getNumber(),
                 PATCHSET, change.getPatchSet().getNumber(),
-                LAST_UPDATED, formatter.format(change.getLastUpdated()),
-                "isoLastUpdated", formatter.withStyle(DateTimeStyle.ISO_8601_DATE_TIME).format(change.getLastUpdated()),
+                LAST_UPDATED, formatLastUpdated(),
+                "isoLastUpdated", isoFormatLastUpdated(),
                 APPROVALS, change.getPatchSet().getApprovals(),
                 "mostSignificantScore", getMostSignificantScore(change.getPatchSet().getApprovals()),
                 "baseurl", this.baseUrl));
+    }
+
+    String formatLastUpdated() {
+        DateTimeFormatter formatter = dateTimeFormatterFactory.formatter();
+        return formatter.format(change.getLastUpdated());
+    }
+
+    String isoFormatLastUpdated() {
+        DateTimeFormatter formatter = dateTimeFormatterFactory.formatter().withStyle(DateTimeStyle.ISO_8601_DATE_TIME);
+        return formatter.format(change.getLastUpdated());
     }
 
     @Override
@@ -83,25 +92,28 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
      * @param approvals
      * @return
      */
-    private GerritApproval getMostSignificantScore(final List<GerritApproval> approvals) {
-        try {
-            GerritApproval min = Collections.min(approvals);
-            GerritApproval max = Collections.max(approvals);
+    GerritApproval getMostSignificantScore(final List<GerritApproval> approvals) {
+        if (approvals != null) {
+            try {
+                GerritApproval min = Collections.min(approvals);
+                GerritApproval max = Collections.max(approvals);
 
-            if (min == max) {
-                // Means there was only 1 vote, so show that one.
-                return max;
-            }
+                if (min == max) {
+                    // Means there was only 1 vote, so show that one.
+                    return max;
+                }
 
-            if (min.getValueAsInt() < 0) {
-                // There exists a negative vote, so show that one.
-                return min;
-            } else if (max.getValueAsInt() > 0) {
-                // No negative votes, and some positive vote, so show the highest positive vote
-                return max;
+                if (min.getValueAsInt() < 0) {
+                    // There exists a negative vote, so show that one.
+                    return min;
+                } else {
+                    // NOTE: Technically not possible to have a 0-score, but if one exists, use it!
+                    // No negative votes, so show the highest positive vote
+                    return max;
+                }
+            } catch (NoSuchElementException nsee) {
+                // Collection was empty
             }
-        } catch (NoSuchElementException nsee) {
-            // Collection was empty
         }
 
         return null;

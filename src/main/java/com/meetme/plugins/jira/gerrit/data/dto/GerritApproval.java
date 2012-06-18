@@ -29,13 +29,17 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
     /** The JIRA user associated with the same email */
     private User user;
 
+    public GerritApproval() {
+        super();
+    }
+
     /**
      * Creates the PatchSetApproval from a {@link JSONObject}.
      * 
      * @param json
      */
     public GerritApproval(JSONObject json) {
-        this.fromJson(json);
+        super(json);
     }
 
     public void setUser(User user) {
@@ -88,7 +92,13 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
      * @return
      */
     public int getValueAsInt() {
-        return Integer.parseInt(getValue(), 10);
+        String value = getValue();
+
+        if (value != null) {
+            return Integer.parseInt(getValue(), 10);
+        }
+
+        return 0;
     }
 
     public String getByEmail() {

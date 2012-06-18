@@ -24,6 +24,10 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Change;
 
 public class GerritChange extends Change {
 
+    public GerritChange() {
+        super();
+    }
+
     public GerritChange(JSONObject obj) {
         super(obj);
     }

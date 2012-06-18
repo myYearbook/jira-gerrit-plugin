@@ -25,6 +25,10 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.PatchSet;
 public class GerritPatchSet extends PatchSet {
     private List<GerritApproval> approvals;
 
+    public GerritPatchSet() {
+        super();
+    }
+
     public GerritPatchSet(JSONObject json) {
         super(json);
     }
