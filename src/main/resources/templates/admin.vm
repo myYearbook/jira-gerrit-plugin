@@ -64,36 +64,35 @@
                 </div>
             </div>
 
-            <h3>HTTP Access (optional)</h3>
+            <!-- This is not yet implemented: for JSON-RPC access -->
+            <!-- <h3>HTTP Access (optional)</h3>
 
-            <div class="field-group">
+                <div class="field-group">
                 <label for="httpBaseUrl">
-                    $i18n.getText("gerrit.admin.httpBaseUrl.label")
-                    <!-- <span class="aui-icon icon-required"></span> -->
+                $i18n.getText("gerrit.admin.httpBaseUrl.label")
                 </label>
-                <input type="text" id="httpBaseUrl" name="httpBaseUrl" class="text" />
+                <input type="text" id="httpBaseUrl" name="httpBaseUrl" class="text" value="$!httpBaseUrl" />
                 <div class="description">$i18n.getText("gerrit.admin.httpBaseUrl.description")</div>
-            </div>
-            <div class="field-group">
+                </div>
+                <div class="field-group">
                 <label for="httpUsername">
-                    $i18n.getText("gerrit.admin.httpUsername.label")
-                    <!-- <span class="aui-icon icon-required"></span> -->
+                $i18n.getText("gerrit.admin.httpUsername.label")
                 </label>
-                <input type="text" id="httpUsername" name="httpUsername" class="text" />
+                <input type="text" id="httpUsername" name="httpUsername" class="text" value="$!httpUsername" />
                 <div class="description">$i18n.getText("gerrit.admin.httpUsername.description")</div>
-            </div>
-            <div class="field-group">
+                </div>
+                <div class="field-group">
                 <label for="httpPassword">
-                    $i18n.getText("gerrit.admin.httpPassword.label")
-                    <!-- <span class="aui-icon icon-required"></span> -->
+                $i18n.getText("gerrit.admin.httpPassword.label")
                 </label>
-                <input type="password" id="httpPassword" name="httpPassword" class="text" />
-            </div>
-            <!-- TODO: Optional "suexec" checkbox with peer_key input -->
+                <input type="password" id="httpPassword" name="httpPassword" class="text" value="$!httpPassword" />
+                </div> -->
+
+            <!-- TODO: Optional "suexec" checkbox with peer_key input? -->
             <div class="buttons-container">
                 <div class="buttons">
                     <input type="submit" value="Save" class="button submit" />
-                    <button type="button" id="gerritTest" class="button">Test Config</button>
+                    <!-- <button type="button" id="gerritTest" class="button">Test Config</button> -->
                 </div>
             </div>
         </form>

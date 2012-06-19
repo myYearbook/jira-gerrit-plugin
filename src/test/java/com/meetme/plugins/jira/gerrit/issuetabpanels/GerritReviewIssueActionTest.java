@@ -58,7 +58,7 @@ public class GerritReviewIssueActionTest extends TestCase {
     @Mock
     private IssueTabPanelModuleDescriptor descriptor;
     @Mock
-    private DateTimeFormatterFactory dateTimeFormatterFactory;
+    private DateTimeFormatter dateTimeFormatter;
 
     private GerritChange change;
 
@@ -72,7 +72,7 @@ public class GerritReviewIssueActionTest extends TestCase {
         setUpDateTimeFormatter();
         setUpApprovals();
         setUpGerritChange();
-        action = new GerritReviewIssueAction(descriptor, change, dateTimeFormatterFactory, BASE_URL);
+        action = new GerritReviewIssueAction(descriptor, change, dateTimeFormatter, BASE_URL);
 
     }
 
@@ -83,8 +83,7 @@ public class GerritReviewIssueActionTest extends TestCase {
     }
 
     private void setUpDateTimeFormatter() {
-        DateTimeFormatter mockFormatter = mock(DateTimeFormatter.class);
-        when(dateTimeFormatterFactory.formatter()).thenReturn(mockFormatter);
+        final DateTimeFormatter mockFormatter = dateTimeFormatter;
         when(mockFormatter.format(TEST_LAST_UPDATED)).thenReturn(TEST_FORMATTED_LAST_UPDATED);
 
         DateTimeFormatter mockFormatterIso = mock(DateTimeFormatter.class);

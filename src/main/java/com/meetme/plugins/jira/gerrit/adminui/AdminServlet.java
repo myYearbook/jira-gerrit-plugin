@@ -67,19 +67,17 @@ public class AdminServlet extends HttpServlet {
     private final JiraHome jiraHome;
     private final GerritConfiguration configurationManager;
 
-    public AdminServlet(UserManager userManager, LoginUriProvider loginUriProvider, TemplateRenderer renderer, JiraHome jiraHome,
-            GerritConfiguration configurationManager) {
+    public AdminServlet(final UserManager userManager, final LoginUriProvider loginUriProvider, final TemplateRenderer renderer,
+            final JiraHome jiraHome, final GerritConfiguration configurationManager) {
         this.userManager = userManager;
         this.loginUriProvider = loginUriProvider;
         this.renderer = renderer;
         this.jiraHome = jiraHome;
         this.configurationManager = configurationManager;
-
-        log.info("---- Initialized AdminServlet ----");
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response)
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
             throws IOException, ServletException {
         String username = userManager.getRemoteUsername(request);
 
@@ -92,7 +90,7 @@ public class AdminServlet extends HttpServlet {
         renderer.render(TEMPLATE_ADMIN, configToMap(configurationManager), response.getWriter());
     }
 
-    private Map<String, Object> configToMap(GerritConfiguration config) {
+    private Map<String, Object> configToMap(final GerritConfiguration config) {
         Map<String, Object> map = new HashMap<String, Object>();
 
         map.put(FIELD_SSH_HOSTNAME, config.getSshHostname());
@@ -100,16 +98,18 @@ public class AdminServlet extends HttpServlet {
         map.put(FIELD_SSH_USERNAME, config.getSshUsername());
         map.put(FIELD_SSH_PRIVATE_KEY, config.getSshPrivateKey());
 
-        map.put(FIELD_HTTP_BASE_URL, config.getHttpBaseUrl().toASCIIString());
-        map.put(FIELD_HTTP_USERNAME, config.getHttpUsername());
-        map.put(FIELD_HTTP_PASSWORD, config.getHttpPassword());
+        if (config.getHttpBaseUrl() != null) {
+            map.put(FIELD_HTTP_BASE_URL, config.getHttpBaseUrl().toASCIIString());
+            map.put(FIELD_HTTP_USERNAME, config.getHttpUsername());
+            map.put(FIELD_HTTP_PASSWORD, config.getHttpPassword());
+        }
 
         return map;
     }
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp)
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
             throws ServletException, IOException {
         try {
             String username = userManager.getRemoteUsername(req);
@@ -139,12 +139,13 @@ public class AdminServlet extends HttpServlet {
             if (privateKeyPath != null) {
                 // We'll store the *path* to the file in ConfigResource, to make it easy to look it
                 // up in the future.
-                log.info("---- Saved ssh private key at: " + privateKeyPath.toString() + " ----");
+                log.debug("---- Saved ssh private key at: " + privateKeyPath.toString() + " ----");
                 configurationManager.setSshPrivateKey(privateKeyPath);
             } else if (configurationManager.getSshPrivateKey() != null) {
-                log.info("---- Private key is already on file, and not being replaced. ----");
+                log.debug("---- Private key is already on file, and not being replaced. ----");
             } else {
-                log.warn("**** No private key was uploaded, and no key currently on file!  Requests will fail. ****");
+                // TODO: is this a failure?
+                log.info("**** No private key was uploaded, and no key currently on file!  Requests will fail. ****");
             }
         } catch (Exception e) {
             e.printStackTrace(resp.getWriter());
@@ -155,9 +156,10 @@ public class AdminServlet extends HttpServlet {
         renderer.render(TEMPLATE_ADMIN, configToMap(configurationManager), resp.getWriter());
     }
 
-    private void setAllFields(List<FileItem> items) {
+    private void setAllFields(final List<FileItem> items) {
         for (FileItem item : items) {
             final String fieldName = item.getFieldName();
+
             if (fieldName.equals(FIELD_HTTP_BASE_URL)) {
                 configurationManager.setHttpBaseUrl(item.getString());
             } else if (fieldName.equals(FIELD_HTTP_USERNAME)) {
@@ -174,7 +176,7 @@ public class AdminServlet extends HttpServlet {
         }
     }
 
-    private File doUploadPrivateKey(List<FileItem> items, String sshHostname) throws IOException {
+    private File doUploadPrivateKey(final List<FileItem> items, final String sshHostname) throws IOException {
         File privateKeyPath = null;
 
         for (FileItem item : items) {
@@ -203,7 +205,7 @@ public class AdminServlet extends HttpServlet {
         return privateKeyPath;
     }
 
-    private URI getUri(HttpServletRequest request) {
+    private URI getUri(final HttpServletRequest request) {
         StringBuffer builder = request.getRequestURL();
 
         if (request.getQueryString() != null) {
@@ -214,7 +216,7 @@ public class AdminServlet extends HttpServlet {
         return URI.create(builder.toString());
     }
 
-    private void redirectToLogin(HttpServletRequest request,
+    private void redirectToLogin(final HttpServletRequest request,
             HttpServletResponse response) throws IOException {
         response.sendRedirect(loginUriProvider.getLoginUri(getUri(request))
                 .toASCIIString());

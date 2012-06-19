@@ -29,7 +29,6 @@ import java.util.NoSuchElementException;
 
 import com.atlassian.core.util.map.EasyMap;
 import com.atlassian.jira.datetime.DateTimeFormatter;
-import com.atlassian.jira.datetime.DateTimeFormatterFactory;
 import com.atlassian.jira.datetime.DateTimeStyle;
 import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
@@ -38,15 +37,14 @@ import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 
 public class GerritReviewIssueAction extends AbstractIssueAction implements IssueAction {
-
-    private DateTimeFormatterFactory dateTimeFormatterFactory;
     private String baseUrl;
     private GerritChange change;
+    private DateTimeFormatter dateTimeFormatter;
 
     public GerritReviewIssueAction(IssueTabPanelModuleDescriptor descriptor, GerritChange change,
-            DateTimeFormatterFactory dateTimeFormatterFactory, String baseUrl) {
+            DateTimeFormatter dateTimeFormatter, String baseUrl) {
         super(descriptor);
-        this.dateTimeFormatterFactory = dateTimeFormatterFactory;
+        this.dateTimeFormatter = dateTimeFormatter;
         this.baseUrl = baseUrl;
         this.change = change;
     }
@@ -67,12 +65,11 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
     }
 
     String formatLastUpdated() {
-        DateTimeFormatter formatter = dateTimeFormatterFactory.formatter();
-        return formatter.format(change.getLastUpdated());
+        return dateTimeFormatter.format(change.getLastUpdated());
     }
 
     String isoFormatLastUpdated() {
-        DateTimeFormatter formatter = dateTimeFormatterFactory.formatter().withStyle(DateTimeStyle.ISO_8601_DATE_TIME);
+        final DateTimeFormatter formatter = dateTimeFormatter.withStyle(DateTimeStyle.ISO_8601_DATE_TIME);
         return formatter.format(change.getLastUpdated());
     }
 

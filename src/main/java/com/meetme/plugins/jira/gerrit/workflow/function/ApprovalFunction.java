@@ -64,7 +64,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * @author jhansche
  */
 public class ApprovalFunction extends AbstractJiraFunctionProvider {
-    private static final Logger logger = LoggerFactory.getLogger(ApprovalFunction.class);
+    private static final Logger log = LoggerFactory.getLogger(ApprovalFunction.class);
 
     public static final String KEY_CMD_ARGS = "cmdArgs";
     public static final String DEFAULT_CMD_ARGS = "--verified 1 --submit";
@@ -104,7 +104,7 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
         Collections.sort(issueReviews, SortByChangeId.INSTANCE);
 
         for (GerritChange change : issueReviews) {
-            logger.info("Attempting to approve " + change);
+            log.debug("Attempting to approve " + change);
 
             try {
                 reviewsManager.doApproval(issueKey, change, cmdArgs);

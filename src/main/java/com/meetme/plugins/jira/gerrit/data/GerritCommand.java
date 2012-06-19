@@ -25,7 +25,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshConnection;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshConnectionFactory;
 
 public class GerritCommand {
-    private static final Logger logger = LoggerFactory.getLogger(GerritCommand.class);
+    private static final Logger log = LoggerFactory.getLogger(GerritCommand.class);
     private final static String BASE_COMMAND = "gerrit review";
     private GerritConfiguration config;
 
@@ -51,13 +51,14 @@ public class GerritCommand {
 
     private void runCommand(String command) throws IOException {
         SshConnection ssh = null;
-        logger.info("Running command: " + command);
+        log.debug("Running command: " + command);
 
         try {
             Authentication auth = new Authentication(config.getSshPrivateKey(), config.getSshUsername());
 
-            // TODO: need to get stderr and exit status. Requires subclassing SshConnectionImpl to
-            // provide more than one Reader
+            // XXX: IMPORTANT! Need to get stderr and exit status. Requires subclassing
+            // SshConnectionImpl to provide more than one Reader
+
             ssh = SshConnectionFactory.getConnection(config.getSshHostname(), config.getSshPort(), auth);
             BufferedReader reader = new BufferedReader(ssh.executeCommandReader(command));
             String incomingLine = null;
@@ -65,10 +66,10 @@ public class GerritCommand {
             while ((incomingLine = reader.readLine()) != null) {
                 // We don't expect any response anyway..
                 // But we can get the response and return it if we need to
-                logger.info("Incoming line: " + incomingLine);
+                log.trace("Incoming line: " + incomingLine);
             }
 
-            logger.info("Closing reader.");
+            log.trace("Closing reader.");
             reader.close();
         } finally {
             if (ssh != null) {

@@ -32,7 +32,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshException;
 
 public class IssueReviewsImpl implements IssueReviewsManager {
-    private static final Logger logger = LoggerFactory.getLogger(IssueReviewsImpl.class);
+    private static final Logger log = LoggerFactory.getLogger(IssueReviewsImpl.class);
 
     private static final String GERRIT_SEARCH = "message:%1$s";
     private static final int CACHE_CAPACITY = 20;
@@ -87,8 +87,8 @@ public class IssueReviewsImpl implements IssueReviewsManager {
         for (JSONObject obj : reviews) {
             if (obj.has("type") && "stats".equalsIgnoreCase(obj.getString("type"))) {
                 // The final JSON object in the query results is just a set of statistics
-                if (logger.isDebugEnabled()) {
-                    logger.debug("Results from QUERY: " + obj.optString("rowCount", "(unknown)") + " rows; runtime: "
+                if (log.isDebugEnabled()) {
+                    log.trace("Results from QUERY: " + obj.optString("rowCount", "(unknown)") + " rows; runtime: "
                             + obj.optString("runTimeMilliseconds", "(unknown)") + " ms");
                 }
                 continue;

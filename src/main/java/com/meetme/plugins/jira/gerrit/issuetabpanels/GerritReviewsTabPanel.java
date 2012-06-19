@@ -20,6 +20,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.datetime.DateTimeFormatter;
 import com.atlassian.jira.datetime.DateTimeFormatterFactory;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
@@ -32,6 +33,7 @@ import com.atlassian.jira.plugin.issuetabpanel.ShowPanelReply;
 import com.atlassian.jira.plugin.issuetabpanel.ShowPanelRequest;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.sal.api.ApplicationProperties;
+import com.atlassian.sal.api.message.I18nResolver;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
@@ -47,20 +49,22 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements IssueTabPanel2 {
     private static final Logger log = LoggerFactory.getLogger(GerritReviewsTabPanel.class);
 
-    private final DateTimeFormatterFactory dateTimeFormatterFactory;
+    private final DateTimeFormatter dateTimeFormatter;
     private final UserManager userManager;
     private final ApplicationProperties applicationProperties;
     private final GerritConfiguration configuration;
     private final IssueReviewsManager reviewsManager;
+    private final I18nResolver i18n;
 
     public GerritReviewsTabPanel(UserManager userManager, DateTimeFormatterFactory dateTimeFormatterFactory,
             ApplicationProperties applicationProperties, GerritConfiguration configuration,
-            IssueReviewsManager reviewsManager) {
+            IssueReviewsManager reviewsManager, I18nResolver i18n) {
         this.userManager = userManager;
-        this.dateTimeFormatterFactory = dateTimeFormatterFactory;
+        this.dateTimeFormatter = dateTimeFormatterFactory.formatter();
         this.applicationProperties = applicationProperties;
         this.configuration = configuration;
         this.reviewsManager = reviewsManager;
+        this.i18n = i18n;
     }
 
     @Override
@@ -80,6 +84,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
             // List of items we will be showing in the tab panel.
             issueActions = getActions(request.issue().getKey());
         }
+
         return GetActionsReply.create(issueActions);
     }
 
@@ -121,13 +126,17 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
             return issueActions;
         }
 
-        for (GerritChange change : reviews) {
-            for (GerritApproval approval : change.getPatchSet().getApprovals()) {
-                String byEmail = approval.getByEmail();
-                approval.setUser(getUserByEmail(byEmail));
+        if (reviews.isEmpty()) {
+            issueActions.add(new GenericMessageAction(i18n.getText("gerrit.tabpanel.no_changes")));
+        } else {
+            for (GerritChange change : reviews) {
+                for (GerritApproval approval : change.getPatchSet().getApprovals()) {
+                    String byEmail = approval.getByEmail();
+                    approval.setUser(getUserByEmail(byEmail));
+                }
+                issueActions.add(new GerritReviewIssueAction(descriptor(), change, dateTimeFormatter, applicationProperties.getBaseUrl()));
+                // issueActions.add(new GenericMessageAction("<pre>" + obj.toString(4) + "</pre>"));
             }
-            issueActions.add(new GerritReviewIssueAction(descriptor(), change, dateTimeFormatterFactory, applicationProperties.getBaseUrl()));
-            // issueActions.add(new GenericMessageAction("<pre>" + obj.toString(4) + "</pre>"));
         }
 
         return issueActions;

@@ -38,7 +38,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * @author Joe Hansche <jhansche@myyearbook.com>
  */
 public class ApprovalScore extends AbstractJiraCondition {
-    private static final Logger logger = LoggerFactory.getLogger(ApprovalScore.class);
+    private static final Logger log = LoggerFactory.getLogger(ApprovalScore.class);
 
     // Must [or not] have [ operator ] N score for [type]
     public static final String KEY_NEGATIVE = "negative";
@@ -48,7 +48,7 @@ public class ApprovalScore extends AbstractJiraCondition {
 
     private IssueReviewsManager reviewsManager;
 
-    public ApprovalScore(IssueReviewsManager reviewsManager) {
+    public ApprovalScore(final IssueReviewsManager reviewsManager) {
         this.reviewsManager = reviewsManager;
     }
 
@@ -72,7 +72,7 @@ public class ApprovalScore extends AbstractJiraCondition {
         int targetScore = Integer.parseInt((String) args.get(KEY_TARGET));
 
         String description = describe(isReverse, label, op, targetScore);
-        logger.debug("Condition description: " + description);
+        log.debug("Condition description: " + description);
 
         boolean matches = false;
         int matchingChanges = 0;
@@ -84,7 +84,7 @@ public class ApprovalScore extends AbstractJiraCondition {
             for (GerritApproval approval : ch.getPatchSet().getApprovals()) {
                 if (approval.getType().equals(label)) {
                     if (compareScore(op, approval.getValueAsInt(), targetScore)) {
-                        logger.info("Found a match on review " + ch + " for condition: " + description + "; Approver=" + approval);
+                        log.debug("Found a match on review " + ch + " for condition: " + description + "; Approver=" + approval);
 
                         matchingApprovals++;
                     }
@@ -104,10 +104,10 @@ public class ApprovalScore extends AbstractJiraCondition {
 
         if (isReverse) {
             matches = !matches;
-            logger.debug("Negating logic, due to 'MUST NOT' condition. NEW matches=" + matches);
+            log.debug("Negating logic, due to 'MUST NOT' condition. NEW matches=" + matches);
         }
 
-        logger.info("Evaluating conditions: " + matches);
+        log.trace("Evaluating conditions: " + matches);
 
         return matches;
     }
@@ -126,7 +126,7 @@ public class ApprovalScore extends AbstractJiraCondition {
      */
     private boolean compareScore(ComparisonOperator oper, int score, int target)
     {
-        logger.debug("Comparing score: " + score + oper + target);
+        log.debug("Comparing score: " + score + oper + target);
 
         switch (oper) {
             case EQUAL_TO:
