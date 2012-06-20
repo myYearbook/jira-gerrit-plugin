@@ -35,7 +35,7 @@ public class IssueReviewsImpl implements IssueReviewsManager {
     private static final Logger log = LoggerFactory.getLogger(IssueReviewsImpl.class);
 
     private static final String GERRIT_SEARCH = "message:%1$s";
-    private static final int CACHE_CAPACITY = 20;
+    private static final int CACHE_CAPACITY = 30;
 
     /** Number of milliseconds an item may stay in cache: 30 seconds */
     private static final long CACHE_EXPIRATION = 30000;
@@ -97,6 +97,7 @@ public class IssueReviewsImpl implements IssueReviewsManager {
             changes.add(new GerritChange(obj));
         }
 
+        Collections.sort(changes);
         return changes;
     }
 

@@ -17,13 +17,15 @@ table.gerrit-review-approvals td.gerrit-review-score
 }
 
 table.gerrit-review-approvals td.review-negative,
-div.flooded span.review-negative
+div.flooded span.review-negative,
+.gerrit-review-score.review-negative
 {
   color: #f00;
 }
 
 table.gerrit-review-approvals td.review-positive,
-div.flooded span.review-positive
+div.flooded span.review-positive,
+.gerrit-review-score.review-positive
 {
   color: #08A400;
 }
@@ -35,4 +37,14 @@ span.gerrit-review
   width: 16px;
   height: 16px;
   background: transparent url(images/gerrit-icon16.png) no-repeat 50% 50%;
+}
+
+span.gerrit-open-reviews
+{
+  color: #900;
+}
+
+span.gerrit-no-reviews
+{
+  font-style: italic;
 }

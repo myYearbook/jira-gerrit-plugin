@@ -14,8 +14,6 @@
 package com.meetme.plugins.jira.gerrit.workflow.function;
 
 import java.io.IOException;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
@@ -26,6 +24,7 @@ import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+import com.meetme.plugins.jira.gerrit.workflow.condition.ApprovalScore;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
@@ -101,8 +100,6 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
             throw new WorkflowException("Unable to retrieve associated reviews", e);
         }
 
-        Collections.sort(issueReviews, SortByChangeId.INSTANCE);
-
         for (GerritChange change : issueReviews) {
             log.debug("Attempting to approve " + change);
 
@@ -111,54 +108,6 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
             } catch (IOException e) {
                 throw new WorkflowException("An error occurred while approving the change", e);
             }
-        }
-    }
-
-    /**
-     * Sorts {@link GerritChange}s in order by their Gerrit change number. For the purpose of this
-     * approval function, changes are considered equal if their projects <b>do not</b> match
-     * (because then order doesn't matter). However, for the same project, earlier change numbers
-     * <i>generally</i> should be acted on first.
-     * 
-     * TODO: To be completely accurate, the changes should impose a dependency-tree ordering (via
-     * <tt>--dependencies</tt> option) to GerritQuery! It is possible for an earlier ChangeId to be
-     * refactored such that it is then dependent on a <i>later</i> change!
-     * 
-     * <p>
-     * Note: this comparator imposes orderings that are inconsistent with <tt>equals()</tt>, because
-     * in this case, the {@link GerritChange#getProject()} results do not matter.
-     * </p>
-     * 
-     * @author jhansche
-     */
-    public static class SortByChangeId implements Comparator<GerritChange>
-    {
-        public static final SortByChangeId INSTANCE = new SortByChangeId();
-
-        /** This is a singleton */
-        private SortByChangeId() {
-        }
-
-        @Override
-        public int compare(GerritChange a, GerritChange b) {
-            if (a != b && a != null && b != null) {
-                String aProject = a.getProject();
-                String bProject = b.getProject();
-
-                if (aProject != null && bProject != null && aProject.equals(bProject)) {
-                    @SuppressWarnings("deprecation")
-                    int aNum = Integer.parseInt(a.getNumber());
-                    @SuppressWarnings("deprecation")
-                    int bNum = Integer.parseInt(b.getNumber());
-
-                    if (aNum == bNum) {
-                        return 0;
-                    } else {
-                        return aNum < bNum ? -1 : 1;
-                    }
-                }
-            }
-            return 0;
         }
     }
 }

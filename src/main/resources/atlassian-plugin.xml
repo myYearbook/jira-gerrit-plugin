@@ -37,8 +37,7 @@
         <interface>com.meetme.plugins.jira.gerrit.data.IssueReviewsManager</interface>
     </component>
 
-    <template-context-item key="applicationPropertiesContextItem" component-ref="applicationProperties" context-key="applicationProperties"
-        name="Application Properties Context Item" />
+    <template-context-item key="applicationPropertiesContextItem" component-ref="applicationProperties" context-key="applicationProperties" name="Application Properties Context Item" />
 
     <!-- Admin panel -->
     <web-resource name="Admin Web Resources" key="admin-resources">
@@ -71,11 +70,19 @@
         <resource type="download" name="tabpanel.css" location="styles/gerrit-reviews-tabpanel.css" />
         <resource type="download" name="images/" location="images/" />
     </web-resource>
+    <!-- Tab panel to list Gerrit Reviews for each subtask -->
+    <issue-tabpanel key="subtask-reviews-tabpanel" name="Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.issuetabpanels.SubtaskReviewsTabPanel">
+        <description>Show Gerrit reviews related to an issue in an issue tab panel.</description>
+        <label key="gerrit.tabpanel.subtasks.label">Gerrit Subtask Reviews</label>
+        <resource type="velocity" name="view" location="templates/subtask-reviews-tabpanel-item.vm" />
+        <resource type="i18n" name="i18n" location="i18n.tabpanel" />
+        <!-- enable fast tab switch -->
+        <supports-ajax-load>true</supports-ajax-load>
+    </issue-tabpanel>
 
     <!-- Workflow Conditions -->
     <!-- 1. Must have zero open reviews (or reversed logic) -->
-    <workflow-condition key="no-open-reviews" i18n-name-key="gerrit.workflow.no-open-reviews.label"
-        class="com.meetme.plugins.jira.gerrit.workflow.NoOpenReviewsConditionFactoryImpl">
+    <workflow-condition key="no-open-reviews" i18n-name-key="gerrit.workflow.no-open-reviews.label" class="com.meetme.plugins.jira.gerrit.workflow.NoOpenReviewsConditionFactoryImpl">
         <description>Condition to allow a workflow transition based on whether there are open Gerrit reviews.</description>
         <condition-class>com.meetme.plugins.jira.gerrit.workflow.condition.NoOpenReviews</condition-class>
         <resource type="velocity" name="view" location="templates/workflow/no-open-reviews-condition-view.vm" />
@@ -85,8 +92,7 @@
     </workflow-condition>
 
     <!-- 2. Must [or not] have [ operator ] N score for [type] -->
-    <workflow-condition i18n-name-key="gerrit.workflow.score-condition.label" key="score-condition"
-        class="com.meetme.plugins.jira.gerrit.workflow.ApprovalScoreConditionFactoryImpl">
+    <workflow-condition i18n-name-key="gerrit.workflow.score-condition.label" key="score-condition" class="com.meetme.plugins.jira.gerrit.workflow.ApprovalScoreConditionFactoryImpl">
         <description>Condition to allow a workflow transition based on existing approval scores.</description>
         <condition-class>com.meetme.plugins.jira.gerrit.workflow.condition.ApprovalScore</condition-class>
         <resource type="velocity" name="view" location="templates/workflow/score-condition-view.vm" />

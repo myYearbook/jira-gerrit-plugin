@@ -1,0 +1,117 @@
+<!--#*
+    Copyright 2012 MeetMe, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the
+    License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing,
+    software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See
+    the License for the specific language governing permissions and
+    limitations under the License.
+    *#
+
+    #set( $hasChanges = !$changes.isEmpty() )
+    #set( $issueUrl = "${baseurl}/browse/${subtask.getKey()}" )
+-->
+<div class="issue-data-block twixi-block collapsed">
+
+    #* Calculates and displays the most significant approval score *#
+    #macro( mostSignificantScore $approvals )
+    #set( $significant = 0 )
+    #foreach( $approval in $approvals )
+    #set( $value = $approval.valueAsInt )
+    #if( $value lt 0 and $value lt $significant )
+    #set( $significant = $value )
+    #elseif( $value gt 0 and $value gt $significant and $significant ge 0 )
+    #set( $significant = $value )
+    #end
+    #end
+
+    <span class="#if ($significant gt 0)review-positive#else review-negative #end gerrit-review-score" title="$i18n.getText('gerrit.tabpanel.most_significant_score')">
+        #if ( $significant gt 0 )
+        +$significant
+        #else
+        $significant
+        #end
+    </span>
+    #end
+
+    #* Displays a single Review Detail record, in the expanded subtasks list *#
+    #macro( reviewDetail $change )
+    <span class="gerrit-review" title="$i18n.getText('gerrit.tabpanel.Review')">$i18n.getText('gerrit.tabpanel.Review'): </span>
+    $change.getNumber(),$change.getPatchSet().getNumber()
+    <a href="$change.getUrl()" target="gerrit-review-$change.getNumber(),$change.getPatchSet().getNumber()">$change.getSubject()</a>
+    -
+
+    #mostSignificantScore($change.getPatchSet().getApprovals())
+    #end
+
+
+
+    ## The concise version (just the subtasks):
+    <div class="actionContainer twixi-wrap concise">
+        #if ($hasChanges)
+        <a href="#" class="twixi">
+            <span class="icon twixi-closed">
+                <span>Show</span>
+            </span>
+        </a>
+        #end
+
+        <div class="action-details flooded">
+            #* The short version just shows "$key: $summary - $count" *#
+            <a href="$issueUrl">$subtask.getKey(): $subtask.getSummary()</a>
+            -
+            <span class="#if ($hasChanges)gerrit-open-reviews#else gerrit-no-reviews#end">$i18n.getText("gerrit.tabpanel.subtasks.has_open_reviews", $changes.size())</span>
+        </div>
+    </div>
+
+
+    ## The verbose version (lists collapsed change info):
+    <div class="actionContainer twixi-wrap verbose">
+        #if ($hasChanges)
+        <a href="#" class="twixi">
+            <span class="icon twixi-opened">
+                <span>Hide</span>
+            </span>
+        </a>
+        #end
+
+        <div class="action-links">
+            ## Top-right links that show up while hovering
+            <a href="$issueUrl" title="$i18n.getText('gerrit.tabpanel.subtasks.permalink')" class="icon icon-perma">
+                <span>Permalink</span>
+            </a>
+        </div>
+
+        ## Main action detail
+        <div class="action-details">
+            ## The long version shows "$key: $summary", with body containing a list of all reviews
+            <a href="$issueUrl">$subtask.getKey(): $subtask.getSummary()</a>
+            -
+            #if ($changes.isEmpty())
+            <span class="gerrit-no-reviews">$i18n.getText("gerrit.tabpanel.subtasks.no_open_reviews")</span>
+            #else
+            <span class="gerrit-open-reviews">$i18n.getText("gerrit.tabpanel.subtasks.has_open_reviews", $changes.size())</span>
+            #end
+        </div>
+
+        <div class="action-body">
+            <ol>
+                #foreach ($change in $changes)
+                <li>
+                    #reviewDetail( $change )
+                </li>
+                #end
+            </ol>
+        </div>
+
+    </div>
+</div>

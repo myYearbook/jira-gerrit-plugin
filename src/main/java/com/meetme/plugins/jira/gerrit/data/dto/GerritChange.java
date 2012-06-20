@@ -22,7 +22,7 @@ import net.sf.json.JSONObject;
 import com.meetme.plugins.jira.gerrit.issuetabpanels.GerritEventKeys;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Change;
 
-public class GerritChange extends Change {
+public class GerritChange extends Change implements Comparable<GerritChange> {
 
     public GerritChange() {
         super();
@@ -60,5 +60,29 @@ public class GerritChange extends Change {
         if (json.containsKey(GerritEventKeys.CURRENT_PATCH_SET)) {
             this.patchSet = new GerritPatchSet(json.getJSONObject(GerritEventKeys.CURRENT_PATCH_SET));
         }
+    }
+
+    /**
+     * Sorts {@link GerritChange}s in order by their Gerrit change number.
+     * 
+     * TODO: To be completely accurate, the changes should impose a dependency-tree ordering (via
+     * <tt>--dependencies</tt> option) to GerritQuery! It is possible for an earlier ChangeId to be
+     * refactored such that it is then dependent on a <i>later</i> change!
+     */
+    @Override
+    @SuppressWarnings("deprecation")
+    public int compareTo(GerritChange obj) {
+        if (this != obj && obj != null) {
+            int aNum = Integer.parseInt(this.getNumber());
+            int bNum = Integer.parseInt(obj.getNumber());
+
+            if (aNum == bNum) {
+                return 0;
+            } else {
+                return aNum < bNum ? -1 : 1;
+            }
+        }
+
+        return 0;
     }
 }

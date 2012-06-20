@@ -38,6 +38,7 @@ import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritPatchSet;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 /**
@@ -130,10 +131,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
             issueActions.add(new GenericMessageAction(i18n.getText("gerrit.tabpanel.no_changes")));
         } else {
             for (GerritChange change : reviews) {
-                for (GerritApproval approval : change.getPatchSet().getApprovals()) {
-                    String byEmail = approval.getByEmail();
-                    approval.setUser(getUserByEmail(byEmail));
-                }
+                setUsersForChangeApprovals(change);
                 issueActions.add(new GerritReviewIssueAction(descriptor(), change, dateTimeFormatter, applicationProperties.getBaseUrl()));
                 // issueActions.add(new GenericMessageAction("<pre>" + obj.toString(4) + "</pre>"));
             }
@@ -161,5 +159,20 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
     private boolean isConfigurationReady() {
         return configuration.getSshHostname() != null && configuration.getSshUsername() != null
                 && configuration.getSshPrivateKey() != null && configuration.getSshPrivateKey().exists();
+    }
+
+    private void setUsersForChangeApprovals(GerritChange change) {
+        GerritPatchSet ps = change.getPatchSet();
+
+        if (ps != null) {
+            List<GerritApproval> approvals = ps.getApprovals();
+
+            if (approvals != null) {
+                for (GerritApproval approval : change.getPatchSet().getApprovals()) {
+                    String byEmail = approval.getByEmail();
+                    approval.setUser(getUserByEmail(byEmail));
+                }
+            }
+        }
     }
 }

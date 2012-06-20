@@ -26,9 +26,35 @@
         <url>http://www.meetme.com/</url>
     </organization>
 
-    <name>jira-gerrit-plugin</name>
+    <name>JIRA Gerrit Plugin</name>
     <description>Integrates Atlassian JIRA with Gerrit code review.</description>
+    <inceptionYear>2012</inceptionYear>
+
     <packaging>atlassian-plugin</packaging>
+
+    <licenses>
+        <license>
+            <name>The Apache Software License, Version 2.0</name>
+            <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+            <distribution>manual</distribution>
+            <comments>A business-friendly OSS license</comments>
+        </license>
+    </licenses>
+
+    <developers>
+        <developer>
+            <id>jhansche</id>
+            <name>Joe Hansche</name>
+            <email>jhansche@myyearbook.com</email>
+            <organization>MeetMe, Inc.</organization>
+            <organizationUrl>http://www.meetme.com/</organizationUrl>
+            <roles>
+                <role>developer</role>
+                <role>maintainer</role>
+            </roles>
+            <timezone>-4</timezone>
+        </developer>
+    </developers>
 
     <dependencies>
         <!-- Base Atlassian requirements -->
@@ -140,5 +166,11 @@
         <jira.version>5.0</jira.version>
         <amps.version>3.10.3</amps.version>
     </properties>
+
+    <scm>
+        <connection>scm:git:git://github.meetmecorp.com/jhansche/jira-gerrit-plugin.git</connection>
+        <developerConnection>scm:git:git@github.meetmecorp.com:jhansche/jira-gerrit-plugin.git</developerConnection>
+        <url>https://github.meetmecorp.com/jhansche/jira-gerrit-plugin</url>
+    </scm>
 
 </project>

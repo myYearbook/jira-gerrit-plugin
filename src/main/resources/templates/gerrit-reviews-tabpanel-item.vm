@@ -80,45 +80,47 @@
             </span>
         </div>
 
-        <div>$i18n.getText("gerrit.tabpanel.Project"): $project</div>
+        <div class="action-body">
+            <div>$i18n.getText("gerrit.tabpanel.Project"): $project</div>
 
-        <table width="300" border="0" padding="3" class="gerrit-review-approvals">
-            <tr>
-                <th>$i18n.getText("gerrit.tabpanel.Approver")</th>
-                <th>$i18n.getText("gerrit.tabpanel.Type")</th>
-                <th>$i18n.getText("gerrit.tabpanel.Score")</th>
-            </tr>
+            <table width="300" border="0" padding="3" class="gerrit-review-approvals">
+                <tr>
+                    <th>$i18n.getText("gerrit.tabpanel.Approver")</th>
+                    <th>$i18n.getText("gerrit.tabpanel.Type")</th>
+                    <th>$i18n.getText("gerrit.tabpanel.Score")</th>
+                </tr>
 
-            #if ($approvals.size() == 0)
-            <tr>
-                <td colspan="3">
-                    <div class="aui-message warning">
-                        <span class="aui-icon icon-warning"></span>
-                        $i18n.getText("gerrit.tabpanel.no_approvals")
-                    </div>
-                </td>
-            </tr>
-            #end
+                #if ($approvals.size() == 0)
+                <tr>
+                    <td colspan="3">
+                        <div class="aui-message warning">
+                            <span class="aui-icon icon-warning"></span>
+                            $i18n.getText("gerrit.tabpanel.no_approvals")
+                        </div>
+                    </td>
+                </tr>
+                #end
 
-            #foreach( $approval in $approvals )
-            <tr>
-                <td>
-                    #if ($approval.user)
-                    <a class="user-hover" rel="$approval.user.name" href="$baseurl/secure/ViewProfile.jspa?name=$approval.user.name">$approval.user.displayName</a>
-                    #else
-                    $approval.by
-                    #end
-                </td>
-                <td>$approval.type</td>
-                <td width="40" class="#if ($approval.valueAsInt > 0)review-positive#else review-negative #end gerrit-review-score">
-                    #if ($approval.valueAsInt > 0)
-                    +$approval.valueAsInt
-                    #else
-                    $approval.valueAsInt
-                    #end
-                </td>
-            </tr>
-            #end
-        </table>
+                #foreach( $approval in $approvals )
+                <tr>
+                    <td>
+                        #if ($approval.user)
+                        <a class="user-hover" rel="$approval.user.name" href="$baseurl/secure/ViewProfile.jspa?name=$approval.user.name">$approval.user.displayName</a>
+                        #else
+                        $approval.by
+                        #end
+                    </td>
+                    <td>$approval.type</td>
+                    <td width="40" class="#if ($approval.valueAsInt > 0)review-positive#else review-negative #end gerrit-review-score">
+                        #if ($approval.valueAsInt > 0)
+                        +$approval.valueAsInt
+                        #else
+                        $approval.valueAsInt
+                        #end
+                    </td>
+                </tr>
+                #end
+            </table>
+        </div>
     </div>
 </div>
