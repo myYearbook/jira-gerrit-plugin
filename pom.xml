@@ -168,9 +168,9 @@
     </properties>
 
     <scm>
-        <connection>scm:git:git://github.meetmecorp.com/jhansche/jira-gerrit-plugin.git</connection>
-        <developerConnection>scm:git:git@github.meetmecorp.com:jhansche/jira-gerrit-plugin.git</developerConnection>
-        <url>https://github.meetmecorp.com/jhansche/jira-gerrit-plugin</url>
+        <connection>scm:git:git://github.com/myYearbook/jira-gerrit-plugin.git</connection>
+        <developerConnection>scm:git:ssh://git@github.com/myYearbook/jira-gerrit-plugin.git</developerConnection>
+        <url>https://github.com/myYearbook/jira-gerrit-plugin</url>
     </scm>
 
 </project>
