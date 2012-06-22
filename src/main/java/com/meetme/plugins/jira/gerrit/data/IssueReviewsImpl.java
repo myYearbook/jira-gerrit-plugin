@@ -46,7 +46,8 @@ public class IssueReviewsImpl implements IssueReviewsManager {
      * LRU (least recently used) Cache object to avoid slamming the Gerrit server too many times.
      * 
      * XXX: This might result in an issue using a stale cache for reviews that change often, but
-     * corresponding issues viewed rarely!
+     * corresponding issues viewed rarely! To account for that, we also have a cache expiration, so
+     * that at least after the cache expires, it'll get back in sync.
      */
     protected static final Map<String, List<GerritChange>> lruCache = Collections.synchronizedMap(new TimedCache(CACHE_CAPACITY, CACHE_EXPIRATION));
 
@@ -126,12 +127,23 @@ public class IssueReviewsImpl implements IssueReviewsManager {
     }
 
     @Override
-    public void doApproval(String issueKey, GerritChange change, String args) throws IOException {
+    public boolean doApproval(String issueKey, GerritChange change, String args) throws IOException {
         GerritCommand command = new GerritCommand(configuration);
-        command.doReview(change, args);
+        boolean result = command.doReview(change, args);
 
         // Something probably changed!
         lruCache.remove(issueKey);
+        return result;
+    }
+
+    @Override
+    public boolean doApprovals(String issueKey, List<GerritChange> changes, String args) throws IOException {
+        GerritCommand command = new GerritCommand(configuration);
+        boolean result = command.doReviews(changes, args);
+
+        // Something probably changed!
+        lruCache.remove(issueKey);
+        return result;
     }
 
     private static class TimedCache extends LinkedHashMap<String, List<GerritChange>> {

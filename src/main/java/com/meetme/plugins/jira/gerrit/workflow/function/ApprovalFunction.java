@@ -100,14 +100,16 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
             throw new WorkflowException("Unable to retrieve associated reviews", e);
         }
 
-        for (GerritChange change : issueReviews) {
-            log.debug("Attempting to approve " + change);
+        boolean success = false;
 
-            try {
-                reviewsManager.doApproval(issueKey, change, cmdArgs);
-            } catch (IOException e) {
-                throw new WorkflowException("An error occurred while approving the change", e);
-            }
+        try {
+            success = reviewsManager.doApprovals(issueKey, issueReviews, cmdArgs);
+        } catch (IOException e) {
+            throw new WorkflowException("An error occurred while approving the changes", e);
+        }
+
+        if (!success) {
+            log.warn("Gerrit failed to perform the approvals!");
         }
     }
 }

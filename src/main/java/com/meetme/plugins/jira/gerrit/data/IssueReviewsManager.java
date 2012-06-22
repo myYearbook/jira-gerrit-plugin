@@ -54,5 +54,7 @@ public interface IssueReviewsManager {
      * @param args
      * @throws IOException
      */
-    public abstract void doApproval(String issueKey, GerritChange change, String args) throws IOException;
+    public abstract boolean doApproval(String issueKey, GerritChange change, String args) throws IOException;
+
+    public abstract boolean doApprovals(String issueKey, List<GerritChange> changes, String args) throws IOException;
 }

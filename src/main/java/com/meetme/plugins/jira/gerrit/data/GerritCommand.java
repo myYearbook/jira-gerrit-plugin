@@ -15,6 +15,8 @@ package com.meetme.plugins.jira.gerrit.data;
 
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStreamReader;
+import java.util.List;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -24,6 +26,7 @@ import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshConnection;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshConnectionFactory;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshException;
 
 public class GerritCommand {
     private static final Logger log = LoggerFactory.getLogger(GerritCommand.class);
@@ -34,9 +37,24 @@ public class GerritCommand {
         this.config = config;
     }
 
-    public void doReview(GerritChange change, String args) throws IOException {
+    public boolean doReview(GerritChange change, String args) throws IOException {
         final String command = getCommand(change, args);
-        runCommand(command);
+        return runCommand(command);
+    }
+
+    public boolean doReviews(List<GerritChange> changes, String args) throws IOException {
+        String[] commands = new String[changes.size()];
+        int i = 0;
+
+        for (GerritChange change : changes) {
+            commands[i++] = getCommand(change, args);
+        }
+
+        return runCommands(commands);
+    }
+
+    private boolean runCommand(String command) throws IOException {
+        return runCommands(new String[] { command });
     }
 
     @SuppressWarnings("deprecation")
@@ -50,19 +68,44 @@ public class GerritCommand {
         return sb.toString();
     }
 
-    private void runCommand(String command) throws IOException {
+    private boolean runCommands(String[] commands) throws IOException {
+        boolean success = true;
         SshConnection ssh = null;
-        log.debug("Running command: " + command);
 
         try {
             Authentication auth = new Authentication(config.getSshPrivateKey(), config.getSshUsername());
-
-            // XXX: IMPORTANT! Need to get stderr and exit status. Requires subclassing
-            // SshConnectionImpl to provide more than one Reader
-
             ssh = SshConnectionFactory.getConnection(config.getSshHostname(), config.getSshPort(), auth);
-            BufferedReader reader = new BufferedReader(ssh.executeCommandReader(command));
+
+            for (String command : commands) {
+                if (!runCommand(ssh, command)) {
+                    success = false;
+                }
+            }
+        } finally {
+            if (ssh != null) {
+                ssh.disconnect();
+            }
+        }
+
+        return success;
+    }
+
+    private boolean runCommand(SshConnection ssh, String command) throws SshException, IOException {
+        boolean success = false;
+        ChannelExec channel = null;
+
+        log.debug("Running command: " + command);
+
+        try {
+            channel = ssh.executeCommandChannel(command);
+
+            BufferedReader reader;
             String incomingLine = null;
+
+            InputStreamReader err = new InputStreamReader(channel.getErrStream());
+            InputStreamReader out = new InputStreamReader(channel.getInputStream());
+
+            reader = new BufferedReader(out);
 
             while ((incomingLine = reader.readLine()) != null) {
                 // We don't expect any response anyway..
@@ -70,13 +113,24 @@ public class GerritCommand {
                 log.trace("Incoming line: " + incomingLine);
             }
 
-            log.trace("Closing reader.");
             reader.close();
-        } finally {
-            if (ssh != null) {
-                ssh.disconnect();
-            }
-        }
-    }
+            reader = new BufferedReader(err);
 
+            while ((incomingLine = reader.readLine()) != null) {
+                // We don't expect any response anyway..
+                // But we can get the response and return it if we need to
+                log.warn("Error: " + incomingLine);
+            }
+
+            reader.close();
+
+            int exitStatus = channel.getExitStatus();
+            success = exitStatus != 0;
+            log.info("Command exit status: " + exitStatus);
+        } finally {
+            channel.disconnect();
+        }
+
+        return success;
+    }
 }
