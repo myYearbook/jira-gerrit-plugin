@@ -20,6 +20,9 @@ import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.atlassian.core.user.preferences.Preferences;
+import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.user.preferences.UserPreferencesManager;
 import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
@@ -70,12 +73,14 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
 
     private final IssueReviewsManager reviewsManager;
     private final GerritConfiguration configuration;
+    private final UserPreferencesManager prefsManager;
 
-    public ApprovalFunction(GerritConfiguration configuration, IssueReviewsManager reviewsManager) {
+    public ApprovalFunction(GerritConfiguration configuration, IssueReviewsManager reviewsManager, UserPreferencesManager prefsManager) {
         super();
 
         this.configuration = configuration;
         this.reviewsManager = reviewsManager;
+        this.prefsManager = prefsManager;
     }
 
     private boolean isConfigurationReady() {
@@ -100,10 +105,13 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
             throw new WorkflowException("Unable to retrieve associated reviews", e);
         }
 
+        User user = getCaller(transientVars, args);
+        Preferences prefs = prefsManager.getPreferences(user);
+
         boolean success = false;
 
         try {
-            success = reviewsManager.doApprovals(issueKey, issueReviews, cmdArgs);
+            success = reviewsManager.doApprovals(issueKey, issueReviews, cmdArgs, prefs);
         } catch (IOException e) {
             throw new WorkflowException("An error occurred while approving the changes", e);
         }

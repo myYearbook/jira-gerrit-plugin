@@ -63,11 +63,16 @@
                     <span class="aui-icon icon-info"></span>
                     $i18n.getText("gerrit.admin.sshKey.isOnFile")
                 </div>
+                #elseif (!$!sshPrivateKey && $!sshHostname)
+                <div class="aui-message warning">
+                    <span class="aui-icon icon-warning"></span>
+                    $i18n.getText("gerrit.admin.sshKey.missing")
+                </div>
                 #end
             </div>
 
-            <!-- This is not yet implemented: for JSON-RPC access -->
             #*
+            <!-- This is not yet implemented: for JSON-RPC access -->
             <h3>$i18n.getText("gerrit.admin.http.label")</h3>
 
             <div class="field-group">
@@ -90,7 +95,9 @@
                 </label>
                 <input type="password" id="httpPassword" name="httpPassword" class="text" value="$!httpPassword" />
             </div>
+
             ## TODO: Optional "suexec" checkbox with peer_key input?
+            ## TODO: Option to enable/require per-user SSH keys, so JIRA can act on behalf of the user?
             *#
 
             <h3>$i18n.getText("gerrit.admin.search.label")y</h3>

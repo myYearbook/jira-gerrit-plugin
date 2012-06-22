@@ -14,6 +14,7 @@
 package com.meetme.plugins.jira.gerrit.data;
 
 import java.io.BufferedReader;
+import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
@@ -21,6 +22,7 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.atlassian.core.user.preferences.Preferences;
 import com.jcraft.jsch.ChannelExec;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
@@ -32,9 +34,11 @@ public class GerritCommand {
     private static final Logger log = LoggerFactory.getLogger(GerritCommand.class);
     private final static String BASE_COMMAND = "gerrit review";
     private GerritConfiguration config;
+    private Preferences userPreferences;
 
-    public GerritCommand(GerritConfiguration config) {
+    public GerritCommand(GerritConfiguration config, Preferences userPreferences) {
         this.config = config;
+        this.userPreferences = userPreferences;
     }
 
     public boolean doReview(GerritChange change, String args) throws IOException {
@@ -73,7 +77,7 @@ public class GerritCommand {
         SshConnection ssh = null;
 
         try {
-            Authentication auth = new Authentication(config.getSshPrivateKey(), config.getSshUsername());
+            Authentication auth = getAuthentication();
             ssh = SshConnectionFactory.getConnection(config.getSshHostname(), config.getSshPort(), auth);
 
             for (String command : commands) {
@@ -82,6 +86,8 @@ public class GerritCommand {
                 }
             }
         } finally {
+            log.info("Disconnecting from SSH");
+
             if (ssh != null) {
                 ssh.disconnect();
             }
@@ -90,11 +96,40 @@ public class GerritCommand {
         return success;
     }
 
+    private Authentication getAuthentication() {
+        Authentication auth = null;
+
+        if (userPreferences != null) {
+            // Attempt to get a per-user authentication mechanism, so JIRA can act as the user.
+            try {
+                String privateKey = userPreferences.getString("gerrit.privateKey");
+                String username = userPreferences.getString("gerrit.username");
+
+                if (privateKey != null && username != null && !privateKey.isEmpty() && !username.isEmpty())
+                {
+                    File privateKeyFile = new File(privateKey);
+
+                    if (privateKeyFile.exists() && privateKeyFile.canRead()) {
+                        auth = new Authentication(privateKeyFile, username);
+                    }
+                }
+            } catch (Exception exc) {
+                auth = null;
+            }
+        }
+
+        if (auth == null) {
+            auth = new Authentication(config.getSshPrivateKey(), config.getSshUsername());
+        }
+
+        return auth;
+    }
+
     private boolean runCommand(SshConnection ssh, String command) throws SshException, IOException {
         boolean success = false;
         ChannelExec channel = null;
 
-        log.debug("Running command: " + command);
+        log.info("Running command: " + command);
 
         try {
             channel = ssh.executeCommandChannel(command);

@@ -25,6 +25,7 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.project.Project;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
@@ -127,8 +128,8 @@ public class IssueReviewsImpl implements IssueReviewsManager {
     }
 
     @Override
-    public boolean doApproval(String issueKey, GerritChange change, String args) throws IOException {
-        GerritCommand command = new GerritCommand(configuration);
+    public boolean doApproval(String issueKey, GerritChange change, String args, Preferences prefs) throws IOException {
+        GerritCommand command = new GerritCommand(configuration, prefs);
         boolean result = command.doReview(change, args);
 
         // Something probably changed!
@@ -137,8 +138,8 @@ public class IssueReviewsImpl implements IssueReviewsManager {
     }
 
     @Override
-    public boolean doApprovals(String issueKey, List<GerritChange> changes, String args) throws IOException {
-        GerritCommand command = new GerritCommand(configuration);
+    public boolean doApprovals(String issueKey, List<GerritChange> changes, String args, Preferences prefs) throws IOException {
+        GerritCommand command = new GerritCommand(configuration, prefs);
         boolean result = command.doReviews(changes, args);
 
         // Something probably changed!

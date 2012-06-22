@@ -18,6 +18,7 @@ import java.util.List;
 
 import net.sf.json.JSONObject;
 
+import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.project.Project;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
@@ -54,7 +55,7 @@ public interface IssueReviewsManager {
      * @param args
      * @throws IOException
      */
-    public abstract boolean doApproval(String issueKey, GerritChange change, String args) throws IOException;
+    public abstract boolean doApproval(String issueKey, GerritChange change, String args, Preferences prefs) throws IOException;
 
     /**
      * Performs approvals/reviews of all changes.
@@ -62,7 +63,8 @@ public interface IssueReviewsManager {
      * @param issueKey
      * @param change
      * @param args
+     * @param prefs
      * @throws IOException
      */
-    public abstract boolean doApprovals(String issueKey, List<GerritChange> changes, String args) throws IOException;
+    public abstract boolean doApprovals(String issueKey, List<GerritChange> changes, String args, Preferences prefs) throws IOException;
 }

@@ -166,6 +166,10 @@ public class AdminServlet extends HttpServlet {
                 configurationManager.setSshUsername(item.getString());
             } else if (fieldName.equals(GerritConfiguration.FIELD_SSH_PORT)) {
                 configurationManager.setSshPort(Integer.parseInt(item.getString()));
+            } else if (fieldName.equals(GerritConfiguration.FIELD_QUERY_ISSUE)) {
+                configurationManager.setIssueSearchQuery(item.getString());
+            } else if (fieldName.equals(GerritConfiguration.FIELD_QUERY_PROJECT)) {
+                configurationManager.setProjectSearchQuery(item.getString());
             }
         }
     }
