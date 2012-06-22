@@ -13,7 +13,7 @@
  */
 package com.meetme.plugins.jira.gerrit.data.dto;
 
-import static com.meetme.plugins.jira.gerrit.issuetabpanels.GerritEventKeys.BY;
+import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.BY;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.EMAIL;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.NAME;
 import net.sf.json.JSONObject;

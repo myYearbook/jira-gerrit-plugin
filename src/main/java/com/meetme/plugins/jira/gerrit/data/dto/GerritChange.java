@@ -13,13 +13,13 @@
  */
 package com.meetme.plugins.jira.gerrit.data.dto;
 
-import static com.meetme.plugins.jira.gerrit.issuetabpanels.GerritEventKeys.LAST_UPDATED;
+import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.LAST_UPDATED;
 
 import java.util.Date;
 
 import net.sf.json.JSONObject;
 
-import com.meetme.plugins.jira.gerrit.issuetabpanels.GerritEventKeys;
+import com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Change;
 
 public class GerritChange extends Change implements Comparable<GerritChange> {

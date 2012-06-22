@@ -1,7 +1,7 @@
-package com.meetme.plugins.jira.gerrit.issuetabpanels;
+package com.meetme.plugins.jira.gerrit.tabpanel;
 
-import static com.meetme.plugins.jira.gerrit.issuetabpanels.GerritEventKeys.APPROVALS;
-import static com.meetme.plugins.jira.gerrit.issuetabpanels.GerritEventKeys.LAST_UPDATED;
+import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.APPROVALS;
+import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.LAST_UPDATED;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.CHANGE;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.PATCHSET;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.PROJECT;
@@ -26,12 +26,12 @@ import org.mockito.Mock;
 
 import com.atlassian.core.util.map.EasyMap;
 import com.atlassian.jira.datetime.DateTimeFormatter;
-import com.atlassian.jira.datetime.DateTimeFormatterFactory;
 import com.atlassian.jira.datetime.DateTimeStyle;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritPatchSet;
+import com.meetme.plugins.jira.gerrit.tabpanel.GerritReviewIssueAction;
 
 public class GerritReviewIssueActionTest extends TestCase {
     private static final String BASE_URL = "http://localhost:2990/jira";

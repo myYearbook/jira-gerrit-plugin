@@ -55,7 +55,7 @@
     </servlet>
 
     <!-- Issue tab for Gerrit Reviews -->
-    <issue-tabpanel key="gerrit-reviews-tabpanel" name="Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.issuetabpanels.GerritReviewsTabPanel">
+    <issue-tabpanel key="gerrit-reviews-tabpanel" name="Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.tabpanel.GerritReviewsTabPanel">
         <description>Show Gerrit reviews related to an issue in an issue tab panel.</description>
         <label key="gerrit.tabpanel.label">Gerrit Reviews</label>
         <resource type="velocity" name="view" location="templates/gerrit-reviews-tabpanel-item.vm" />
@@ -71,7 +71,7 @@
         <resource type="download" name="images/" location="images/" />
     </web-resource>
     <!-- Tab panel to list Gerrit Reviews for each subtask -->
-    <issue-tabpanel key="subtask-reviews-tabpanel" name="Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.issuetabpanels.SubtaskReviewsTabPanel">
+    <issue-tabpanel key="subtask-reviews-tabpanel" name="Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.tabpanel.SubtaskReviewsTabPanel">
         <description>Show Gerrit reviews related to an issue in an issue tab panel.</description>
         <label key="gerrit.tabpanel.subtasks.label">Gerrit Subtask Reviews</label>
         <resource type="velocity" name="view" location="templates/subtask-reviews-tabpanel-item.vm" />

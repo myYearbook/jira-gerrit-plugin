@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package com.meetme.plugins.jira.gerrit.issuetabpanels;
+package com.meetme.plugins.jira.gerrit.tabpanel;
 
 /**
  * Extension of {@link com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys
