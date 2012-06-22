@@ -22,7 +22,9 @@
     </head>
     <body>
         <form id="admin" class="aui" enctype="multipart/form-data" method="post" action="">
-            <h2>Gerrit Server Configuration</h2>
+            <h2>$i18n.getText("gerrit.admin.label")</h2>
+
+            <h3>$i18n.getText("gerrit.admin.ssh.label")</h3>
             <div class="field-group">
                 <label for="sshHostname">
                     $i18n.getText("gerrit.admin.host.label"):
@@ -53,46 +55,63 @@
                     <span class="aui-icon icon-required"></span>
                 </label>
                 <input type="file" id="sshPrivateKey" name="sshPrivateKey" class="upfile" />
-                #if ($!sshPrivateKey != "")
-                <div class="description">
-                    ## TODO: better class?
-                    $i18n.getText("gerrit.admin.sshKey.isOnFile")
-                </div>
-                #end
                 <div class="description">
                     $i18n.getText("gerrit.admin.sshKey.description")
                 </div>
+                #if ($!sshPrivateKey)
+                <div class="aui-message info">
+                    <span class="aui-icon icon-info"></span>
+                    $i18n.getText("gerrit.admin.sshKey.isOnFile")
+                </div>
+                #end
             </div>
 
             <!-- This is not yet implemented: for JSON-RPC access -->
-            <!-- <h3>HTTP Access (optional)</h3>
+            #*
+            <h3>$i18n.getText("gerrit.admin.http.label")</h3>
 
-                <div class="field-group">
+            <div class="field-group">
                 <label for="httpBaseUrl">
-                $i18n.getText("gerrit.admin.httpBaseUrl.label")
+                    $i18n.getText("gerrit.admin.httpBaseUrl.label")
                 </label>
                 <input type="text" id="httpBaseUrl" name="httpBaseUrl" class="text" value="$!httpBaseUrl" />
                 <div class="description">$i18n.getText("gerrit.admin.httpBaseUrl.description")</div>
-                </div>
-                <div class="field-group">
+            </div>
+            <div class="field-group">
                 <label for="httpUsername">
-                $i18n.getText("gerrit.admin.httpUsername.label")
+                    $i18n.getText("gerrit.admin.httpUsername.label")
                 </label>
                 <input type="text" id="httpUsername" name="httpUsername" class="text" value="$!httpUsername" />
                 <div class="description">$i18n.getText("gerrit.admin.httpUsername.description")</div>
-                </div>
-                <div class="field-group">
+            </div>
+            <div class="field-group">
                 <label for="httpPassword">
-                $i18n.getText("gerrit.admin.httpPassword.label")
+                    $i18n.getText("gerrit.admin.httpPassword.label")
                 </label>
                 <input type="password" id="httpPassword" name="httpPassword" class="text" value="$!httpPassword" />
-                </div> -->
+            </div>
+            ## TODO: Optional "suexec" checkbox with peer_key input?
+            *#
 
-            <!-- TODO: Optional "suexec" checkbox with peer_key input? -->
+            <h3>$i18n.getText("gerrit.admin.search.label")y</h3>
+            <div class="field-group">
+                <label for="issueSearchQuery">$i18n.getText("gerrit.admin.issueSearchQuery.label")</label>
+                <input type="text" id="issueSearchQuery" name="issueSearchQuery" class="text" value="$!issueSearchQuery" />
+                <div class="description">$i18n.getText("gerrit.admin.issueSearchQuery.description")</div>
+            </div>
+            <div class="field-group">
+                <label for="projectSearchQuery">$i18n.getText("gerrit.admin.projectSearchQuery.label")</label>
+                <input type="text" id="projectSearchQuery" name="projectSearchQuery" class="text" value="$!issueSearchQuery" />
+                <div class="description">$i18n.getText("gerrit.admin.projectSearchQuery.description")</div>
+            </div>
+
             <div class="buttons-container">
                 <div class="buttons">
-                    <input type="submit" value="Save" class="button submit" />
-                    <!-- <button type="button" id="gerritTest" class="button">Test Config</button> -->
+                    <input type="submit" name="action" value="Save" class="button submit" />
+                    #*
+                    ## Clear cache button?
+                    <button type="button" name="action" value="Test Config" id="gerritTest" class="button">Test Config</button>
+                    *#
                 </div>
             </div>
         </form>

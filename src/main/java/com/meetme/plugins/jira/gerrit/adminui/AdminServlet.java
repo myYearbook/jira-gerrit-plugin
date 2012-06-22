@@ -52,15 +52,6 @@ public class AdminServlet extends HttpServlet {
 
     private static String TEMPLATE_ADMIN = "templates/admin.vm";
 
-    private static String FIELD_SSH_HOSTNAME = "sshHostname";
-    private static String FIELD_SSH_USERNAME = "sshUsername";
-    private static String FIELD_SSH_PORT = "sshPort";
-    private static String FIELD_SSH_PRIVATE_KEY = "sshPrivateKey";
-
-    private static String FIELD_HTTP_BASE_URL = "httpBaseUrl";
-    private static String FIELD_HTTP_USERNAME = "httpUsername";
-    private static String FIELD_HTTP_PASSWORD = "httpPassword";
-
     private final UserManager userManager;
     private final TemplateRenderer renderer;
     private final LoginUriProvider loginUriProvider;
@@ -93,15 +84,18 @@ public class AdminServlet extends HttpServlet {
     private Map<String, Object> configToMap(final GerritConfiguration config) {
         Map<String, Object> map = new HashMap<String, Object>();
 
-        map.put(FIELD_SSH_HOSTNAME, config.getSshHostname());
-        map.put(FIELD_SSH_PORT, config.getSshPort());
-        map.put(FIELD_SSH_USERNAME, config.getSshUsername());
-        map.put(FIELD_SSH_PRIVATE_KEY, config.getSshPrivateKey());
+        map.put(GerritConfiguration.FIELD_SSH_HOSTNAME, config.getSshHostname());
+        map.put(GerritConfiguration.FIELD_SSH_PORT, config.getSshPort());
+        map.put(GerritConfiguration.FIELD_SSH_USERNAME, config.getSshUsername());
+        map.put(GerritConfiguration.FIELD_SSH_PRIVATE_KEY, config.getSshPrivateKey());
+
+        map.put(GerritConfiguration.FIELD_QUERY_ISSUE, config.getIssueSearchQuery());
+        map.put(GerritConfiguration.FIELD_QUERY_PROJECT, config.getProjectSearchQuery());
 
         if (config.getHttpBaseUrl() != null) {
-            map.put(FIELD_HTTP_BASE_URL, config.getHttpBaseUrl().toASCIIString());
-            map.put(FIELD_HTTP_USERNAME, config.getHttpUsername());
-            map.put(FIELD_HTTP_PASSWORD, config.getHttpPassword());
+            map.put(GerritConfiguration.FIELD_HTTP_BASE_URL, config.getHttpBaseUrl().toASCIIString());
+            map.put(GerritConfiguration.FIELD_HTTP_USERNAME, config.getHttpUsername());
+            map.put(GerritConfiguration.FIELD_HTTP_PASSWORD, config.getHttpPassword());
         }
 
         return map;
@@ -160,17 +154,17 @@ public class AdminServlet extends HttpServlet {
         for (FileItem item : items) {
             final String fieldName = item.getFieldName();
 
-            if (fieldName.equals(FIELD_HTTP_BASE_URL)) {
+            if (fieldName.equals(GerritConfiguration.FIELD_HTTP_BASE_URL)) {
                 configurationManager.setHttpBaseUrl(item.getString());
-            } else if (fieldName.equals(FIELD_HTTP_USERNAME)) {
+            } else if (fieldName.equals(GerritConfiguration.FIELD_HTTP_USERNAME)) {
                 configurationManager.setHttpUsername(item.getString());
-            } else if (fieldName.equals(FIELD_HTTP_PASSWORD)) {
+            } else if (fieldName.equals(GerritConfiguration.FIELD_HTTP_PASSWORD)) {
                 configurationManager.setHttpPassword(item.getString());
-            } else if (fieldName.equals(FIELD_SSH_HOSTNAME)) {
+            } else if (fieldName.equals(GerritConfiguration.FIELD_SSH_HOSTNAME)) {
                 configurationManager.setSshHostname(item.getString());
-            } else if (fieldName.equals(FIELD_SSH_USERNAME)) {
+            } else if (fieldName.equals(GerritConfiguration.FIELD_SSH_USERNAME)) {
                 configurationManager.setSshUsername(item.getString());
-            } else if (fieldName.equals(FIELD_SSH_PORT)) {
+            } else if (fieldName.equals(GerritConfiguration.FIELD_SSH_PORT)) {
                 configurationManager.setSshPort(Integer.parseInt(item.getString()));
             }
         }
@@ -180,7 +174,7 @@ public class AdminServlet extends HttpServlet {
         File privateKeyPath = null;
 
         for (FileItem item : items) {
-            if (item.getFieldName().equals(FIELD_SSH_PRIVATE_KEY) && item.getSize() > 0) {
+            if (item.getFieldName().equals(GerritConfiguration.FIELD_SSH_PRIVATE_KEY) && item.getSize() > 0) {
                 File dataDir = new File(jiraHome.getDataDirectory(), StringUtils.join(PACKAGE_PARTS, File.separatorChar));
 
                 if (!dataDir.exists()) {

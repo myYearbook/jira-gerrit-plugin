@@ -62,7 +62,7 @@ public class SubtaskReviewsTabPanel extends AbstractIssueTabPanel2 implements Is
     }
 
     private List<GerritChange> getChanges(Issue subtask) throws GerritQueryException {
-        return reviewsManager.getReviews(subtask.getKey());
+        return reviewsManager.getReviewsForIssue(subtask.getKey());
     }
 
     @Override

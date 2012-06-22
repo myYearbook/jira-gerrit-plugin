@@ -25,6 +25,8 @@ import net.sf.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.project.Project;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryHandler;
@@ -34,13 +36,11 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshException;
 public class IssueReviewsImpl implements IssueReviewsManager {
     private static final Logger log = LoggerFactory.getLogger(IssueReviewsImpl.class);
 
-    private static final String GERRIT_SEARCH = "message:%1$s";
+    /** Max number of items to retain in the cache */
     private static final int CACHE_CAPACITY = 30;
 
     /** Number of milliseconds an item may stay in cache: 30 seconds */
     private static final long CACHE_EXPIRATION = 30000;
-
-    private GerritConfiguration configuration;
 
     /**
      * LRU (least recently used) Cache object to avoid slamming the Gerrit server too many times.
@@ -50,32 +50,56 @@ public class IssueReviewsImpl implements IssueReviewsManager {
      */
     protected static final Map<String, List<GerritChange>> lruCache = Collections.synchronizedMap(new TimedCache(CACHE_CAPACITY, CACHE_EXPIRATION));
 
+    private GerritConfiguration configuration;
+
     public IssueReviewsImpl(GerritConfiguration configuration) {
         this.configuration = configuration;
     }
 
+    public List<GerritChange> getReviews(Issue issue) throws GerritQueryException {
+        return getReviewsForIssue(issue.getKey());
+    }
+
+    public List<GerritChange> getReviews(Project project) throws GerritQueryException {
+        return getReviewsForProject(project.getKey());
+    }
+
     @Override
-    public List<GerritChange> getReviews(String issueKey) throws GerritQueryException {
+    public List<GerritChange> getReviewsForIssue(String issueKey) throws GerritQueryException {
         List<GerritChange> changes;
 
         if (lruCache.containsKey(issueKey)) {
             changes = lruCache.get(issueKey);
         } else {
-            changes = getReviewsFromGerrit(issueKey);
+            changes = getReviewsFromGerrit(String.format(configuration.getIssueSearchQuery(), issueKey));
             lruCache.put(issueKey, changes);
         }
 
         return changes;
     }
 
-    private List<GerritChange> getReviewsFromGerrit(String issueKey) throws GerritQueryException {
+    @Override
+    public List<GerritChange> getReviewsForProject(String projectKey) throws GerritQueryException {
+        List<GerritChange> changes;
+
+        if (lruCache.containsKey(projectKey)) {
+            changes = lruCache.get(projectKey);
+        } else {
+            changes = getReviewsFromGerrit(String.format(configuration.getProjectSearchQuery(), projectKey));
+            lruCache.put(projectKey, changes);
+        }
+
+        return changes;
+    }
+
+    private List<GerritChange> getReviewsFromGerrit(String searchQuery) throws GerritQueryException {
         List<GerritChange> changes;
         Authentication auth = new Authentication(configuration.getSshPrivateKey(), configuration.getSshUsername());
         GerritQueryHandler query = new GerritQueryHandler(configuration.getSshHostname(), configuration.getSshPort(), auth);
         List<JSONObject> reviews;
 
         try {
-            reviews = query.queryJava(String.format(GERRIT_SEARCH, issueKey), false, true, false);
+            reviews = query.queryJava(searchQuery, false, true, false);
         } catch (SshException e) {
             throw new GerritQueryException("An ssh error occurred while querying for reviews.", e);
         } catch (IOException e) {

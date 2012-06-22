@@ -95,7 +95,7 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
         String cmdArgs = (String) args.get(KEY_CMD_ARGS);
 
         try {
-            issueReviews = reviewsManager.getReviews(issueKey);
+            issueReviews = reviewsManager.getReviewsForIssue(issueKey);
         } catch (GerritQueryException e) {
             throw new WorkflowException("Unable to retrieve associated reviews", e);
         }

@@ -47,7 +47,7 @@ public class NoOpenReviews extends AbstractJiraCondition {
         List<GerritChange> reviews;
 
         try {
-            reviews = reviewsManager.getReviews(issueKey);
+            reviews = reviewsManager.getReviewsForIssue(issueKey);
         } catch (GerritQueryException e) {
             // If there's an error, best not to block the workflow, and just act like it passes??
             throw new WorkflowException(e);

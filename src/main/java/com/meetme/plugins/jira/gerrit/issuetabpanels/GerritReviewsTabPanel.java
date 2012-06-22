@@ -120,7 +120,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
         List<GerritChange> reviews;
 
         try {
-            reviews = reviewsManager.getReviews(issueKey);
+            reviews = reviewsManager.getReviewsForIssue(issueKey);
         } catch (GerritQueryException exc) {
             exc.printStackTrace();
             issueActions.add(new GenericMessageAction(exc.getMessage()));
