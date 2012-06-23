@@ -28,6 +28,10 @@
 
     <name>JIRA Gerrit Plugin</name>
     <description>Integrates Atlassian JIRA with Gerrit code review.</description>
+    <issueManagement>
+        <system>GitHub</system>
+        <url>https://github.com/myYearbook/jira-gerrit-plugin/issues</url>
+    </issueManagement>
     <inceptionYear>2012</inceptionYear>
 
     <packaging>atlassian-plugin</packaging>

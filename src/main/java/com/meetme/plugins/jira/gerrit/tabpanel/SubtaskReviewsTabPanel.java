@@ -61,10 +61,6 @@ public class SubtaskReviewsTabPanel extends AbstractIssueTabPanel2 implements Is
         return GetActionsReply.create(actions);
     }
 
-    private List<GerritChange> getChanges(Issue subtask) throws GerritQueryException {
-        return reviewsManager.getReviewsForIssue(subtask.getKey());
-    }
-
     @Override
     public ShowPanelReply showPanel(ShowPanelRequest request) {
         boolean show = false;
@@ -78,10 +74,14 @@ public class SubtaskReviewsTabPanel extends AbstractIssueTabPanel2 implements Is
         return ShowPanelReply.create(show);
     }
 
+    private List<GerritChange> getChanges(Issue subtask) throws GerritQueryException {
+        return reviewsManager.getReviewsForIssue(subtask.getKey());
+    }
+
     private boolean isConfigurationReady() {
         final GerritConfiguration configuration = this.configuration;
 
-        return configuration.getSshHostname() != null && configuration.getSshUsername() != null
+        return configuration != null && configuration.getSshHostname() != null && configuration.getSshUsername() != null
                 && configuration.getSshPrivateKey() != null && configuration.getSshPrivateKey().exists();
     }
 }
