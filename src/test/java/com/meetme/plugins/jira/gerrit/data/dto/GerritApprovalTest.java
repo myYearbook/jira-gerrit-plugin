@@ -13,8 +13,12 @@
  */
 package com.meetme.plugins.jira.gerrit.data.dto;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.MockitoAnnotations.initMocks;
-import junit.framework.TestCase;
 import net.sf.json.JSONObject;
 
 import org.junit.After;
@@ -24,7 +28,7 @@ import org.mockito.Mock;
 
 import com.atlassian.crowd.embedded.api.User;
 
-public class GerritApprovalTest extends TestCase {
+public class GerritApprovalTest {
 
     private final JSONObject BASE_TEST = new JSONObject();
 
@@ -39,17 +43,14 @@ public class GerritApprovalTest extends TestCase {
     private User EXPECTED_USER;
 
     @Before
-    protected void setUp() throws Exception {
-        super.setUp();
+    public void setUp() throws Exception {
         initMocks(this);
 
         BASE_TEST.element("type", EXPECTED_TYPE).element("value", EXPECTED_VALUE);
     }
 
     @After
-    protected void tearDown() throws Exception {
-        super.tearDown();
-
+    public void tearDown() throws Exception {
         BASE_TEST.clear();
     }
 

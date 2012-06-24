@@ -17,9 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.user.preferences.UserPreferencesManager;
@@ -66,7 +63,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * @author jhansche
  */
 public class ApprovalFunction extends AbstractJiraFunctionProvider {
-    private static final Logger log = LoggerFactory.getLogger(ApprovalFunction.class);
+    // private static final Logger log = LoggerFactory.getLogger(ApprovalFunction.class);
 
     public static final String KEY_CMD_ARGS = "cmdArgs";
     public static final String DEFAULT_CMD_ARGS = "--verified 1 --submit";
@@ -83,11 +80,6 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
         this.prefsManager = prefsManager;
     }
 
-    private boolean isConfigurationReady() {
-        return configuration.getSshHostname() != null && configuration.getSshUsername() != null
-                && configuration.getSshPrivateKey() != null && configuration.getSshPrivateKey().exists();
-    }
-
     @Override
     public void execute(@SuppressWarnings("rawtypes") Map transientVars, @SuppressWarnings("rawtypes") Map args, PropertySet ps)
             throws WorkflowException {
@@ -95,18 +87,10 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
             throw new IllegalStateException("Configure the Gerrit integration from the Administration panel first.");
         }
 
-        String issueKey = getIssue(transientVars).getKey();
-        List<GerritChange> issueReviews;
-        String cmdArgs = (String) args.get(KEY_CMD_ARGS);
-
-        try {
-            issueReviews = reviewsManager.getReviewsForIssue(issueKey);
-        } catch (GerritQueryException e) {
-            throw new WorkflowException("Unable to retrieve associated reviews", e);
-        }
-
-        User user = getCaller(transientVars, args);
-        Preferences prefs = prefsManager.getPreferences(user);
+        final String issueKey = getIssueKey(transientVars);
+        final List<GerritChange> issueReviews = getReviews(issueKey);
+        final Preferences prefs = getUserPrefs(transientVars, args);
+        final String cmdArgs = (String) args.get(KEY_CMD_ARGS);
 
         boolean success = false;
 
@@ -117,7 +101,29 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
         }
 
         if (!success) {
-            log.warn("Gerrit failed to perform the approvals!");
+            throw new WorkflowException("Gerrit failed to perform the approvals!");
         }
+    }
+
+    protected Preferences getUserPrefs(@SuppressWarnings("rawtypes") Map transientVars, @SuppressWarnings("rawtypes") Map args) {
+        final User user = getCaller(transientVars, args);
+        return prefsManager.getPreferences(user);
+    }
+
+    protected String getIssueKey(@SuppressWarnings("rawtypes") Map transientVars) {
+        return getIssue(transientVars).getKey();
+    }
+
+    protected List<GerritChange> getReviews(String issueKey) throws WorkflowException {
+        try {
+            return reviewsManager.getReviewsForIssue(issueKey);
+        } catch (GerritQueryException e) {
+            throw new WorkflowException("Unable to retrieve associated reviews", e);
+        }
+    }
+
+    protected boolean isConfigurationReady() {
+        return configuration != null && configuration.getSshHostname() != null && configuration.getSshUsername() != null
+                && configuration.getSshPrivateKey() != null && configuration.getSshPrivateKey().exists();
     }
 }

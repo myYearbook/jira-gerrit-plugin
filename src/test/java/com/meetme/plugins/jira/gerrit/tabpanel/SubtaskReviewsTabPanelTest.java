@@ -13,6 +13,9 @@
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -20,8 +23,6 @@ import static org.mockito.MockitoAnnotations.initMocks;
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
-
-import junit.framework.TestCase;
 
 import org.junit.After;
 import org.junit.Before;
@@ -38,7 +39,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 /**
  * @author jhansche
  */
-public class SubtaskReviewsTabPanelTest extends TestCase {
+public class SubtaskReviewsTabPanelTest {
 
     @Mock
     private GerritConfiguration configuration;
@@ -55,16 +56,14 @@ public class SubtaskReviewsTabPanelTest extends TestCase {
     Issue subtask3;
 
     @Before
-    protected void setUp() throws Exception {
-        super.setUp();
+    public void setUp() throws Exception {
         initMocks(this);
 
         setUpConfiguration();
     }
 
     @After
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    public void tearDown() throws Exception {
     }
 
     private void setUpConfiguration() {
@@ -162,9 +161,8 @@ public class SubtaskReviewsTabPanelTest extends TestCase {
     }
 
     @Test(expected = RuntimeException.class)
-    public void testGetActions_gerritError() throws GerritQueryException {
+    public void testGetActions_gerritError() throws RuntimeException, GerritQueryException {
         SubtaskReviewsTabPanel obj = new SubtaskReviewsTabPanel(configuration, reviewsManager);
-        List<IssueAction> actions = null;
 
         List<Issue> subtasks = setUpSubtasks();
         when(issue.getSubTaskObjects()).thenReturn(subtasks);
@@ -172,17 +170,8 @@ public class SubtaskReviewsTabPanelTest extends TestCase {
         GerritQueryException exc = new GerritQueryException();
         when(reviewsManager.getReviewsForIssue("SUB-2")).thenThrow(exc);
 
-        try {
-            actions = obj.getActions(issue, user);
-            fail("Expected RuntimeException on SUB-2");
-        } catch (RuntimeException re) {
-            // Apparently @Test(expected=RuntimeException.class) and @ExpectedException both fail to
-            // recognize a RuntimeException. The only way to assert that this exception is thrown,
-            // is to use the try/catch block and fail() if it isn't thrown.
-            assertSame(exc, re.getCause());
-        }
+        obj.getActions(issue, user);
 
-        assertNull(actions);
     }
 
     /**

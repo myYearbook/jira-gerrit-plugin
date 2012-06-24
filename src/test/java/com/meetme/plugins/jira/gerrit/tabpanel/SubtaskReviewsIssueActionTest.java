@@ -13,6 +13,12 @@
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertSame;
+import static org.junit.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -22,13 +28,12 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import junit.framework.TestCase;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
+import com.atlassian.core.util.collection.EasyList;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
@@ -36,7 +41,7 @@ import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 /**
  * @author jhansche
  */
-public class SubtaskReviewsIssueActionTest extends TestCase {
+public class SubtaskReviewsIssueActionTest {
 
     @Mock
     IssueTabPanelModuleDescriptor descriptor;
@@ -51,15 +56,12 @@ public class SubtaskReviewsIssueActionTest extends TestCase {
     GerritChange change2;
 
     @Before
-    protected void setUp() throws Exception {
-        super.setUp();
-
+    public void setUp() throws Exception {
         initMocks(this);
     }
 
     @After
-    protected void tearDown() throws Exception {
-        super.tearDown();
+    public void tearDown() throws Exception {
     }
 
     /**
@@ -99,7 +101,7 @@ public class SubtaskReviewsIssueActionTest extends TestCase {
      * Test method for {@link SubtaskReviewsIssueAction#populateVelocityParams(Map)} .
      */
     @Test
-    public void testPopulateVelocityParamsMap() {
+    public void testPopulateVelocityParamsMap_nullChanges() {
         Map<String, Object> params = new HashMap<String, Object>();
         SubtaskReviewsIssueAction obj = new SubtaskReviewsIssueAction(descriptor, subtask, null);
 
@@ -109,4 +111,22 @@ public class SubtaskReviewsIssueActionTest extends TestCase {
         assertNull(params.get("changes"));
     }
 
+    /**
+     * Test method for {@link SubtaskReviewsIssueAction#populateVelocityParams(Map)} .
+     */
+    @SuppressWarnings("rawtypes")
+    @Test
+    public void testPopulateVelocityParamsMap() {
+        Map<String, Object> params = new HashMap<String, Object>();
+        List changes = EasyList.build(change1, change2);
+
+        @SuppressWarnings("unchecked")
+        SubtaskReviewsIssueAction obj = new SubtaskReviewsIssueAction(descriptor, subtask, changes);
+
+        obj.populateVelocityParams(params);
+
+        assertSame(subtask, params.get("subtask"));
+        assertNotNull(params.get("changes"));
+        assertEquals(2, ((List) params.get("changes")).size());
+    }
 }
