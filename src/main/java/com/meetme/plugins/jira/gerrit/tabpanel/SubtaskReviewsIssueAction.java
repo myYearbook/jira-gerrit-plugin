@@ -22,6 +22,7 @@ import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+import com.meetme.plugins.jira.gerrit.workflow.condition.NoOpenReviews;
 
 /**
  * @author jhansche
@@ -49,9 +50,14 @@ public class SubtaskReviewsIssueAction extends AbstractIssueAction implements Is
     @SuppressWarnings("unchecked")
     @Override
     protected void populateVelocityParams(@SuppressWarnings("rawtypes") Map velocityParams) {
+        final int openReviews = changes == null ? 0 : NoOpenReviews.countReviewStatus(changes, true);
+        final int closedReviews = changes == null ? 0 : NoOpenReviews.countReviewStatus(changes, false);
+
         // push data
         velocityParams.put("subtask", subtask);
         velocityParams.put("changes", changes);
+        velocityParams.put("openReviews", openReviews);
+        velocityParams.put("closedReviews", closedReviews);
     }
 
     @Override

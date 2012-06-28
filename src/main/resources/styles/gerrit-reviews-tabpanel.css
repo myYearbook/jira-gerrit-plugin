@@ -11,6 +11,11 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
+table.gerrit-review-approvals
+{
+  width: 350px;
+}
+
 table.gerrit-review-approvals td.gerrit-review-score
 {
   text-align: right;
@@ -30,13 +35,27 @@ div.flooded span.review-positive,
   color: #08A400;
 }
 
+div.gerrit-status-ABANDONED span.gerrit-review
+{
+  background-image: url(images/gerrit-x.png);
+}
+
+div.gerrit-status-MERGED span.gerrit-review,
+div.gerrit-status-SUBMITTED span.gerrit-review
+{
+  background-image: url(images/gerrit-check.png);
+}
+
 span.gerrit-review
 {
   display: inline-block;
   text-indent: -9999px;
   width: 16px;
   height: 16px;
-  background: transparent url(images/gerrit-icon16.png) no-repeat 50% 50%;
+  background-color: transparent;
+  background-image: url(images/gerrit-icon16.png);
+  background-repeat: no-repeat;
+  background-position: 50% 50%;
 }
 
 span.gerrit-open-reviews

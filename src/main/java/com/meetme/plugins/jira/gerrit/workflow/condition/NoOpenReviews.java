@@ -57,9 +57,28 @@ public class NoOpenReviews extends AbstractJiraCondition {
         boolean isReversed = Boolean.parseBoolean(value);
 
         // The ReviewsManager will only return issues that are "status:open" by default.
-        int numOpenReviews = reviews.size();
+        int numOpenReviews = countReviewStatus(reviews, true);
 
         return isReversed ? numOpenReviews > 0 : numOpenReviews == 0;
+    }
+
+    /**
+     * Counts the number of reviews that are open or closed.
+     * 
+     * @param reviews
+     * @param isOpen
+     * @return
+     */
+    public static int countReviewStatus(List<GerritChange> reviews, boolean isOpen) {
+        int count = 0;
+
+        for (GerritChange change : reviews) {
+            if (change.isOpen() == isOpen) {
+                count += 1;
+            }
+        }
+
+        return count;
     }
 
 }

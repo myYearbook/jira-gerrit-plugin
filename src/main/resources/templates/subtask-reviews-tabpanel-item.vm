@@ -17,14 +17,12 @@
     limitations under the License.
     *#
 
-    #set( $hasChanges = !$changes.isEmpty() )
-    #set( $issueUrl = "${baseurl}/browse/${subtask.getKey()}" )
--->
-<div class="issue-data-block twixi-block collapsed">
+    ### See utility.vm
 
     #* Calculates and displays the most significant approval score *#
     #macro( mostSignificantScore $approvals )
     #set( $significant = 0 )
+
     #foreach( $approval in $approvals )
     #set( $value = $approval.valueAsInt )
     #if( 0 > $value && $significant > $value )
@@ -35,25 +33,46 @@
     #end
 
     <span class="#if ($significant > 0)review-positive#else review-negative #end gerrit-review-score" title="$i18n.getText('gerrit.tabpanel.most_significant_score')">
-        #if ( $significant > 0 )
-        +$significant
-        #else
-        $significant
-        #end
-    </span>
+    #if ( $significant > 0 )
+    +$significant
+    #else
+    $significant
     #end
+    </span>
+
+    #end
+
+
 
     #* Displays a single Review Detail record, in the expanded subtasks list *#
     #macro( reviewDetail $change )
-    <span class="gerrit-review" title="$i18n.getText('gerrit.tabpanel.Review')">$i18n.getText('gerrit.tabpanel.Review'): </span>
-    $change.getNumber(),$change.getPatchSet().getNumber()
-    <a href="$change.getUrl()" target="gerrit-review-$change.getNumber(),$change.getPatchSet().getNumber()">$change.getSubject()</a>
-    -
 
-    #mostSignificantScore($change.getPatchSet().getApprovals())
+    #set( $statusClass = "gerrit-status-$change.status" )
+    #if ($change.isOpen())
+    #set( $openClass = "gerrit-review-open" )
+    #else
+    #set( $openClass = "gerrit-review-closed" )
     #end
 
+    <div class="$openClass $statusClass">
 
+    <span class="gerrit-review" title="$i18n.getText('gerrit.tabpanel.Review')">$i18n.getText('gerrit.tabpanel.Review'): </span>
+    $change.number,$change.patchSet.number
+    <a href="$change.getUrl()" target="gerrit-review-$change.number,$change.patchSet.number">$change.subject</a>
+    -
+    #if ($change.isOpen())
+    #mostSignificantScore($change.patchSet.approvals)
+    #else
+    ($change.status)
+    #end
+
+    </div>
+    #end
+
+    #set( $issueUrl = "${baseurl}/browse/${subtask.key}" )
+    #set( $hasChanges = $changes.size() > 0 )
+-->
+<div class="issue-data-block twixi-block collapsed">
 
     ## The concise version (just the subtasks):
     <div class="actionContainer twixi-wrap concise">
@@ -67,9 +86,12 @@
 
         <div class="action-details flooded">
             #* The short version just shows "$key: $summary - $count" *#
-            <a href="$issueUrl">$subtask.getKey(): $subtask.getSummary()</a>
+            <a href="$issueUrl">$subtask.key: $subtask.summary</a>
             -
-            <span class="#if ($hasChanges)gerrit-open-reviews#else gerrit-no-reviews#end">$i18n.getText("gerrit.tabpanel.subtasks.has_open_reviews", $changes.size())</span>
+            <span class="#if ($openReviews > 0)gerrit-open-reviews#else gerrit-no-reviews#end">$i18n.getText("gerrit.tabpanel.subtasks.has_open_reviews", $openReviews)</span>
+            #if ($closedReviews > 0)
+            <span>$i18n.getText("gerrit.tabpanel.subtasks.closed_reviews", $closedReviews)</span>
+            #end
         </div>
     </div>
 
@@ -94,12 +116,15 @@
         ## Main action detail
         <div class="action-details">
             ## The long version shows "$key: $summary", with body containing a list of all reviews
-            <a href="$issueUrl">$subtask.getKey(): $subtask.getSummary()</a>
+            <a href="$issueUrl">$subtask.key: $subtask.summary</a>
             -
             #if ($changes.isEmpty())
             <span class="gerrit-no-reviews">$i18n.getText("gerrit.tabpanel.subtasks.no_open_reviews")</span>
             #else
-            <span class="gerrit-open-reviews">$i18n.getText("gerrit.tabpanel.subtasks.has_open_reviews", $changes.size())</span>
+            <span class="#if ($openReviews > 0)gerrit-open-reviews#else gerrit-no-reviews#end">$i18n.getText("gerrit.tabpanel.subtasks.has_open_reviews", $openReviews)</span>
+            #if ($closedReviews > 0)
+            <span>$i18n.getText("gerrit.tabpanel.subtasks.closed_reviews", $closedReviews)</span>
+            #end
             #end
         </div>
 

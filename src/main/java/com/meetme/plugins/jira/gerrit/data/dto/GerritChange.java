@@ -24,42 +24,31 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Change;
 
 public class GerritChange extends Change implements Comparable<GerritChange> {
 
+    /**
+     * Gerrit review status enumeration, corresponding to the status string in the Gerrit change
+     * payload.
+     * 
+     * @author Joe Hansche <jhansche@myyearbook.com>
+     */
+    public static enum Status
+    {
+        NEW, SUBMITTED, DRAFT, MERGED, ABANDONED
+    }
+
+    private Date lastUpdated;
+
+    private GerritPatchSet patchSet;
+
+    private boolean isOpen;
+
+    private Status status;
+
     public GerritChange() {
         super();
     }
 
     public GerritChange(JSONObject obj) {
         super(obj);
-    }
-
-    public Date getLastUpdated() {
-        return lastUpdated;
-    }
-
-    public void setLastUpdated(Date lastUpdated) {
-        this.lastUpdated = lastUpdated;
-    }
-
-    public GerritPatchSet getPatchSet() {
-        return patchSet;
-    }
-
-    public void setPatchSet(GerritPatchSet patchSet) {
-        this.patchSet = patchSet;
-    }
-
-    private Date lastUpdated;
-    private GerritPatchSet patchSet;
-
-    @Override
-    public void fromJson(JSONObject json) {
-        super.fromJson(json);
-
-        this.lastUpdated = new Date(1000 * json.getLong(LAST_UPDATED));
-
-        if (json.containsKey(GerritEventKeys.CURRENT_PATCH_SET)) {
-            this.patchSet = new GerritPatchSet(json.getJSONObject(GerritEventKeys.CURRENT_PATCH_SET));
-        }
     }
 
     /**
@@ -84,5 +73,54 @@ public class GerritChange extends Change implements Comparable<GerritChange> {
         }
 
         return 0;
+    }
+
+    @Override
+    public void fromJson(JSONObject json) {
+        super.fromJson(json);
+
+        this.lastUpdated = new Date(1000 * json.getLong(LAST_UPDATED));
+
+        if (json.containsKey(GerritEventKeys.CURRENT_PATCH_SET)) {
+            this.patchSet = new GerritPatchSet(json.getJSONObject(GerritEventKeys.CURRENT_PATCH_SET));
+        }
+
+        if (json.containsKey(GerritEventKeys.STATUS)) {
+            this.setStatus(Status.valueOf(json.getString(GerritEventKeys.STATUS)));
+        }
+
+        this.isOpen = json.getBoolean(GerritEventKeys.OPEN);
+    }
+
+    public Date getLastUpdated() {
+        return lastUpdated;
+    }
+
+    public GerritPatchSet getPatchSet() {
+        return patchSet;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public boolean isOpen() {
+        return isOpen;
+    }
+
+    public void setLastUpdated(Date lastUpdated) {
+        this.lastUpdated = lastUpdated;
+    }
+
+    public void setOpen(boolean isOpen) {
+        this.isOpen = isOpen;
+    }
+
+    public void setPatchSet(GerritPatchSet patchSet) {
+        this.patchSet = patchSet;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
     }
 }

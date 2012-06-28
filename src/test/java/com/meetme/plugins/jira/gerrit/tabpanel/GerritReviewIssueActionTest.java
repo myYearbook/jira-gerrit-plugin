@@ -13,13 +13,6 @@
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
 
-import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.APPROVALS;
-import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.LAST_UPDATED;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.CHANGE;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.PATCHSET;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.PROJECT;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.SUBJECT;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.URL;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -44,7 +37,6 @@ import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritPatchSet;
-import com.meetme.plugins.jira.gerrit.tabpanel.GerritReviewIssueAction;
 
 public class GerritReviewIssueActionTest extends TestCase {
     private static final String BASE_URL = "http://localhost:2990/jira";
@@ -66,7 +58,6 @@ public class GerritReviewIssueActionTest extends TestCase {
     private static final GerritApproval APPROVAL_NEGATIVE = new GerritApproval();
     private static final GerritApproval APPROVAL_POSITIVE = new GerritApproval();
     private static final GerritApproval APPROVAL_POSITIVE_2 = new GerritApproval();
-    private static final GerritApproval TEST_MOST_SIGNIFICANT_APPROVAL = APPROVAL_NEGATIVE;
 
     @Mock
     private IssueTabPanelModuleDescriptor descriptor;
@@ -150,6 +141,7 @@ public class GerritReviewIssueActionTest extends TestCase {
         assertEquals(TEST_LAST_UPDATED, action.getTimePerformed());
     }
 
+    @SuppressWarnings("deprecation")
     @Test
     public void testMostSignificantScore() {
 
@@ -193,29 +185,11 @@ public class GerritReviewIssueActionTest extends TestCase {
         assertEquals(expected, velocityParams);
     }
 
-    @Test
-    public void testPopulateVelocityParams_PostiveSignificant() {
-        HashMap<String, Object> velocityParams = new HashMap<String, Object>();
-        Map<String, Object> expected = setUpExpectedVelocityParams();
-
-        TEST_APPROVALS.remove(APPROVAL_NEGATIVE);
-        expected.put("mostSignificantScore", APPROVAL_POSITIVE_2);
-
-        action.populateVelocityParams(velocityParams);
-        assertEquals(expected, velocityParams);
-    }
-
     @SuppressWarnings("unchecked")
     private Map<String, Object> setUpExpectedVelocityParams() {
-        return EasyMap.build(URL, TEST_URL,
-                SUBJECT, TEST_SUBJECT,
-                PROJECT, TEST_PROJECT,
-                CHANGE, TEST_NUMBER,
-                PATCHSET, TEST_PATCHSET_NUMBER,
-                LAST_UPDATED, TEST_FORMATTED_LAST_UPDATED,
+        return EasyMap.build("change", change,
+                "formatLastUpdated", TEST_FORMATTED_LAST_UPDATED,
                 "isoLastUpdated", TEST_ISO_LAST_UPDATED,
-                APPROVALS, TEST_APPROVALS,
-                "mostSignificantScore", TEST_MOST_SIGNIFICANT_APPROVAL,
                 "baseurl", BASE_URL);
     }
 }

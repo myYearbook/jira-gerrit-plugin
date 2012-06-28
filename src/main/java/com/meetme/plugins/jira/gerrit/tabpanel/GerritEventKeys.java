@@ -19,12 +19,11 @@ package com.meetme.plugins.jira.gerrit.tabpanel;
  * 
  * @author jhansche
  */
-public abstract class GerritEventKeys {
+public interface GerritEventKeys {
+    public static final String APPROVALS = "approvals";
     public static final String BY = "by";
     public static final String CURRENT_PATCH_SET = "currentPatchSet";
-    public static final String APPROVALS = "approvals";
     public static final String LAST_UPDATED = "lastUpdated";
-
-    private GerritEventKeys() {
-    }
+    public static final String OPEN = "open";
+    public static final String STATUS = "status";
 }

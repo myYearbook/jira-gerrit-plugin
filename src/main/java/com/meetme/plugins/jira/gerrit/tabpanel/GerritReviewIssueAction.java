@@ -13,14 +13,6 @@
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
 
-import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.LAST_UPDATED;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.APPROVALS;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.CHANGE;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.PATCHSET;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.PROJECT;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.SUBJECT;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.URL;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -50,17 +42,11 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
     }
 
     @Override
-    @SuppressWarnings({ "unchecked", "deprecation" })
+    @SuppressWarnings("unchecked")
     protected void populateVelocityParams(@SuppressWarnings("rawtypes") Map params) {
-        params.putAll(EasyMap.build(URL, change.getUrl(),
-                SUBJECT, change.getSubject(),
-                PROJECT, change.getProject(),
-                CHANGE, change.getNumber(),
-                PATCHSET, change.getPatchSet().getNumber(),
-                LAST_UPDATED, formatLastUpdated(),
+        params.putAll(EasyMap.build("change", change,
+                "formatLastUpdated", formatLastUpdated(),
                 "isoLastUpdated", isoFormatLastUpdated(),
-                APPROVALS, change.getPatchSet().getApprovals(),
-                "mostSignificantScore", getMostSignificantScore(change.getPatchSet().getApprovals()),
                 "baseurl", this.baseUrl));
     }
 
@@ -88,7 +74,9 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
      * 
      * @param approvals
      * @return
+     * @deprecated This functionality can now be found in the velocity template
      */
+    @Deprecated
     GerritApproval getMostSignificantScore(final List<GerritApproval> approvals) {
         if (approvals != null) {
             try {

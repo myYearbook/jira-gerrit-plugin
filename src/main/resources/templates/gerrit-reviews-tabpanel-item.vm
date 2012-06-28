@@ -16,9 +16,55 @@
     the License for the specific language governing permissions and
     limitations under the License.
     *#
--->
-<div class="issue-data-block twixi-block collapsed">
 
+    ### See utility.vm
+
+    #* Calculates and displays the most significant approval score *#
+    #macro( mostSignificantScore $approvals )
+    #set( $significant = 0 )
+
+    #foreach( $approval in $approvals )
+    #set( $value = $approval.valueAsInt )
+    #if( 0 > $value && $significant > $value )
+    #set( $significant = $value )
+    #elseif( $value > 0 && $value > $significant && $significant >= 0 )
+    #set( $significant = $value )
+    #end
+    #end
+
+    <span class="#if ($significant > 0)review-positive#else review-negative #end gerrit-review-score" title="$i18n.getText('gerrit.tabpanel.most_significant_score')">
+    #if ( $significant > 0 )
+    +$significant
+    #else
+    $significant
+    #end
+    </span>
+
+    #end
+
+
+
+    #* Displays a single Review Detail record, in the expanded subtasks list *#
+    #macro( reviewDetail $change )
+    <span class="gerrit-review" title="$i18n.getText('gerrit.tabpanel.Review')">$i18n.getText('gerrit.tabpanel.Review'): </span>
+    $change.getNumber(),$change.getPatchSet().getNumber()
+    <a href="$change.getUrl()" target="gerrit-review-$change.getNumber(),$change.getPatchSet().getNumber()">$change.getSubject()</a>
+    -
+    #if ($change.isOpen())
+    #mostSignificantScore($change.getPatchSet().getApprovals())
+    #else
+    ($change.status)
+    #end
+    #end
+
+    #set( $statusClass = "gerrit-status-$change.status" )
+    #if ($change.isOpen())
+    #set( $openClass = "gerrit-review-open" )
+    #else
+    #set( $openClass = "gerrit-review-closed" )
+    #end
+-->
+<div class="issue-data-block twixi-block collapsed $statusClass $openClass">
     ## The concise version:
     <div class="actionContainer twixi-wrap concise">
         <a href="#" class="twixi">
@@ -28,27 +74,7 @@
         </a>
 
         <div class="action-details flooded">
-            <span class="gerrit-review" title="$i18n.getText('gerrit.tabpanel.Review')">$i18n.getText('gerrit.tabpanel.Review'): </span>
-            $change,$patchset
-            <a href="$url" target="gerrit-review-$change,$patchset">$subject</a>
-            -
-            <span class="subText">
-                <span class="date user-tz" title="$lastUpdated">
-                    <time datetime="$isoLastUpdated">$lastUpdated</time>
-                </span>
-            </span>
-
-            #if ($mostSignificantScore)
-            <span class="#if ($mostSignificantScore.valueAsInt > 0)review-positive#else review-negative #end gerrit-review-score">
-                #if ($mostSignificantScore.valueAsInt > 0)
-                +$mostSignificantScore.valueAsInt
-                #else
-                $mostSignificantScore.valueAsInt
-                #end
-            </span>
-            #else
-            <span>$i18n.getText("gerrit.tabpanel.no_approvals")</span>
-            #end
+            #reviewDetail( $change )
         </div>
     </div>
 
@@ -62,7 +88,7 @@
         </a>
         <div class="action-links">
             ## Top-right links that show up while hovering
-            <a href="$url" target="gerrit-review-$change,$patchset" title="$i18n.getText('gerrit.tabpanel.permalink')" class="icon icon-perma">
+            <a href="$change.url" target="gerrit-review-$change.number,$change.patchSet.number" title="$i18n.getText('gerrit.tabpanel.permalink')" class="icon icon-perma">
                 <span>Permalink</span>
             </a>
         </div>
@@ -70,27 +96,36 @@
         ## Main action detail
         <div class="action-details">
             <span class="gerrit-review" title="$i18n.getText('gerrit.tabpanel.Review')">$i18n.getText('gerrit.tabpanel.Review'): </span>
-            $change,$patchset
-            <a href="$url" target="gerrit-review-$change,$patchset">$subject</a>
+            $change.number,$change.patchSet.number
+            <a href="$change.url" target="gerrit-review-$change.number,$change.patchSet.number">$change.subject</a>
             -
             <span class="subText">
-                <span class="date user-tz" title="$lastUpdated">
-                    <time datetime="$isoLastUpdated">$lastUpdated</time>
+                <span class="date user-tz" title="$formatLastUpdated">
+                    <time datetime="$isoLastUpdated">$formatLastUpdated</time>
                 </span>
             </span>
         </div>
 
         <div class="action-body">
-            <div>$i18n.getText("gerrit.tabpanel.Project"): $project</div>
+            <div>$i18n.getText("gerrit.tabpanel.Project"): $change.project</div>
+            <div>
+                $i18n.getText("gerrit.tabpanel.Status"):
+                #if ($change.isOpen())
+                $i18n.getText("gerrit.tabpanel.status.open")
+                #else
+                $i18n.getText("gerrit.tabpanel.status.closed")
+                #end
+                ($change.status)
+            </div>
 
-            <table width="300" border="0" padding="3" class="gerrit-review-approvals">
+            <table border="0" padding="3" class="gerrit-review-approvals">
                 <tr>
                     <th>$i18n.getText("gerrit.tabpanel.Approver")</th>
                     <th>$i18n.getText("gerrit.tabpanel.Type")</th>
                     <th>$i18n.getText("gerrit.tabpanel.Score")</th>
                 </tr>
 
-                #if ($approvals.size() == 0)
+                #if (!$change.patchSet.approvals.size())
                 <tr>
                     <td colspan="3">
                         <div class="aui-message warning">
@@ -101,7 +136,7 @@
                 </tr>
                 #end
 
-                #foreach( $approval in $approvals )
+                #foreach( $approval in $change.patchSet.approvals )
                 <tr>
                     <td>
                         #if ($approval.user)
