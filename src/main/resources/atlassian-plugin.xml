@@ -18,6 +18,12 @@
         <description>${project.description}</description>
         <version>${project.version}</version>
         <vendor name="${project.organization.name}" url="${project.organization.url}" />
+
+        <param name="plugin-icon">images/gerrit-icon16.png</param>
+        <param name="plugin-logo">images/meetme_75.png</param>
+        <param name="vendor-icon">images/meetme_16.png</param>
+        <param name="vendor-logo">images/meetme_75.png</param>
+        <param name="configure.url">/plugins/servlet/gerrit/admin</param>
     </plugin-info>
 
     <component-import key="pluginSettingsFactory" interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" />
