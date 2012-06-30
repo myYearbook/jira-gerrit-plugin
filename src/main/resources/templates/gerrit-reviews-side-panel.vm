@@ -1,0 +1,128 @@
+<!--#*
+    Copyright 2012 MeetMe, Inc.
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+    *#
+
+    ### See utility.vm
+
+    #* Calculates and displays the most significant approval score *#
+    #macro( mostSignificantScore $approvals )
+    #set( $significant = 0 )
+
+    #foreach( $approval in $approvals )
+    #set( $value = $approval.valueAsInt )
+    #if( 0 > $value && $significant > $value )
+    #set( $significant = $value )
+    #elseif( $value > 0 && $value > $significant && $significant >= 0 )
+    #set( $significant = $value )
+    #end
+    #end
+
+    <span class="#if ($significant > 0)review-positive#else review-negative #end gerrit-review-score" title="$i18n.getText('gerrit.tabpanel.most_significant_score')">
+    #if ( $significant > 0 )
+    +$significant
+    #else
+    $significant
+    #end
+    </span>
+
+    #end
+
+
+
+    #* Displays a single Review Detail record, in the expanded subtasks list *#
+    #macro( sideReviewDetail $change )
+    <dl>
+
+    <dt>
+    <a href="$change.url" title="$change.subject" target="gerrit-review-$change.number,$change.patchSet.number">$change.subject</a>
+    </dt>
+
+    <dd>
+    #if ($change.isOpen())
+    #mostSignificantScore($change.patchSet.approvals)
+    #end
+    <span class="gerrit-review" title="$change.number,$change.patchSet.number: ($change.status)">$i18n.getText('gerrit.tabpanel.Review'): </span>
+    </dd>
+
+    </dl>
+    #end
+
+    #set( $numClosed = 0 )
+    #set( $numOpen = 0 )
+    #foreach ($change in $changes)
+    #if ($change.isOpen())
+    #set( $numOpen = $numOpen + 1 )
+    #else
+    #set( $numClosed = $numClosed + 1 )
+    #end
+    #end
+-->
+<div id="gerrit-reviews-side-panel">
+
+    <div>
+        $i18n.getText("gerrit-reviews-side-panel.open_reviews", $numOpen)
+    </div>
+
+    #if ($numOpen > 0)
+    <ul class="item-details gerrit-review-open">
+        #foreach ($change in $changes)
+
+        #if ($change.isOpen())
+        #set( $statusClass = "gerrit-status-$change.status" )
+        <li class="$statusClass">#sideReviewDetail( $change )</li>
+        #end
+
+        #end
+    </ul>
+    #end
+
+    #if ($numClosed > 0)
+    <div class="twixi-block collapsed">
+        <div class="twixi-wrap concise">
+            <a href="#" class="twixi">
+                <span class="icon twixi-closed">
+                    <span>Show</span>
+                </span>
+            </a>
+            $i18n.getText("gerrit-reviews-side-panel.closed_reviews", $numClosed)
+        </div>
+
+        <div class="verbose">
+            <span class="twixi icon twixi-opened">
+                <span>Hide</span>
+            </span>
+            <span>
+                $i18n.getText("gerrit-reviews-side-panel.closed_reviews", $numClosed)
+            </span>
+
+            <ul class="item-details gerrit-review-closed">
+
+
+
+                #foreach ( $change in $changes)
+                #set( $statusClass = "gerrit-status-$change.status" )
+
+                #if ( ! $change.isOpen() )
+                <div class="$statusClass">
+                    #sideReviewDetail( $change )
+                </div>
+                #end
+                #end
+
+            </ul>
+        </div>
+    </div>
+    #end
+</div>

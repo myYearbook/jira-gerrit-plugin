@@ -1,3 +1,4 @@
+<?xml version="1.0" encoding="UTF-8"?>
 <!--
     Copyright 2012 MeetMe, Inc.
 
@@ -78,14 +79,23 @@
         <resource type="download" name="images/" location="images/" />
     </web-resource>
     <!-- Tab panel to list Gerrit Reviews for each subtask -->
-    <issue-tabpanel key="subtask-reviews-tabpanel" name="Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.tabpanel.SubtaskReviewsTabPanel">
-        <description>Show Gerrit reviews related to an issue in an issue tab panel.</description>
+    <issue-tabpanel key="subtask-reviews-tabpanel" name="Subtask Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.tabpanel.SubtaskReviewsTabPanel">
+        <description>Show Gerrit reviews related issue subtasks in the parent issue's tab panel.</description>
         <label key="gerrit.tabpanel.subtasks.label">Gerrit Subtask Reviews</label>
         <resource type="velocity" name="view" location="templates/subtask-reviews-tabpanel-item.vm" />
         <resource type="i18n" name="i18n" location="i18n.tabpanel" />
         <!-- enable fast tab switch -->
         <supports-ajax-load>true</supports-ajax-load>
     </issue-tabpanel>
+
+    <!-- View Issue right-side panel (disabled by default) -->
+    <web-panel name="Gerrit Reviews Side Panel" i18n-name-key="gerrit-reviews-side-panel.name" key="gerrit-reviews-side-panel" location="atl.jira.view.issue.right.context" state="disabled">
+        <description key="gerrit-reviews-side-panel.description">Show Gerrit reviews in the View Issue side panel</description>
+        <label key="gerrit-reviews-side-panel.label">Gerrit Reviews</label>
+        <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueWebPanel" />
+        <resource type="i18n" name="i18n" location="i18n.webpanel" />
+        <resource name="view" type="velocity" location="templates/gerrit-reviews-side-panel.vm" />
+    </web-panel>
 
     <!-- Workflow Conditions -->
     <!-- 1. Must have zero open reviews (or reversed logic) -->

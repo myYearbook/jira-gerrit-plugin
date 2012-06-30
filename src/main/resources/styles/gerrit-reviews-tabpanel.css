@@ -67,3 +67,29 @@ span.gerrit-no-reviews
 {
   font-style: italic;
 }
+
+#gerrit-reviews-side-panel ul.item-details dl dt
+{
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: none;
+  width: 81%;
+  text-align: left;
+}
+
+#gerrit-reviews-side-panel ul.item-details dl dd
+{
+  width: 18%;
+  text-align: right;
+}
+
+#gerrit-reviews-side-panel ul.item-details dl dd span.gerrit-review
+{
+  text-indent: 9999px;
+  vertical-align: middle;
+}
+
+#gerrit-reviews-side-panel span.twixi
+{
+  cursor: pointer
+}
