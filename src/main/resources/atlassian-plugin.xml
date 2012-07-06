@@ -33,6 +33,7 @@
     <component-import key="velocity-renderer" interface="com.atlassian.templaterenderer.velocity.one.six.VelocityTemplateRenderer" />
     <component-import key="applicationProperties" interface="com.atlassian.sal.api.ApplicationProperties" />
     <component-import key="i18nResolver" interface="com.atlassian.sal.api.message.I18nResolver" />
+    <component-import key="outlookDateManager" interface="com.atlassian.jira.web.util.OutlookDateManager" />
 
     <component name="Configuration Manager" key="configurationManager" class="com.meetme.plugins.jira.gerrit.data.GerritConfigurationImpl">
         <description>Stores the Gerrit configuration</description>

@@ -13,7 +13,6 @@
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
 
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
 
@@ -31,9 +30,8 @@ import org.junit.Test;
 import org.mockito.Mock;
 
 import com.atlassian.core.util.map.EasyMap;
-import com.atlassian.jira.datetime.DateTimeFormatter;
-import com.atlassian.jira.datetime.DateTimeStyle;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
+import com.atlassian.jira.web.util.OutlookDate;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritPatchSet;
@@ -62,7 +60,7 @@ public class GerritReviewIssueActionTest extends TestCase {
     @Mock
     private IssueTabPanelModuleDescriptor descriptor;
     @Mock
-    private DateTimeFormatter dateTimeFormatter;
+    private OutlookDate dateTimeFormatter;
 
     private GerritChange change;
 
@@ -87,12 +85,9 @@ public class GerritReviewIssueActionTest extends TestCase {
     }
 
     private void setUpDateTimeFormatter() {
-        final DateTimeFormatter mockFormatter = dateTimeFormatter;
-        when(mockFormatter.format(TEST_LAST_UPDATED)).thenReturn(TEST_FORMATTED_LAST_UPDATED);
+        when(dateTimeFormatter.format(TEST_LAST_UPDATED)).thenReturn(TEST_FORMATTED_LAST_UPDATED);
 
-        DateTimeFormatter mockFormatterIso = mock(DateTimeFormatter.class);
-        when(mockFormatter.withStyle(DateTimeStyle.ISO_8601_DATE_TIME)).thenReturn(mockFormatterIso);
-        when(mockFormatterIso.format(TEST_LAST_UPDATED)).thenReturn(TEST_ISO_LAST_UPDATED);
+        when(dateTimeFormatter.formatIso8601(TEST_LAST_UPDATED)).thenReturn(TEST_ISO_LAST_UPDATED);
     }
 
     private void setUpApprovals() {

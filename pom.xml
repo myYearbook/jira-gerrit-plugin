@@ -64,7 +64,8 @@
         <!-- Base Atlassian requirements -->
         <dependency>
             <groupId>com.atlassian.jira</groupId>
-            <artifactId>jira-api</artifactId>
+            <!-- <artifactId>jira-api</artifactId> -->
+            <artifactId>atlassian-jira</artifactId>
             <version>${jira.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -164,7 +165,14 @@
                 <extensions>true</extensions>
                 <configuration>
                     <productVersion>${jira.version}</productVersion>
-                    <productDataVersion>${jira.data.version}</productDataVersion>
+                    <productDataVersion>${jira.version}</productDataVersion>
+
+                    <products>
+                        <product>
+                            <id>jira</id>
+                            <version>${jira.version}</version>
+                        </product>
+                    </products>
                 </configuration>
             </plugin>
             <plugin>
@@ -178,10 +186,49 @@
     </build>
 
     <properties>
-        <jira.version>4.4.1</jira.version>
-        <jira.data.version>4.4</jira.data.version>
+        <jira.version>4.3</jira.version>
+        <jira.test.version>4.3</jira.test.version>
+        <jira.data.version>4.3</jira.data.version>
         <amps.version>3.10.3</amps.version>
     </properties>
+
+    <profiles>
+        <profile>
+            <id>jira43</id>
+            <properties>
+                <jira.version>4.3</jira.version>
+                <skip.tests>true</skip.tests>
+                <skip.func.tests>true</skip.func.tests>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>jira44</id>
+            <properties>
+                <jira.version>4.4</jira.version>
+                <skip.tests>true</skip.tests>
+                <skip.func.tests>true</skip.func.tests>
+            </properties>
+        </profile>
+
+        <profile>
+            <id>jira5</id>
+            <properties>
+                <jira.version>5.0</jira.version>
+                <skip.tests>true</skip.tests>
+                <skip.func.tests>true</skip.func.tests>
+            </properties>
+        </profile>
+        <profile>
+            <!-- We need to target 4.3 for the moment -->
+            <id>release</id>
+            <properties>
+                <jira.version>4.3</jira.version>
+                <skip.tests>true</skip.tests>
+                <skip.func.tests>true</skip.func.tests>
+            </properties>
+        </profile>
+    </profiles>
 
     <scm>
         <connection>scm:git:git://github.com/myYearbook/jira-gerrit-plugin.git</connection>

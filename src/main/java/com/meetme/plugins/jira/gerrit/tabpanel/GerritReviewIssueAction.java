@@ -20,21 +20,20 @@ import java.util.Map;
 import java.util.NoSuchElementException;
 
 import com.atlassian.core.util.map.EasyMap;
-import com.atlassian.jira.datetime.DateTimeFormatter;
-import com.atlassian.jira.datetime.DateTimeStyle;
 import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
+import com.atlassian.jira.web.util.OutlookDate;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 
 public class GerritReviewIssueAction extends AbstractIssueAction implements IssueAction {
     private String baseUrl;
     private GerritChange change;
-    private DateTimeFormatter dateTimeFormatter;
+    private OutlookDate dateTimeFormatter;
 
     public GerritReviewIssueAction(IssueTabPanelModuleDescriptor descriptor, GerritChange change,
-            DateTimeFormatter dateTimeFormatter, String baseUrl) {
+            OutlookDate dateTimeFormatter, String baseUrl) {
         super(descriptor);
         this.dateTimeFormatter = dateTimeFormatter;
         this.baseUrl = baseUrl;
@@ -55,8 +54,7 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
     }
 
     String isoFormatLastUpdated() {
-        final DateTimeFormatter formatter = dateTimeFormatter.withStyle(DateTimeStyle.ISO_8601_DATE_TIME);
-        return formatter.format(change.getLastUpdated());
+        return dateTimeFormatter.formatIso8601(change.getLastUpdated());
     }
 
     @Override

@@ -20,14 +20,14 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.atlassian.crowd.embedded.api.User;
-import com.atlassian.jira.datetime.DateTimeFormatter;
-import com.atlassian.jira.datetime.DateTimeFormatterFactory;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
 import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel;
 import com.atlassian.jira.user.util.UserManager;
+import com.atlassian.jira.web.util.OutlookDate;
+import com.atlassian.jira.web.util.OutlookDateManager;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.message.I18nResolver;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
@@ -46,18 +46,18 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 public class GerritReviewsTabPanel extends AbstractIssueTabPanel implements IssueTabPanel {
     private static final Logger log = LoggerFactory.getLogger(GerritReviewsTabPanel.class);
 
-    private final DateTimeFormatter dateTimeFormatter;
+    private final OutlookDate dateTimeFormatter;
     private final UserManager userManager;
     private final ApplicationProperties applicationProperties;
     private final GerritConfiguration configuration;
     private final IssueReviewsManager reviewsManager;
     private final I18nResolver i18n;
 
-    public GerritReviewsTabPanel(UserManager userManager, DateTimeFormatterFactory dateTimeFormatterFactory,
+    public GerritReviewsTabPanel(UserManager userManager, OutlookDateManager dateTimeFormatterFactory,
             ApplicationProperties applicationProperties, GerritConfiguration configuration,
             IssueReviewsManager reviewsManager, I18nResolver i18n) {
         this.userManager = userManager;
-        this.dateTimeFormatter = dateTimeFormatterFactory.formatter();
+        this.dateTimeFormatter = dateTimeFormatterFactory.getOutlookDate(null);
         this.applicationProperties = applicationProperties;
         this.configuration = configuration;
         this.reviewsManager = reviewsManager;
