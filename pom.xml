@@ -186,31 +186,13 @@
     </build>
 
     <properties>
-        <jira.version>4.3</jira.version>
-        <jira.test.version>4.3</jira.test.version>
-        <jira.data.version>4.3</jira.data.version>
+        <jira.version>5.0</jira.version>
+        <jira.test.version>5.0</jira.test.version>
+        <jira.data.version>5.0</jira.data.version>
         <amps.version>3.10.3</amps.version>
     </properties>
 
     <profiles>
-        <profile>
-            <id>jira43</id>
-            <properties>
-                <jira.version>4.3</jira.version>
-                <skip.tests>true</skip.tests>
-                <skip.func.tests>true</skip.func.tests>
-            </properties>
-        </profile>
-
-        <profile>
-            <id>jira44</id>
-            <properties>
-                <jira.version>4.4</jira.version>
-                <skip.tests>true</skip.tests>
-                <skip.func.tests>true</skip.func.tests>
-            </properties>
-        </profile>
-
         <profile>
             <id>jira5</id>
             <properties>
@@ -220,10 +202,9 @@
             </properties>
         </profile>
         <profile>
-            <!-- We need to target 4.3 for the moment -->
             <id>release</id>
             <properties>
-                <jira.version>4.3</jira.version>
+                <jira.version>5.0</jira.version>
                 <skip.tests>true</skip.tests>
                 <skip.func.tests>true</skip.func.tests>
             </properties>

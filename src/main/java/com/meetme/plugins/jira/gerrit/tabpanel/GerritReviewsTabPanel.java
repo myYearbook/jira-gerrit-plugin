@@ -22,9 +22,13 @@ import org.slf4j.LoggerFactory;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
-import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel;
+import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel2;
+import com.atlassian.jira.plugin.issuetabpanel.GetActionsReply;
+import com.atlassian.jira.plugin.issuetabpanel.GetActionsRequest;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
-import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel;
+import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel2;
+import com.atlassian.jira.plugin.issuetabpanel.ShowPanelReply;
+import com.atlassian.jira.plugin.issuetabpanel.ShowPanelRequest;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.web.util.OutlookDate;
 import com.atlassian.jira.web.util.OutlookDateManager;
@@ -43,7 +47,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * 
  * @author Joe Hansche <jhansche@myyearbook.com>
  */
-public class GerritReviewsTabPanel extends AbstractIssueTabPanel implements IssueTabPanel {
+public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements IssueTabPanel2 {
     private static final Logger log = LoggerFactory.getLogger(GerritReviewsTabPanel.class);
 
     private final OutlookDate dateTimeFormatter;
@@ -53,6 +57,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel implements Issu
     private final IssueReviewsManager reviewsManager;
     private final I18nResolver i18n;
 
+    //TODO: Update OutlookDateManager to DateFormatter
     public GerritReviewsTabPanel(UserManager userManager, OutlookDateManager dateTimeFormatterFactory,
             ApplicationProperties applicationProperties, GerritConfiguration configuration,
             IssueReviewsManager reviewsManager, I18nResolver i18n) {
@@ -64,8 +69,8 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel implements Issu
         this.i18n = i18n;
     }
 
-    @SuppressWarnings("rawtypes")
-    public List getActions(Issue issue, User remoteUser) {
+    @Override
+    public GetActionsReply getActions(GetActionsRequest request) {
         List<IssueAction> issueActions;
 
         if (configuration.getSshHostname() == null || configuration.getSshUsername() == null || configuration.getSshPrivateKey() == null) {
@@ -74,13 +79,14 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel implements Issu
             issueActions.add(new GenericMessageAction("Configure Gerrit in Administration interface first."));
         } else {
             // List of items we will be showing in the tab panel.
-            issueActions = getActions(issue.getKey());
+            issueActions = getActions(request.issue().getKey());
         }
 
-        return issueActions;
+        return GetActionsReply.create(issueActions);
     }
 
-    public boolean showPanel(Issue issue, User remoteUser) {
+    @Override
+    public ShowPanelReply showPanel(ShowPanelRequest arg0) {
         boolean isShowing = true;
 
         if (!isConfigurationReady())
@@ -88,7 +94,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel implements Issu
             isShowing = false;
         }
 
-        return isShowing;
+        return ShowPanelReply.create(isShowing);
     }
 
     /**
@@ -117,7 +123,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel implements Issu
         } else {
             for (GerritChange change : reviews) {
                 setUsersForChangeApprovals(change);
-                issueActions.add(new GerritReviewIssueAction(descriptor, change, dateTimeFormatter, applicationProperties.getBaseUrl()));
+                issueActions.add(new GerritReviewIssueAction(descriptor(), change, dateTimeFormatter, applicationProperties.getBaseUrl()));
                 // issueActions.add(new GenericMessageAction("<pre>" + obj.toString(4) + "</pre>"));
             }
         }
@@ -159,16 +165,5 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel implements Issu
                 }
             }
         }
-    }
-
-    @SuppressWarnings("rawtypes")
-    @Override
-    public List getActions(Issue issue, @SuppressWarnings("deprecation") com.opensymphony.user.User remoteUser) {
-        return this.getActions(issue, (User) remoteUser);
-    }
-
-    @Override
-    public boolean showPanel(Issue issue, @SuppressWarnings("deprecation") com.opensymphony.user.User remoteUser) {
-        return this.showPanel(issue, (User) remoteUser);
     }
 }
