@@ -19,7 +19,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.meetme.plugins.jira</groupId>
     <artifactId>gerrit-plugin</artifactId>
-    <version>1.0</version>
+    <version>1.2-SNAPSHOT</version>
 
     <organization>
         <name>MeetMe, Inc.</name>
