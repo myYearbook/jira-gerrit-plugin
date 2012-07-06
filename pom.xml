@@ -211,6 +211,19 @@
         </profile>
     </profiles>
 
+    <distributionManagement>
+        <repository>
+            <id>atlassian-contrib</id>
+            <name>Atlassian Contrib Repository</name>
+            <url>dav:https://maven.atlassian.com/contrib</url>
+        </repository>
+        <snapshotRepository>
+            <id>atlassian-contrib-snapshot</id>
+            <name>Atlassian Contrib Snapshot Repository</name>
+            <url>dav:https://maven.atlassian.com/contrib-snapshot</url>
+        </snapshotRepository>
+    </distributionManagement>
+
     <scm>
         <connection>scm:git:git://github.com/myYearbook/jira-gerrit-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/myYearbook/jira-gerrit-plugin.git</developerConnection>
