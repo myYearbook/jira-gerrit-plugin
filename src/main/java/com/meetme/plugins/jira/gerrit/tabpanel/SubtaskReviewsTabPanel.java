@@ -17,20 +17,17 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel2;
-import com.atlassian.jira.plugin.issuetabpanel.GetActionsReply;
-import com.atlassian.jira.plugin.issuetabpanel.GetActionsRequest;
+import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
-import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel2;
-import com.atlassian.jira.plugin.issuetabpanel.ShowPanelReply;
-import com.atlassian.jira.plugin.issuetabpanel.ShowPanelRequest;
+import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
-public class SubtaskReviewsTabPanel extends AbstractIssueTabPanel2 implements IssueTabPanel2 {
+public class SubtaskReviewsTabPanel extends AbstractIssueTabPanel implements IssueTabPanel {
     private final GerritConfiguration configuration;
     private final IssueReviewsManager reviewsManager;
 
@@ -40,10 +37,8 @@ public class SubtaskReviewsTabPanel extends AbstractIssueTabPanel2 implements Is
         this.reviewsManager = reviewsManager;
     }
 
-    @Override
-    public GetActionsReply getActions(GetActionsRequest request) {
-
-        Issue issue = request.issue();
+    @SuppressWarnings("rawtypes")
+    public List getActions(Issue issue, User remoteUser) {
         Collection<Issue> subtasks = issue.getSubTaskObjects();
         List<IssueAction> actions = new ArrayList<IssueAction>();
         List<GerritChange> changes;
@@ -55,23 +50,21 @@ public class SubtaskReviewsTabPanel extends AbstractIssueTabPanel2 implements Is
                 throw new RuntimeException(e);
             }
 
-            actions.add(new SubtaskReviewsIssueAction(descriptor(), subtask, changes));
+            actions.add(new SubtaskReviewsIssueAction(descriptor, subtask, changes));
         }
 
-        return GetActionsReply.create(actions);
+        return actions;
     }
 
-    @Override
-    public ShowPanelReply showPanel(ShowPanelRequest request) {
+    public boolean showPanel(Issue issue, User remoteUser) {
         boolean show = false;
 
         if (isConfigurationReady()) {
-            Issue issue = request.issue();
             Collection<Issue> subtasks = issue.getSubTaskObjects();
             show = subtasks != null && subtasks.size() > 0;
         }
 
-        return ShowPanelReply.create(show);
+        return show;
     }
 
     private List<GerritChange> getChanges(Issue subtask) throws GerritQueryException {
@@ -83,5 +76,16 @@ public class SubtaskReviewsTabPanel extends AbstractIssueTabPanel2 implements Is
 
         return configuration != null && configuration.getSshHostname() != null && configuration.getSshUsername() != null
                 && configuration.getSshPrivateKey() != null && configuration.getSshPrivateKey().exists();
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public List getActions(Issue issue, @SuppressWarnings("deprecation") com.opensymphony.user.User remoteUser) {
+        return this.getActions(issue, (User) remoteUser);
+    }
+
+    @Override
+    public boolean showPanel(Issue issue, @SuppressWarnings("deprecation") com.opensymphony.user.User remoteUser) {
+        return this.showPanel(issue, (User) remoteUser);
     }
 }

@@ -24,13 +24,9 @@ import com.atlassian.jira.datetime.DateTimeFormatter;
 import com.atlassian.jira.datetime.DateTimeFormatterFactory;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
-import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel2;
-import com.atlassian.jira.plugin.issuetabpanel.GetActionsReply;
-import com.atlassian.jira.plugin.issuetabpanel.GetActionsRequest;
+import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
-import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel2;
-import com.atlassian.jira.plugin.issuetabpanel.ShowPanelReply;
-import com.atlassian.jira.plugin.issuetabpanel.ShowPanelRequest;
+import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.message.I18nResolver;
@@ -47,7 +43,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * 
  * @author Joe Hansche <jhansche@myyearbook.com>
  */
-public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements IssueTabPanel2 {
+public class GerritReviewsTabPanel extends AbstractIssueTabPanel implements IssueTabPanel {
     private static final Logger log = LoggerFactory.getLogger(GerritReviewsTabPanel.class);
 
     private final DateTimeFormatter dateTimeFormatter;
@@ -68,13 +64,8 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
         this.i18n = i18n;
     }
 
-    @Override
-    protected void init() {
-        log.debug("Initializing Gerrit Reviews tab panel");
-    }
-
-    @Override
-    public GetActionsReply getActions(GetActionsRequest request) {
+    @SuppressWarnings("rawtypes")
+    public List getActions(Issue issue, User remoteUser) {
         List<IssueAction> issueActions;
 
         if (configuration.getSshHostname() == null || configuration.getSshUsername() == null || configuration.getSshPrivateKey() == null) {
@@ -83,19 +74,13 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
             issueActions.add(new GenericMessageAction("Configure Gerrit in Administration interface first."));
         } else {
             // List of items we will be showing in the tab panel.
-            issueActions = getActions(request.issue().getKey());
+            issueActions = getActions(issue.getKey());
         }
 
-        return GetActionsReply.create(issueActions);
+        return issueActions;
     }
 
-    /**
-     * Whether this panel should show up in the view-issue page.
-     * 
-     * Current implementation only shows the tab if the issue is editable (e.g., not closed)
-     */
-    @Override
-    public ShowPanelReply showPanel(ShowPanelRequest request) {
+    public boolean showPanel(Issue issue, User remoteUser) {
         boolean isShowing = true;
 
         if (!isConfigurationReady())
@@ -103,7 +88,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
             isShowing = false;
         }
 
-        return ShowPanelReply.create(isShowing);
+        return isShowing;
     }
 
     /**
@@ -132,7 +117,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
         } else {
             for (GerritChange change : reviews) {
                 setUsersForChangeApprovals(change);
-                issueActions.add(new GerritReviewIssueAction(descriptor(), change, dateTimeFormatter, applicationProperties.getBaseUrl()));
+                issueActions.add(new GerritReviewIssueAction(descriptor, change, dateTimeFormatter, applicationProperties.getBaseUrl()));
                 // issueActions.add(new GenericMessageAction("<pre>" + obj.toString(4) + "</pre>"));
             }
         }
@@ -174,5 +159,16 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
                 }
             }
         }
+    }
+
+    @SuppressWarnings("rawtypes")
+    @Override
+    public List getActions(Issue issue, @SuppressWarnings("deprecation") com.opensymphony.user.User remoteUser) {
+        return this.getActions(issue, (User) remoteUser);
+    }
+
+    @Override
+    public boolean showPanel(Issue issue, @SuppressWarnings("deprecation") com.opensymphony.user.User remoteUser) {
+        return this.showPanel(issue, (User) remoteUser);
     }
 }

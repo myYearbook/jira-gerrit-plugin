@@ -144,7 +144,6 @@ public class GerritReviewIssueActionTest extends TestCase {
     @SuppressWarnings("deprecation")
     @Test
     public void testMostSignificantScore() {
-
         // null input = null output
         assertNull(action.getMostSignificantScore(null));
 

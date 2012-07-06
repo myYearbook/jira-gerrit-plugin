@@ -11,9 +11,9 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-table.gerrit-review-approvals
+.module table.gerrit-review-approvals
 {
-  width: 350px;
+  width: 400px;
 }
 
 table.gerrit-review-approvals td.gerrit-review-score

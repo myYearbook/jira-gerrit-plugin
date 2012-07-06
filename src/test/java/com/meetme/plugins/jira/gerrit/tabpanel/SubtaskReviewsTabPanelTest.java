@@ -146,6 +146,7 @@ public class SubtaskReviewsTabPanelTest extends TestCase {
     public void testGetActions_noSubtasks() {
         SubtaskReviewsTabPanel obj = new SubtaskReviewsTabPanel(configuration, reviewsManager);
         // Returns false because the configuration is empty
+        @SuppressWarnings("unchecked")
         List<IssueAction> actions = obj.getActions(issue, user);
         assertEquals(0, actions.size());
     }
@@ -157,10 +158,12 @@ public class SubtaskReviewsTabPanelTest extends TestCase {
 
         SubtaskReviewsTabPanel obj = new SubtaskReviewsTabPanel(configuration, reviewsManager);
         // Returns false because the configuration is empty
+        @SuppressWarnings("unchecked")
         List<IssueAction> actions = obj.getActions(issue, user);
         assertEquals(3, actions.size());
     }
 
+    @SuppressWarnings("unchecked")
     @Test(expected = RuntimeException.class)
     public void testGetActions_gerritError() throws GerritQueryException {
         SubtaskReviewsTabPanel obj = new SubtaskReviewsTabPanel(configuration, reviewsManager);
