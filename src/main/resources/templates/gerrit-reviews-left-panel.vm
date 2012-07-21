@@ -1,0 +1,107 @@
+#*
+Copyright 2012 MeetMe, Inc.
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*#
+
+### See utility.vm
+
+
+#* Calculates and displays the most significant approval score *#
+#macro( mostSignificantScore $approvals )
+    #set( $significant = 0 )
+
+    #foreach( $approval in $approvals )
+        #set( $value = $approval.valueAsInt )
+        #if( 0 > $value && $significant > $value )
+            #set( $significant = $value )
+        #elseif( $value > 0 && $value > $significant && $significant >= 0 )
+            #set( $significant = $value )
+        #end
+    #end
+
+    <span class="#if ($significant > 0)review-positive#else review-negative #end gerrit-review-score" title="$i18n.getText('gerrit.tabpanel.most_significant_score')">
+    #if ( $significant > 0 )
+       +$significant
+    #else
+        $significant
+    #end
+    </span>
+#end
+
+
+
+#* Displays a single Review Detail record, in the expanded subtasks list *#
+#macro( leftReviewDetail $change )
+    <tr class="issuerow">
+
+        <td class="nav gerrit-changeid">
+            $change.number,$change.patchSet.number
+        </td>
+
+		<td class="nav gerrit-subject">
+            <a href="$change.url" title="$change.subject" target="gerrit-review-$change.number,$change.patchSet.number">$change.subject</a>
+        </td>
+
+        <td class="nav gerrit-status gerrit-status-$change.status">
+            <span class="gerrit-review" title="$change.number,$change.patchSet.number: ($change.status)">$i18n.getText('gerrit.tabpanel.Status'): </span>
+            $change.status
+        </td>
+
+        <td class="nav gerrit-review-score">
+            #mostSignificantScore($change.patchSet.approvals)
+        </td>
+
+    </tr>
+#end
+
+
+#set( $numClosed = 0 )
+#set( $numOpen = 0 )
+#foreach ($change in $changes)
+    #if ($change.isOpen())
+        #set( $numOpen = $numOpen + 1 )
+    #else
+        #set( $numClosed = $numClosed + 1 )
+    #end
+#end
+
+
+#if ($numOpen == 0 && $numClosed == 0)
+
+    <div class="aui-message info">
+        <span class="aui-icon icon-info"></span>
+        $i18n.getText("gerrit-reviews-left-panel.no_matching_reviews")
+    </div>
+
+#else
+
+    <table id="gerrit-reviews-left-panel">
+        <tbody>
+            #foreach ($change in $changes)
+                #if ($change.isOpen())
+                    #leftReviewDetail( $change )
+                #end
+            #end
+        <tbody>
+
+        <tbody>
+            #foreach ( $change in $changes)
+                #if (!$change.isOpen())
+                    #leftReviewDetail( $change )
+                #end
+            #end
+        </tbody>
+    </table>
+
+#end

@@ -125,7 +125,7 @@
                     <th>$i18n.getText("gerrit.tabpanel.Score")</th>
                 </tr>
 
-                #if (!$change.patchSet.approvals.size())
+                #if (!$change.patchSet.approvals || !$change.patchSet.approvals.size())
                 <tr>
                     <td colspan="3">
                         <div class="aui-message warning">
