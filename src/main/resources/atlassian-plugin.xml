@@ -36,6 +36,7 @@
     <component-import key="i18nResolver" interface="com.atlassian.sal.api.message.I18nResolver" />
     <component-import key="outlookDateManager" interface="com.atlassian.jira.web.util.OutlookDateManager" />
 
+    <!-- Our Components -->
     <component name="Configuration Manager" key="configurationManager" class="com.meetme.plugins.jira.gerrit.data.GerritConfigurationImpl">
         <description>Stores the Gerrit configuration</description>
         <interface>com.meetme.plugins.jira.gerrit.data.GerritConfiguration</interface>
@@ -92,10 +93,34 @@
     <web-panel name="Gerrit Reviews Side Panel" i18n-name-key="gerrit-reviews-side-panel.name" key="gerrit-reviews-side-panel" location="atl.jira.view.issue.right.context" state="disabled">
         <description key="gerrit-reviews-side-panel.description">Show Gerrit reviews in the View Issue side panel</description>
         <label key="gerrit-reviews-side-panel.label">Gerrit Reviews</label>
-        <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueWebPanel" />
+        <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueSidePanel" />
         <resource type="i18n" name="i18n" location="i18n.webpanel" />
         <resource name="view" type="velocity" location="templates/gerrit-reviews-side-panel.vm" />
     </web-panel>
+
+
+    <!-- View Issue left-side panel -->
+    <web-panel key="gerritreviewsmodule" name="Gerrit Reviews Main Panel" i18n-name-key="gerrit-reviews-left-panel.name" location="atl.jira.view.issue.left.context" state="disabled" weight="750">
+        <description key="gerrit-reviews-left-panel.description">Show Gerrit reviews in a View Issue panel</description>
+        <label key="gerrit-reviews-left-panel.label">Gerrit Reviews</label>
+        <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueLeftPanel" />
+        <resource type="i18n" name="i18n" location="i18n.webpanel" />
+        <resource name="view" type="velocity" location="templates/gerrit-reviews-left-panel.vm" />
+    </web-panel>
+    <!-- TODO: add conditions for some of these view options, and maybe even for the module itself? -->
+
+    <web-section key="issuetype-view-options" name="Issue Type View Options Section" location="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop" weight="10" />
+    <simple-link-factory key="issuetype-view-options-factory" name="View Reviews View Options Factory" section="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop/issuetype-view-options"
+        weight="10" lazy="false" class="com.meetme.plugins.jira.gerrit.webpanel.IssueTypeOptionsFactory" />
+
+    <web-section key="reviewstatus-view-options" name="Review Status View Options Section" location="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop" weight="20" />
+    <simple-link-factory key="reviewstatus-view-options-factory" name="View Reviews View Options Factory" section="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop/reviewstatus-view-options"
+        weight="10" lazy="false" class="com.meetme.plugins.jira.gerrit.webpanel.ReviewStatusOptionsFactory" />
+
+    <web-section key="issuestatus-view-options" name="Issue Status View Options Section" location="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop" weight="30" />
+    <simple-link-factory key="issuestatus-view-options-factory" name="Issue Status View Options Factory" section="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop/issuestatus-view-options"
+        weight="10" lazy="false" class="com.meetme.plugins.jira.gerrit.webpanel.IssueStatusOptionsFactory" />
+
 
     <!-- Workflow Conditions -->
     <!-- 1. Must have zero open reviews (or reversed logic) -->

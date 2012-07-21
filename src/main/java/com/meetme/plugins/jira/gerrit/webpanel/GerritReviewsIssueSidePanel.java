@@ -26,14 +26,14 @@ import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 @SuppressWarnings("unchecked")
-public class GerritReviewsIssueWebPanel extends AbstractJiraContextProvider {
+public class GerritReviewsIssueSidePanel extends AbstractJiraContextProvider {
     private static final String KEY_ISSUE = "issue";
     private static final String KEY_CHANGES = "changes";
     private static final String KEY_ERROR = "error";
 
     private IssueReviewsManager reviewsManager;
 
-    public GerritReviewsIssueWebPanel(IssueReviewsManager reviewsManager) {
+    public GerritReviewsIssueSidePanel(IssueReviewsManager reviewsManager) {
         super();
         this.reviewsManager = reviewsManager;
     }

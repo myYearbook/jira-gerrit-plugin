@@ -35,13 +35,13 @@ div.flooded span.review-positive,
   color: #08A400;
 }
 
-div.gerrit-status-ABANDONED span.gerrit-review
+.gerrit-status-ABANDONED span.gerrit-review
 {
   background-image: url(images/gerrit-x.png);
 }
 
-div.gerrit-status-MERGED span.gerrit-review,
-div.gerrit-status-SUBMITTED span.gerrit-review
+.gerrit-status-MERGED span.gerrit-review,
+.gerrit-status-SUBMITTED span.gerrit-review
 {
   background-image: url(images/gerrit-check.png);
 }
@@ -92,4 +92,59 @@ span.gerrit-no-reviews
 #gerrit-reviews-side-panel span.twixi
 {
   cursor: pointer
+}
+
+#gerrit-reviews-left-panel
+{
+  width: 100%;
+  margin: 0 0 8px 0;
+  background-color: white;
+  border-collapse: collapse;
+}
+
+#gerrit-reviews-left-panel tr.issuerow:hover
+{
+  background-color: #f0f0f0;
+}
+
+#gerrit-reviews-left-panel tr td.gerrit-subject
+{
+  min-width: 200px;
+  margin: 0;
+  max-width: 1400px;
+  white-space: normal;
+}
+
+#gerrit-reviews-left-panel td
+{
+  height: 25px;
+  line-height: 1.286;
+  padding: 5px 7px;
+  overflow: hidden;
+}
+
+#gerrit-reviews-left-panel .nav
+{
+  border-bottom: 1px solid #eee;
+  vertical-align: middle;
+}
+
+#gerrit-reviews-left-panel img
+{
+  vertical-align: middle;
+}
+
+#gerrit-reviews-left-panel .gerrit-changeid,
+#gerrit-reviews-left-panel .gerrit-patchset
+{
+  white-space: nowrap;
+  width: 16px;
+}
+
+#gerrit-reviews-left-panel .gerrit-status,
+#gerrit-reviews-left-panel .gerrit-review-score
+{
+  white-space: nowrap;
+  width: 16px;
+  max-width: 150px;
 }
