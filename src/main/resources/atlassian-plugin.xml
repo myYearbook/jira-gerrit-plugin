@@ -90,7 +90,7 @@
     </issue-tabpanel>
 
     <!-- View Issue right-side panel (disabled by default) -->
-    <web-panel name="Gerrit Reviews Side Panel" i18n-name-key="gerrit-reviews-side-panel.name" key="gerrit-reviews-side-panel" location="atl.jira.view.issue.right.context" state="disabled">
+    <web-panel key="gerrit-reviews-side-panel" name="Gerrit Reviews Side Panel" i18n-name-key="gerrit-reviews-side-panel.name" location="atl.jira.view.issue.right.context" state="disabled">
         <description key="gerrit-reviews-side-panel.description">Show Gerrit reviews in the View Issue side panel</description>
         <label key="gerrit-reviews-side-panel.label">Gerrit Reviews</label>
         <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueSidePanel" />
