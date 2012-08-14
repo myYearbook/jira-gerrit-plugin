@@ -109,7 +109,7 @@
             </div>
             <div class="field-group">
                 <label for="projectSearchQuery">$i18n.getText("gerrit.admin.projectSearchQuery.label")</label>
-                <input type="text" id="projectSearchQuery" name="projectSearchQuery" class="text" value="$!issueSearchQuery" />
+                <input type="text" id="projectSearchQuery" name="projectSearchQuery" class="text" value="$!projectSearchQuery" />
                 <div class="description">$i18n.getText("gerrit.admin.projectSearchQuery.description")</div>
             </div>
 
