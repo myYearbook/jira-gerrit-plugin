@@ -45,7 +45,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * An {@link IssueTabPanel2 issue tab panel} for displaying all Gerrit code reviews related to this
  * issue.
  * 
- * @author Joe Hansche <jhansche@myyearbook.com>
+ * @author Joe Hansche <jhansche@meetme.com>
  */
 public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements IssueTabPanel2 {
     private static final Logger log = LoggerFactory.getLogger(GerritReviewsTabPanel.class);

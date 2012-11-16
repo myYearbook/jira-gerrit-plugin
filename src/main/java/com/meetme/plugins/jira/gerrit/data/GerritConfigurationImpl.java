@@ -23,7 +23,7 @@ import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
  * {@link GerritConfiguration} implementation that uses {@link PluginSettings} to store
  * configuration data.
  * 
- * @author Joe Hansche <jhansche@myyearbook.com>
+ * @author Joe Hansche <jhansche@meetme.com>
  */
 public class GerritConfigurationImpl implements GerritConfiguration {
     private static final String PLUGIN_STORAGE_KEY = "com.meetme.plugins.jira.gerrit.data";

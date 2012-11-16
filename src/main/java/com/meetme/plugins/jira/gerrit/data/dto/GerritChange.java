@@ -28,7 +28,7 @@ public class GerritChange extends Change implements Comparable<GerritChange> {
      * Gerrit review status enumeration, corresponding to the status string in the Gerrit change
      * payload.
      * 
-     * @author Joe Hansche <jhansche@myyearbook.com>
+     * @author Joe Hansche <jhansche@meetme.com>
      */
     public static enum Status
     {

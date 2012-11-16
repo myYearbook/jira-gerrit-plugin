@@ -2,7 +2,7 @@ JIRA-Gerrit integration plugin
 ==============================
 &copy; Copyright 2012 MeetMe, Inc.
 
-Maintainer: Joe Hansche <jhansche@myyearbook.com>
+Maintainer: Joe Hansche <jhansche@meetme.com>
 
 
 Licensing

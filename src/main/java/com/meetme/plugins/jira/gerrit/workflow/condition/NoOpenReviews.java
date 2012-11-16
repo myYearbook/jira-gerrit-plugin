@@ -28,7 +28,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * Workflow condition that can be used to enforce that an issue "MUST", or "MUST NOT" have any open
  * Gerrit reviews.
  * 
- * @author Joe Hansche <jhansche@myyearbook.com>
+ * @author Joe Hansche <jhansche@meetme.com>
  */
 public class NoOpenReviews extends AbstractJiraCondition {
     public static final String KEY_REVERSED = "reversed";

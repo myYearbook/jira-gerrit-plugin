@@ -35,7 +35,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * "Must NOT have a CRVW score < 0" (these could even be combined into a single transition to
  * require both conditions be met).
  * 
- * @author Joe Hansche <jhansche@myyearbook.com>
+ * @author Joe Hansche <jhansche@meetme.com>
  */
 public class ApprovalScore extends AbstractJiraCondition {
     private static final Logger log = LoggerFactory.getLogger(ApprovalScore.class);
@@ -147,7 +147,7 @@ public class ApprovalScore extends AbstractJiraCondition {
     /**
      * Text-based selection of comparison operators.
      * 
-     * @author Joe Hansche <jhansche@myyearbook.com>
+     * @author Joe Hansche <jhansche@meetme.com>
      */
     public static enum ComparisonOperator
     {
