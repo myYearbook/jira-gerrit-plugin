@@ -1,11 +1,11 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- *
+ * 
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- *
+ * 
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * 
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,6 +13,7 @@
  */
 package com.meetme.plugins.jira.gerrit.webpanel;
 
+import java.net.URI;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
@@ -79,12 +80,17 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
         paramsBuilder.add("gerritIssueType", gerritIssueType);
 
         // Gerrit 2.5 introduces Dashboards. Provide an easy-to-access Dashboard fragment
-        String baseUrl = this.config.getHttpBaseUrl().toASCIIString();
-        if (!StringUtils.isBlank(baseUrl)) {
-            String searchQuery = String.format(this.config.getIssueSearchQuery(), issue.getKey());
-            String part = String.format("&For+%s=%s", issue.getKey(), searchQuery);
-            paramsBuilder.add("dashboardUrl", baseUrl + "#/dashboard/?title=From+JIRA" + part);
-            paramsBuilder.add("dashboardPart", part);
+        URI baseUri = this.config.getHttpBaseUrl();
+
+        if (baseUri != null) {
+            String baseUrl = baseUri.toASCIIString();
+
+            if (!StringUtils.isBlank(baseUrl)) {
+                String searchQuery = String.format(this.config.getIssueSearchQuery(), issue.getKey());
+                String part = String.format("&For+%s=%s", issue.getKey(), searchQuery);
+                paramsBuilder.add("dashboardUrl", baseUrl + "#/dashboard/?title=From+JIRA" + part);
+                paramsBuilder.add("dashboardPart", part);
+            }
         }
 
         List<GerritChange> changes = new ArrayList<GerritChange>();
