@@ -124,6 +124,6 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
     @Override
     public String toString() {
         int value = getValueAsInt();
-        return value > 0 ? "+" : "" + value + " by " + getBy();
+        return (value > 0 ? "+" : "") + value + " by " + getBy();
     }
 }

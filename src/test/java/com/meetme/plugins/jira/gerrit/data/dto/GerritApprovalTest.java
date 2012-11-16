@@ -142,7 +142,7 @@ public class GerritApprovalTest {
         setUpJson(BASE_TEST);
         GerritApproval obj = new GerritApproval(BASE_TEST);
 
-        assertEquals("Approval: CRVW 1 by Name", obj.toString());
+        assertEquals("+1 by Name", obj.toString());
     }
 
     @Test
