@@ -123,6 +123,7 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
 
     @Override
     public String toString() {
-        return super.toString() + " by " + getBy();
+        int value = getValueAsInt();
+        return value > 0 ? "+" : "" + value + " by " + getBy();
     }
 }

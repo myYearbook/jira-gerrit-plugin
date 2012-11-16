@@ -14,7 +14,10 @@
 package com.meetme.plugins.jira.gerrit.data.dto;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -23,6 +26,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.PatchSet;
 
 public class GerritPatchSet extends PatchSet {
+
     private List<GerritApproval> approvals;
 
     public GerritPatchSet() {
@@ -49,6 +53,37 @@ public class GerritPatchSet extends PatchSet {
 
     public List<GerritApproval> getApprovals() {
         return approvals;
+    }
+
+    public Map<String, List<GerritApproval>> getApprovalsByLabel()
+    {
+        Map<String, List<GerritApproval>> map = new HashMap<String, List<GerritApproval>>();
+        List<GerritApproval> l;
+
+        for (GerritApproval approval : approvals) {
+            l = map.get(approval.getType());
+
+            if (l != null) {
+                l.add(approval);
+            } else {
+                map.put(approval.getType(), new ArrayList<GerritApproval>(Collections.singletonList(approval)));
+            }
+        }
+
+        return map;
+    }
+
+    public List<GerritApproval> getApprovalsForLabel(String label)
+    {
+        List<GerritApproval> filtered = new ArrayList<GerritApproval>();
+
+        for (GerritApproval approval : approvals) {
+            if (approval.getType().equals(label)) {
+                filtered.add(approval);
+            }
+        }
+
+        return filtered;
     }
 
     public void setApprovals(List<GerritApproval> approvals) {

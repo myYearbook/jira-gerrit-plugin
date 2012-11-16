@@ -16,7 +16,7 @@
   width: 400px;
 }
 
-table.gerrit-review-approvals td.gerrit-review-score
+table td.gerrit-review-score
 {
   text-align: right;
 }
@@ -147,4 +147,10 @@ span.gerrit-no-reviews
   white-space: nowrap;
   width: 16px;
   max-width: 150px;
+}
+
+#gerrit-reviews-left-panel th.dashboardHeader
+{
+  font-weight: normal;
+  text-align: center;
 }

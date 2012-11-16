@@ -72,7 +72,6 @@
                 #end
             </div>
 
-            #*
             <!-- This is not yet implemented: for JSON-RPC access -->
             <h3>$i18n.getText("gerrit.admin.http.label")</h3>
 
@@ -97,21 +96,24 @@
                 <input type="password" id="httpPassword" name="httpPassword" class="text" value="$!httpPassword" />
             </div>
 
+            #*
             ## TODO: Optional "suexec" checkbox with peer_key input?
             ## TODO: Option to enable/require per-user SSH keys, so JIRA can act on behalf of the user?
             *#
 
-            <h3>$i18n.getText("gerrit.admin.search.label")y</h3>
+            <h3>$i18n.getText("gerrit.admin.search.label")</h3>
             <div class="field-group">
                 <label for="issueSearchQuery">$i18n.getText("gerrit.admin.issueSearchQuery.label")</label>
                 <input type="text" id="issueSearchQuery" name="issueSearchQuery" class="text" value="$!issueSearchQuery" />
                 <div class="description">$i18n.getText("gerrit.admin.issueSearchQuery.description")</div>
             </div>
+            #*
             <div class="field-group">
                 <label for="projectSearchQuery">$i18n.getText("gerrit.admin.projectSearchQuery.label")</label>
                 <input type="text" id="projectSearchQuery" name="projectSearchQuery" class="text" value="$!projectSearchQuery" />
                 <div class="description">$i18n.getText("gerrit.admin.projectSearchQuery.description")</div>
             </div>
+            *#
 
             <div class="buttons-container">
                 <div class="buttons">

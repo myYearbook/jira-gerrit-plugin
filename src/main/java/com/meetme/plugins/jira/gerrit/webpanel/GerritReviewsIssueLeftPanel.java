@@ -32,6 +32,7 @@ import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
 import com.atlassian.jira.util.collect.MapBuilder;
 import com.atlassian.plugin.PluginParseException;
 import com.meetme.plugins.jira.gerrit.SessionKeys;
+import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
@@ -49,12 +50,16 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
     private String gerritReviewStatus = null;
     private String gerritIssueStatus = null;
 
-    public GerritReviewsIssueLeftPanel(IssueReviewsManager reviewsManager) {
+    private GerritConfiguration config;
+
+    public GerritReviewsIssueLeftPanel(IssueReviewsManager reviewsManager, GerritConfiguration config) {
         super();
         this.reviewsManager = reviewsManager;
+        this.config = config;
     }
 
     public void init(Map<String, String> params) throws PluginParseException {
+        // No init
     }
 
     @Override
@@ -72,6 +77,15 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
         log.info("issuetype=" + gerritIssueType + ", issuestatus=" + gerritIssueStatus + ", reviewstatus=" + gerritReviewStatus);
 
         paramsBuilder.add("gerritIssueType", gerritIssueType);
+
+        // Gerrit 2.5 introduces Dashboards. Provide an easy-to-access Dashboard fragment
+        String baseUrl = this.config.getHttpBaseUrl().toASCIIString();
+        if (!StringUtils.isBlank(baseUrl)) {
+            String searchQuery = String.format(this.config.getIssueSearchQuery(), issue.getKey());
+            String part = String.format("&For+%s=%s", issue.getKey(), searchQuery);
+            paramsBuilder.add("dashboardUrl", baseUrl + "#/dashboard/?title=From+JIRA" + part);
+            paramsBuilder.add("dashboardPart", part);
+        }
 
         List<GerritChange> changes = new ArrayList<GerritChange>();
 

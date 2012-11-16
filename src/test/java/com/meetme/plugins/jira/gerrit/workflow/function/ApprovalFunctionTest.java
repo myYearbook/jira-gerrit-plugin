@@ -17,7 +17,6 @@ import static org.junit.Assert.*;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -28,7 +27,6 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 
 import com.atlassian.core.user.preferences.Preferences;
-import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.user.preferences.UserPreferencesManager;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
