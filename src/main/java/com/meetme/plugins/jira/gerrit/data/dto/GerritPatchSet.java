@@ -77,9 +77,11 @@ public class GerritPatchSet extends PatchSet {
     {
         List<GerritApproval> filtered = new ArrayList<GerritApproval>();
 
-        for (GerritApproval approval : approvals) {
-            if (approval.getType().equals(label)) {
-                filtered.add(approval);
+        if (approvals != null) {
+            for (GerritApproval approval : approvals) {
+                if (approval.getType().equals(label)) {
+                    filtered.add(approval);
+                }
             }
         }
 
