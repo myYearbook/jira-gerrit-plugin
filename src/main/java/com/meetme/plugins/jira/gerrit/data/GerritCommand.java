@@ -160,7 +160,7 @@ public class GerritCommand {
             reader.close();
 
             int exitStatus = channel.getExitStatus();
-            success = exitStatus != 0;
+            success = exitStatus == 0;
             log.info("Command exit status: " + exitStatus);
         } finally {
             channel.disconnect();
