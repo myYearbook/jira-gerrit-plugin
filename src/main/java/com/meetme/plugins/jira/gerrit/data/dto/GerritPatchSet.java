@@ -14,7 +14,6 @@
 package com.meetme.plugins.jira.gerrit.data.dto;
 
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -22,10 +21,14 @@ import java.util.Map;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.PatchSet;
 
 public class GerritPatchSet extends PatchSet {
+    private static final Logger log = LoggerFactory.getLogger(GerritPatchSet.class);
 
     private List<GerritApproval> approvals;
 
@@ -39,6 +42,7 @@ public class GerritPatchSet extends PatchSet {
 
     @Override
     public void fromJson(JSONObject json) {
+        log.debug("GerritPatchSet from json: " + json.toString(4, 0));
         super.fromJson(json);
 
         if (json.containsKey(GerritEventKeys.APPROVALS)) {
@@ -46,8 +50,11 @@ public class GerritPatchSet extends PatchSet {
             approvals = new ArrayList<GerritApproval>(eventApprovals.size());
 
             for (int i = 0; i < eventApprovals.size(); i++) {
-                approvals.add(new GerritApproval(eventApprovals.getJSONObject(i)));
+                GerritApproval approval = new GerritApproval(eventApprovals.getJSONObject(i));
+                approvals.add(approval);
             }
+        } else {
+            log.warn("GerritPatchSet contains no approvals key.");
         }
     }
 
@@ -55,26 +62,27 @@ public class GerritPatchSet extends PatchSet {
         return approvals;
     }
 
-    public Map<String, List<GerritApproval>> getApprovalsByLabel()
-    {
+    public Map<String, List<GerritApproval>> getApprovalsByLabel() {
         Map<String, List<GerritApproval>> map = new HashMap<String, List<GerritApproval>>();
         List<GerritApproval> l;
 
         for (GerritApproval approval : approvals) {
-            l = map.get(approval.getType());
+            String type = approval.getType();
 
-            if (l != null) {
-                l.add(approval);
-            } else {
-                map.put(approval.getType(), new ArrayList<GerritApproval>(Collections.singletonList(approval)));
+            l = map.get(type);
+
+            if (l == null) {
+                l = new ArrayList<GerritApproval>();
+                map.put(type, l);
             }
+
+            l.add(approval);
         }
 
         return map;
     }
 
-    public List<GerritApproval> getApprovalsForLabel(String label)
-    {
+    public List<GerritApproval> getApprovalsForLabel(String label) {
         List<GerritApproval> filtered = new ArrayList<GerritApproval>();
 
         if (approvals != null) {

@@ -75,7 +75,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
         final String gerritIssueStatus = getGerritIssueStatus();
         final String gerritReviewStatus = getGerritReviewStatus();
 
-        log.info("issuetype=" + gerritIssueType + ", issuestatus=" + gerritIssueStatus + ", reviewstatus=" + gerritReviewStatus);
+        log.debug("issuetype=" + gerritIssueType + ", issuestatus=" + gerritIssueStatus + ", reviewstatus=" + gerritReviewStatus);
 
         paramsBuilder.add("gerritIssueType", gerritIssueType);
 
@@ -96,8 +96,8 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
         List<GerritChange> changes = new ArrayList<GerritChange>();
 
         try {
-            if (IssueTypeOptionsFactory.wantsIssue(gerritIssueType) &&
-                    (IssueStatusOptionsFactory.wantsUnresolved(gerritIssueStatus) || IssueStatusOptionsFactory.isIssueOpen(issue))) {
+            if (IssueTypeOptionsFactory.wantsIssue(gerritIssueType)
+                    && (IssueStatusOptionsFactory.wantsUnresolved(gerritIssueStatus) || IssueStatusOptionsFactory.isIssueOpen(issue))) {
                 addIssueChanges(changes, issue);
             }
 
@@ -115,7 +115,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
             paramsBuilder.add(KEY_ERROR, e.getMessage());
         }
 
-        log.info("Showing changes: " + changes);
+        log.debug("Showing changes: " + changes);
 
         return paramsBuilder.toMap();
     }
@@ -140,11 +140,11 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
         for (Issue subtask : issue.getSubTaskObjects()) {
             log.trace(" .. checking for " + subtask.getKey());
 
-            log.info("wants unresolved: " + IssueStatusOptionsFactory.wantsUnresolved(gerritIssueStatus) + ", or isopen " + subtask.getKey() + ": "
+            log.debug("wants unresolved: " + IssueStatusOptionsFactory.wantsUnresolved(gerritIssueStatus) + ", or isopen " + subtask.getKey() + ": "
                     + IssueStatusOptionsFactory.isIssueOpen(subtask));
 
             if (IssueStatusOptionsFactory.isIssueOpen(subtask) || IssueStatusOptionsFactory.wantsUnresolved(gerritIssueStatus)) {
-                log.info(" .. adding all changes for subtask: " + subtask.getKey());
+                log.debug(" .. adding all changes for subtask: " + subtask.getKey());
                 changes.addAll(reviewsManager.getReviewsForIssue(subtask.getKey()));
             }
         }

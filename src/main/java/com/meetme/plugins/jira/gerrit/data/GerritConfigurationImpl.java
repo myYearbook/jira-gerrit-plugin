@@ -130,7 +130,7 @@ public class GerritConfigurationImpl implements GerritConfiguration {
 
     @Override
     public String toString() {
-        return String.format("GerritConfigurationImpl[ssh://{0}@{1}:{2}/, {3}; http://{4}:{5}@{6}/]",
-                getSshUsername(), getSshHostname(), getSshPort(), getSshPrivateKey(), getHttpUsername(), getHttpPassword(), getHttpBaseUrl());
+        return String.format("GerritConfigurationImpl[ssh://{0}@{1}:*****/, {3}; http://{4}:*****@{6}/]", getSshUsername(), getSshHostname(),
+                getSshPort(), getSshPrivateKey(), getHttpUsername(), getHttpPassword(), getHttpBaseUrl());
     }
 }

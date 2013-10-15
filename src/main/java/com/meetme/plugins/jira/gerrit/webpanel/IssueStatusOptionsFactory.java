@@ -17,7 +17,6 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
-import org.jfree.util.Log;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -96,7 +95,7 @@ public class IssueStatusOptionsFactory implements SimpleLinkFactory
     }
 
     public static boolean isIssueOpen(Issue issue) {
-        log.info("Checking if " + issue.getKey() + " is open: " + issue.getResolutionObject());
+        log.debug("Checking if " + issue.getKey() + " is open: " + issue.getResolutionObject());
         return issue.getResolutionObject() == null;
     }
 

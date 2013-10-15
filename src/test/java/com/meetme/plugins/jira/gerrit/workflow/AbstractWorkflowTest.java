@@ -68,7 +68,7 @@ public abstract class AbstractWorkflowTest {
         mum.addUser(mockUser);
         mockComponents.addMock(UserManager.class, mum);
         when(workflowContext.getCaller()).thenReturn(mockUser.getName());
-    }
+  }
 
     private void createMocks() {
         mockComponents = new MockComponentWorker();

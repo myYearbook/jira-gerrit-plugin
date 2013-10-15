@@ -118,9 +118,9 @@
             <div class="buttons-container">
                 <div class="buttons">
                     <input type="submit" name="action" value="Save" class="button submit" />
+                    <button type="button" name="action" value="Test Config" id="gerritTest" class="button">Test Config</button>
                     #*
                     ## Clear cache button?
-                    <button type="button" name="action" value="Test Config" id="gerritTest" class="button">Test Config</button>
                     *#
                 </div>
             </div>

@@ -34,7 +34,7 @@ public class GerritApprovalTest {
 
     private static final String EXPECTED_NAME = "Name";
     private static final String EXPECTED_EMAIL = "user@email.local";
-    private static final String EXPECTED_TYPE = "CRVW";
+    private static final String EXPECTED_TYPE = "Code-Review";
     private static final String EXPECTED_VALUE = "1";
 
     private static final String GREATER_VALUE = "2";

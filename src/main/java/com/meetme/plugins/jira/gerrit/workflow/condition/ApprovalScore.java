@@ -31,8 +31,8 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 /**
  * A workflow condition that requires (or rejects) a certain Gerrit approval score.
  * 
- * An example use case might be to require, for example, "MUST have a CRVW score >= 2", or
- * "Must NOT have a CRVW score < 0" (these could even be combined into a single transition to
+ * An example use case might be to require, for example, "MUST have a Code-Review score >= 2", or
+ * "Must NOT have a Code-Review score < 0" (these could even be combined into a single transition to
  * require both conditions be met).
  * 
  * @author Joe Hansche <jhansche@meetme.com>
@@ -124,8 +124,7 @@ public class ApprovalScore extends AbstractJiraCondition {
      * @param target
      * @return
      */
-    private boolean compareScore(ComparisonOperator oper, int score, int target)
-    {
+    private boolean compareScore(ComparisonOperator oper, int score, int target) {
         log.debug("Comparing score: " + score + oper + target);
 
         switch (oper) {
@@ -149,13 +148,8 @@ public class ApprovalScore extends AbstractJiraCondition {
      * 
      * @author Joe Hansche <jhansche@meetme.com>
      */
-    public static enum ComparisonOperator
-    {
-        LESS_THAN("<"),
-        LESS_OR_EQUAL("<="),
-        EQUAL_TO("=="),
-        GREATER_OR_EQUAL(">="),
-        GREATER_THAN(">");
+    public static enum ComparisonOperator {
+        LESS_THAN("<"), LESS_OR_EQUAL("<="), EQUAL_TO("=="), GREATER_OR_EQUAL(">="), GREATER_THAN(">");
 
         private final String display;
 

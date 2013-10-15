@@ -26,6 +26,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.ws.rs.core.Response.Status;
 
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
@@ -68,8 +69,7 @@ public class AdminServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(final HttpServletRequest request, final HttpServletResponse response)
-            throws IOException, ServletException {
+    protected void doGet(final HttpServletRequest request, final HttpServletResponse response) throws IOException, ServletException {
         String username = userManager.getRemoteUsername(request);
 
         if (username == null || !userManager.isSystemAdmin(username)) {
@@ -103,8 +103,7 @@ public class AdminServlet extends HttpServlet {
 
     @SuppressWarnings("unchecked")
     @Override
-    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp)
-            throws ServletException, IOException {
+    protected void doPost(final HttpServletRequest req, final HttpServletResponse resp) throws ServletException, IOException {
         try {
             String username = userManager.getRemoteUsername(req);
 
@@ -214,9 +213,7 @@ public class AdminServlet extends HttpServlet {
         return URI.create(builder.toString());
     }
 
-    private void redirectToLogin(final HttpServletRequest request,
-            HttpServletResponse response) throws IOException {
-        response.sendRedirect(loginUriProvider.getLoginUri(getUri(request))
-                .toASCIIString());
+    private void redirectToLogin(final HttpServletRequest request, HttpServletResponse response) throws IOException {
+        response.sendRedirect(loginUriProvider.getLoginUri(getUri(request)).toASCIIString());
     }
 }

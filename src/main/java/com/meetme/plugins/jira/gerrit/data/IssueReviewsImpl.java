@@ -97,7 +97,7 @@ public class IssueReviewsImpl implements IssueReviewsManager {
     private List<GerritChange> getReviewsFromGerrit(String searchQuery) throws GerritQueryException {
         List<GerritChange> changes;
         Authentication auth = new Authentication(configuration.getSshPrivateKey(), configuration.getSshUsername());
-        GerritQueryHandler query = new GerritQueryHandler(configuration.getSshHostname(), configuration.getSshPort(), auth);
+        GerritQueryHandler query = new GerritQueryHandler(configuration.getSshHostname(), configuration.getSshPort(), null, auth);
         List<JSONObject> reviews;
 
         try {

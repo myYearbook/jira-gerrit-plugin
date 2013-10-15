@@ -75,11 +75,11 @@ limitations under the License.
         </td>
 
         <td class="nav gerrit-review-score">
-            #mostSignificantScore(${change.patchSet.getApprovalsForLabel("CRVW")})
+            #mostSignificantScore(${change.patchSet.getApprovalsForLabel("Code-Review")})
         </td>
 
         <td class="nav gerrit-review-score">
-            #mostSignificantScore(${change.patchSet.getApprovalsForLabel("VRIF")})
+            #mostSignificantScore(${change.patchSet.getApprovalsForLabel("Verified")})
         </td>
     </tr>
 #end

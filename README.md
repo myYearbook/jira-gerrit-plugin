@@ -46,7 +46,7 @@ Features
 * Workflow condition to require that an issue must (or must not) have any
   open reviews
 * Workflow condition to require that an issue must (or must not) have a certain
-  approval score (e.g., CRVW == 2, or ! VRIF < 0)
+  approval score (e.g., Code-Review == 2, or ! Verified < 0)
 * Workflow function to perform a Gerrit review
   * This is just an argument to the `gerrit review [ChangeId] ..` command, so
     it could be something like `--verified +1` to give a +1 score;

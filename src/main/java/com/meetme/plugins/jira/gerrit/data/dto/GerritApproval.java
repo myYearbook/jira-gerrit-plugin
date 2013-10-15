@@ -18,10 +18,15 @@ import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEven
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.NAME;
 import net.sf.json.JSONObject;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import com.atlassian.crowd.embedded.api.User;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
 
 public class GerritApproval extends Approval implements Comparable<GerritApproval> {
+    private static final Logger log = LoggerFactory.getLogger(GerritApproval.class);
+
     /** The approver's name */
     private String by;
     /** The approver's email */
@@ -52,13 +57,13 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
 
     @Override
     public void fromJson(JSONObject json) {
+        log.debug("GerritApproval from json: " + json.toString(4, 0));
         super.fromJson(json);
 
         if (json.containsKey(BY)) {
             JSONObject by = json.getJSONObject(BY);
 
-            if (by.containsKey(NAME))
-            {
+            if (by.containsKey(NAME)) {
                 this.setBy(by.getString(NAME));
             }
 
@@ -66,6 +71,24 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
                 this.setByEmail(by.getString(EMAIL));
             }
         }
+    }
+
+    @Override
+    public String getType() {
+        return getUpgradedLabelType(super.getType());
+    }
+
+    public static String getUpgradedLabelType(String type) {
+        // XXX: Older Gerrit versions had compact abbreviations for approval types;
+        // translate those old abbreviations to the new expected types
+
+        if ("CRVW".equals(type)) {
+            return "Code-Review";
+        } else if ("VRIF".equals(type)) {
+            return "Verified";
+        }
+
+        return type;
     }
 
     /**

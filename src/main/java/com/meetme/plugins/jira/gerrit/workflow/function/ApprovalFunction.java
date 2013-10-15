@@ -42,9 +42,9 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * that, e.g., a "Merge Change" workflow transition can be used to automatically "submit" a Gerrit
  * review, iff all of the following conditions are met:
  * <ul>
- * <li>MUST have a CRVW score &gt;= 2</li>
- * <li>MUST have a VRIF score &gt;= 1</li>
- * <li>Must NOT have a CRVW score &lt; 0</li>
+ * <li>MUST have a Code-Review score &gt;= 2</li>
+ * <li>MUST have a Verified score &gt;= 1</li>
+ * <li>Must NOT have a Code-Review score &lt; 0</li>
  * </ul>
  * </p>
  * 

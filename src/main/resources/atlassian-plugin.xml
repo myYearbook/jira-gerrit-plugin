@@ -53,7 +53,7 @@
         <dependency>com.atlassian.auiplugin:ajs</dependency>
         <!-- <resource type="download" name="admin.js" location="scripts/admin.js" /> -->
     </web-resource>
-    <web-item key="jira-menu-item" name="Gerrit Admin" section="system.admin/globalsettings" weight="10" application="jira">
+    <web-item key="jira-menu-item" name="Gerrit Admin" section="admin_plugins_menu/source_control" weight="10" application="jira">
         <description>Link to Gerrit site configuration page.</description>
         <label key="gerrit.admin.label" />
         <link linkId="gerrit-admin-link">/plugins/servlet/gerrit/admin</link>

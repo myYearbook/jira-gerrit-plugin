@@ -39,7 +39,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 /**
  * @author jhansche
  */
-public class ApprovalFunctionTest extends AbstractWorkflowTest {
+public abstract class ApprovalFunctionTest extends AbstractWorkflowTest {
     @Mock
     PropertySet ps;
     @Mock
