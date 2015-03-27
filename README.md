@@ -26,7 +26,7 @@ Getting Started
   * The public key will simply be copied/pasted (2)
 * Create a new user in Gerrit that you will use for the integration:
 
-        $ ssh gerrit.company.com -p 29418 gerrit create-account jira --email jira@company.com --name JIRA --ssh-key <paste public key (2)>
+        $ ssh gerrit.company.com -p 29418 gerrit create-account jira --email jira@company.com --full-name JIRA --ssh-key <paste public key (2)>
 
 * In JIRA, navigate to Administration > Plugins > Gerrit Admin
 * Enter hostname, port, and user under the SSH section
