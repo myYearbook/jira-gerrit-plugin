@@ -184,7 +184,17 @@ public class AdminServlet extends HttpServlet {
                     dataDir.mkdirs();
                 }
 
-                privateKeyPath = File.createTempFile(configurationManager.getSshHostname(), ".key", dataDir);
+                String tempFilePrefix = configurationManager.getSshHostname();
+                String tempFileSuffix = ".key";
+
+                try {
+                    privateKeyPath = File.createTempFile(tempFilePrefix, tempFileSuffix, dataDir);
+                }
+                catch (IOException e) {
+                    log.info("---- Cannot create temporary file: " + e.getMessage() + ": " + dataDir.toString() + tempFilePrefix + tempFileSuffix + " ----");
+                    break;
+                }
+
                 privateKeyPath.setReadable(false, false);
                 privateKeyPath.setReadable(true, true);
 
