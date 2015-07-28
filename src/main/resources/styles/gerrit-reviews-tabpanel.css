@@ -100,6 +100,7 @@ span.gerrit-no-reviews
   margin: 0 0 8px 0;
   background-color: white;
   border-collapse: collapse;
+  text-align: left;
 }
 
 #gerrit-reviews-left-panel tr.issuerow:hover
@@ -119,7 +120,7 @@ span.gerrit-no-reviews
 {
   height: 25px;
   line-height: 1.286;
-  padding: 5px 7px;
+  padding: 5px 7px 0 0;
   overflow: hidden;
 }
 
@@ -152,5 +153,10 @@ span.gerrit-no-reviews
 #gerrit-reviews-left-panel th.dashboardHeader
 {
   font-weight: normal;
-  text-align: center;
+  text-align: left;
+}
+
+#gerrit-reviews-left-panel td.gerrit-review-score
+{
+  text-align: left;
 }

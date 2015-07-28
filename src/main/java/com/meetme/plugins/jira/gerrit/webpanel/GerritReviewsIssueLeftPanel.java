@@ -90,6 +90,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
                 String part = String.format("&For+%s=%s", issue.getKey(), searchQuery);
                 paramsBuilder.add("dashboardUrl", baseUrl + "#/dashboard/?title=From+JIRA" + part);
                 paramsBuilder.add("dashboardPart", part);
+                paramsBuilder.add("dashboardKey", issue.getKey());
             }
         }
 

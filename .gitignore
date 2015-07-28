@@ -1,3 +1,9 @@
 work/
 target/
 bin/
+
+#IDE specific files
+.project
+.classpath
+.idea
+*.iml

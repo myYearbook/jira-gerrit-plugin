@@ -107,6 +107,13 @@ limitations under the License.
 
     <table id="gerrit-reviews-left-panel">
         <thead>
+            #if ( $dashboardUrl && $dashboardKey)
+            <tr>
+                <th colspan="6" class="dashboardHeader">
+                    For Gerrit Dashboard: <a href="$dashboardUrl">$dashboardKey</a>
+                </th>
+            </tr>
+            #end
             <tr>
                 <th>#</th>
                 <th>Subject</th>
@@ -115,13 +122,6 @@ limitations under the License.
                 <th title="$i18n.getText('gerrit.tabpanel.most_significant_score')">CR</th>
                 <th title="$i18n.getText('gerrit.tabpanel.most_significant_score')">V</th>
             </tr>
-            #if ( $dashboardUrl && $dashboardPart )
-            <tr>
-                <th colspan="6" class="dashboardHeader">
-                    For Gerrit Dashboard: <a href="$dashboardUrl">$dashboardPart</a>
-                </th>
-            </tr>
-            #end
         </thead>
         <tbody>
             #foreach ($change in $changes)
