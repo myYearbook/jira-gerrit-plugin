@@ -1,11 +1,11 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -45,7 +45,7 @@ public class IssueReviewsImpl implements IssueReviewsManager {
 
     /**
      * LRU (least recently used) Cache object to avoid slamming the Gerrit server too many times.
-     * 
+     *
      * XXX: This might result in an issue using a stale cache for reviews that change often, but
      * corresponding issues viewed rarely! To account for that, we also have a cache expiration, so
      * that at least after the cache expires, it'll get back in sync.
@@ -142,6 +142,10 @@ public class IssueReviewsImpl implements IssueReviewsManager {
         GerritCommand command = new GerritCommand(configuration, prefs);
         boolean result = command.doReviews(changes, args);
 
+        if (log.isDebugEnabled()) {
+            log.trace("doApprovals " + issueKey + ", " + changes + ", " + args + "; result=" + result);
+        }
+
         // Something probably changed!
         lruCache.remove(issueKey);
         return result;
@@ -163,7 +167,7 @@ public class IssueReviewsImpl implements IssueReviewsManager {
 
         /**
          * Returns true if the requested key has expired from the cache.
-         * 
+         *
          * @param key
          * @return
          */

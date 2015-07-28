@@ -1,11 +1,11 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -182,9 +182,9 @@ public class GerritReviewIssueActionTest {
 
     @SuppressWarnings("unchecked")
     private Map<String, Object> setUpExpectedVelocityParams() {
-        return EasyMap.build("change", change,
-                "formatLastUpdated", TEST_FORMATTED_LAST_UPDATED,
-                "isoLastUpdated", TEST_ISO_LAST_UPDATED,
-                "baseurl", BASE_URL);
+        return (Map<String, Object>) EasyMap.build("change", (Object) change,
+                "formatLastUpdated", (Object) TEST_FORMATTED_LAST_UPDATED,
+                "isoLastUpdated", (Object) TEST_ISO_LAST_UPDATED,
+                "baseurl", (Object) BASE_URL);
     }
 }

@@ -1,11 +1,11 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -16,6 +16,9 @@ package com.meetme.plugins.jira.gerrit.workflow.function;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.crowd.embedded.api.User;
@@ -36,7 +39,7 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * or "--submit", etc). The argument will be appended to the <tt>gerrit review [ChangeId] ...</tt>
  * command line.
  * </p>
- * 
+ *
  * <p>
  * This function can be used in combination with {@link ApprovalScore} workflow conditions, such
  * that, e.g., a "Merge Change" workflow transition can be used to automatically "submit" a Gerrit
@@ -47,23 +50,23 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * <li>Must NOT have a Code-Review score &lt; 0</li>
  * </ul>
  * </p>
- * 
+ *
  * <p>
  * This ensures that the workflow transition is only available if the "submit" step will be
  * successful.
  * <p>
- * 
+ *
  * <p>
  * Another common use for this function would be to automatically provide a "Verified +1" score, via
  * another workflow step, e.g., "Ready for Merge". In that way, a "Ready for Merge" transition may
  * then automatically enable the "Merge Change" transition, as a result of giving the Verified +1
  * score.
  * </p>
- * 
+ *
  * @author jhansche
  */
 public class ApprovalFunction extends AbstractJiraFunctionProvider {
-    // private static final Logger log = LoggerFactory.getLogger(ApprovalFunction.class);
+    private static final Logger log = LoggerFactory.getLogger(ApprovalFunction.class);
 
     public static final String KEY_CMD_ARGS = "cmdArgs";
     public static final String DEFAULT_CMD_ARGS = "--verified 1 --submit";
@@ -101,7 +104,8 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
         }
 
         if (!success) {
-            throw new WorkflowException("Gerrit failed to perform the approvals!");
+            log.warn("doApprovals() returned false!");
+            // throw new WorkflowException("Gerrit failed to perform the approvals!");
         }
     }
 

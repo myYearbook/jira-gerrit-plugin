@@ -106,6 +106,7 @@
         <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueLeftPanel" />
         <resource type="i18n" name="i18n" location="i18n.webpanel" />
         <resource name="view" type="velocity" location="templates/gerrit-reviews-left-panel.vm" />
+        <supports-ajax-load>true</supports-ajax-load>
     </web-panel>
     <!-- TODO: add conditions for some of these view options, and maybe even for the module itself? -->
 
