@@ -21,7 +21,6 @@ import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.plugin.webfragment.contextproviders.AbstractJiraContextProvider;
 import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
-import com.atlassian.plugin.PluginParseException;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
@@ -48,7 +47,7 @@ public class GerritReviewsIssueAgilePanel extends AbstractJiraContextProvider {
 		try {
 			List<GerritChange> changes = reviewsManager.getReviewsForIssue(currentIssue.getKey());
 			contextMap.put(KEY_CHANGES, changes);
-			contextMap.put("atl.gh.issue.details.tab.count",Long.valueOf(changes.size()));
+			contextMap.put("atl.gh.issue.details.tab.count", Long.valueOf(changes.size()));
 		} catch (GerritQueryException e) {
 			contextMap.put(KEY_ERROR, e.getMessage());
 		}
