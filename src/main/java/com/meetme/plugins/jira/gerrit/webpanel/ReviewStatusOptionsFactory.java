@@ -16,13 +16,13 @@ package com.meetme.plugins.jira.gerrit.webpanel;
 import java.util.List;
 import java.util.Map;
 
-import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.plugin.webfragment.SimpleLinkFactory;
 import com.atlassian.jira.plugin.webfragment.descriptors.SimpleLinkFactoryModuleDescriptor;
 import com.atlassian.jira.plugin.webfragment.model.SimpleLink;
 import com.atlassian.jira.plugin.webfragment.model.SimpleLinkImpl;
 import com.atlassian.jira.security.JiraAuthenticationContext;
+import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.util.I18nHelper;
 import com.atlassian.jira.util.collect.CollectionBuilder;
 import com.atlassian.jira.util.velocity.VelocityRequestContext;
@@ -49,7 +49,7 @@ public class ReviewStatusOptionsFactory implements SimpleLinkFactory
     }
 
     @Override
-    public List<SimpleLink> getLinks(User user, Map<String, Object> params) {
+    public List<SimpleLink> getLinks(ApplicationUser user, Map<String, Object> params) {
         final VelocityRequestContext requestContext = requestContextFactory.getJiraVelocityRequestContext();
         final I18nHelper i18n = authenticationContext.getI18nHelper();
         final Issue issue = (Issue) params.get("issue");

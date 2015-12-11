@@ -18,10 +18,11 @@ import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEven
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.NAME;
 import net.sf.json.JSONObject;
 
+import com.atlassian.jira.user.ApplicationUser;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.atlassian.crowd.embedded.api.User;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
 
 public class GerritApproval extends Approval implements Comparable<GerritApproval> {
@@ -32,7 +33,7 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
     /** The approver's email */
     private String byEmail;
     /** The JIRA user associated with the same email */
-    private User user;
+    private ApplicationUser user;
 
     public GerritApproval() {
         super();
@@ -47,11 +48,11 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
         super(json);
     }
 
-    public void setUser(User user) {
+    public void setUser(ApplicationUser user) {
         this.user = user;
     }
 
-    public User getUser() {
+    public ApplicationUser getUser() {
         return this.user;
     }
 

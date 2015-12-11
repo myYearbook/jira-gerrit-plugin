@@ -29,9 +29,9 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
+import com.atlassian.jira.user.ApplicationUser;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
@@ -49,7 +49,7 @@ public class SubtaskReviewsTabPanelTest {
     @Mock
     Issue issue;
     @Mock
-    User user;
+    ApplicationUser user;
 
     Issue subtask1;
     Issue subtask2;

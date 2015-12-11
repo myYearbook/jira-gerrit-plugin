@@ -21,7 +21,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.atlassian.core.user.preferences.Preferences;
-import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.preferences.UserPreferencesManager;
 import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
@@ -110,7 +110,7 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
     }
 
     protected Preferences getUserPrefs(@SuppressWarnings("rawtypes") Map transientVars, @SuppressWarnings("rawtypes") Map args) {
-        final User user = getCaller(transientVars, args);
+        final ApplicationUser user = getCaller(transientVars, args);
         return prefsManager.getPreferences(user);
     }
 

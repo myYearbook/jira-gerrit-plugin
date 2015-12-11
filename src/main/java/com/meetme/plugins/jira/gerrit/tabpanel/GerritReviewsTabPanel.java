@@ -19,7 +19,6 @@ import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
 import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel2;
@@ -29,6 +28,7 @@ import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel2;
 import com.atlassian.jira.plugin.issuetabpanel.ShowPanelReply;
 import com.atlassian.jira.plugin.issuetabpanel.ShowPanelRequest;
+import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.web.util.OutlookDate;
 import com.atlassian.jira.web.util.OutlookDateManager;
@@ -131,11 +131,11 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
         return issueActions;
     }
 
-    private User getUserByEmail(String email) {
-        User user = null;
+    private ApplicationUser getUserByEmail(String email) {
+        ApplicationUser user = null;
 
         if (email != null) {
-            for (User iUser : userManager.getUsers()) {
+            for (ApplicationUser iUser : userManager.getUsers()) {
                 if (email.equalsIgnoreCase(iUser.getEmailAddress()))
                 {
                     user = iUser;
