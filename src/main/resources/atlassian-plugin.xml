@@ -59,7 +59,7 @@
     <url-pattern>/gerrit/admin</url-pattern>
   </servlet>
   <!-- Issue tab for Gerrit Reviews -->
-  <issue-tabpanel key="gerrit-reviews-tabpanel" name="Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.tabpanel.GerritReviewsTabPanel">
+  <issue-tabpanel key="gerrit-reviews-tabpanel" name="Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.tabpanel.GerritReviewsTabPanel" state="disabled">
     <description>Show Gerrit reviews related to an issue in an issue tab panel.</description>
     <label key="gerrit.tabpanel.label">Gerrit Reviews</label>
     <resource type="velocity" name="view" location="templates/gerrit-reviews-tabpanel-item.vm"/>
@@ -75,7 +75,7 @@
     <resource type="download" name="images/" location="images/"/>
   </web-resource>
   <!-- Tab panel to list Gerrit Reviews for each subtask -->
-  <issue-tabpanel key="subtask-reviews-tabpanel" name="Subtask Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.tabpanel.SubtaskReviewsTabPanel">
+  <issue-tabpanel key="subtask-reviews-tabpanel" name="Subtask Gerrit Reviews Tab Panel" class="com.meetme.plugins.jira.gerrit.tabpanel.SubtaskReviewsTabPanel" state="disabled">
     <description>Show Gerrit reviews related issue subtasks in the parent issue's tab panel.</description>
     <label key="gerrit.tabpanel.subtasks.label">Gerrit Subtask Reviews</label>
     <resource type="velocity" name="view" location="templates/subtask-reviews-tabpanel-item.vm"/>
@@ -92,7 +92,7 @@
     <resource name="view" type="velocity" location="templates/gerrit-reviews-side-panel.vm"/>
   </web-panel>
   <!-- View Issue left-side panel -->
-  <web-panel key="gerritreviewsmodule" name="Gerrit Reviews Main Panel" i18n-name-key="gerrit-reviews-left-panel.name" location="atl.jira.view.issue.left.context" state="disabled" weight="750">
+  <web-panel key="gerritreviewsmodule" name="Gerrit Reviews Main Panel" i18n-name-key="gerrit-reviews-left-panel.name" location="atl.jira.view.issue.left.context" weight="750">
     <description key="gerrit-reviews-left-panel.description">Show Gerrit reviews in a View Issue panel</description>
     <label key="gerrit-reviews-left-panel.label">Gerrit Reviews</label>
     <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueLeftPanel"/>
