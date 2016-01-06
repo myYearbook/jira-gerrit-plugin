@@ -17,7 +17,7 @@ package com.meetme.plugins.jira.gerrit.tabpanel;
  * Extension of {@link com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys
  * sonyericsson.GerritEventKeys} to provide additional missing keys.
  * 
- * @author jhansche
+ * @author Joe Hansche
  */
 public interface GerritEventKeys {
     public static final String APPROVALS = "approvals";

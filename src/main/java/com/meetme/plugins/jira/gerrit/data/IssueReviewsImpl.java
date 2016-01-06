@@ -13,18 +13,6 @@
  */
 package com.meetme.plugins.jira.gerrit.data;
 
-import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
-
-import net.sf.json.JSONObject;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.project.Project;
@@ -33,6 +21,18 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryHandler;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshException;
+
+import net.sf.json.JSONObject;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 public class IssueReviewsImpl implements IssueReviewsManager {
     private static final Logger log = LoggerFactory.getLogger(IssueReviewsImpl.class);
@@ -168,8 +168,8 @@ public class IssueReviewsImpl implements IssueReviewsManager {
         /**
          * Returns true if the requested key has expired from the cache.
          *
-         * @param key
-         * @return
+         * @param key the key
+         * @return whether the associated value exists and has expired
          */
         private boolean hasKeyExpired(Object key) {
             if (timestamps.containsKey(key)) {

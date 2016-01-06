@@ -37,7 +37,7 @@ import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 /**
- * @author jhansche
+ * @author Joe Hansche
  */
 public abstract class ApprovalFunctionTest extends AbstractWorkflowTest {
     @Mock

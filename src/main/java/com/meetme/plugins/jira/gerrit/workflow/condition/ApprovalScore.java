@@ -1,23 +1,17 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
 package com.meetme.plugins.jira.gerrit.workflow.condition;
-
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.workflow.condition.AbstractJiraCondition;
@@ -28,14 +22,20 @@ import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.util.List;
+import java.util.Map;
+
 /**
  * A workflow condition that requires (or rejects) a certain Gerrit approval score.
- * 
- * An example use case might be to require, for example, "MUST have a Code-Review score >= 2", or
- * "Must NOT have a Code-Review score < 0" (these could even be combined into a single transition to
+ *
+ * An example use case might be to require, for example, "{@literal MUST have a Code-Review score >= 2}", or
+ * "{@literal Must NOT have a Code-Review score < 0}" (these could even be combined into a single transition to
  * require both conditions be met).
- * 
- * @author Joe Hansche <jhansche@meetme.com>
+ *
+ * @author Joe Hansche
  */
 public class ApprovalScore extends AbstractJiraCondition {
     private static final Logger log = LoggerFactory.getLogger(ApprovalScore.class);
@@ -118,11 +118,11 @@ public class ApprovalScore extends AbstractJiraCondition {
 
     /**
      * Compare two scores using the provided {@link ComparisonOperator}
-     * 
-     * @param oper
-     * @param score
-     * @param target
-     * @return
+     *
+     * @param oper the comparison operator
+     * @param score the score that is being compared
+     * @param target the target score against which {@code score} is being compared
+     * @return the result of the comparison
      */
     private boolean compareScore(ComparisonOperator oper, int score, int target) {
         log.debug("Comparing score: " + score + oper + target);
@@ -145,8 +145,8 @@ public class ApprovalScore extends AbstractJiraCondition {
 
     /**
      * Text-based selection of comparison operators.
-     * 
-     * @author Joe Hansche <jhansche@meetme.com>
+     *
+     * @author Joe Hansche
      */
     public static enum ComparisonOperator {
         LESS_THAN("<"), LESS_OR_EQUAL("<="), EQUAL_TO("=="), GREATER_OR_EQUAL(">="), GREATER_THAN(">");

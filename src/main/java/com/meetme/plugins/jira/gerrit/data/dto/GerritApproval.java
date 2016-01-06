@@ -1,11 +1,11 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,16 +13,17 @@
  */
 package com.meetme.plugins.jira.gerrit.data.dto;
 
-import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.BY;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.EMAIL;
-import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.NAME;
+import com.atlassian.crowd.embedded.api.User;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
+
 import net.sf.json.JSONObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.atlassian.crowd.embedded.api.User;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
+import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.BY;
+import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.EMAIL;
+import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.NAME;
 
 public class GerritApproval extends Approval implements Comparable<GerritApproval> {
     private static final Logger log = LoggerFactory.getLogger(GerritApproval.class);
@@ -40,8 +41,8 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
 
     /**
      * Creates the PatchSetApproval from a {@link JSONObject}.
-     * 
-     * @param json
+     *
+     * @param json the JSON object with corresponding data.
      */
     public GerritApproval(JSONObject json) {
         super(json);
@@ -93,7 +94,7 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
 
     /**
      * Returns the approver's name.
-     * 
+     *
      * @return Approver's name as a string.
      */
     public String getBy() {
@@ -102,7 +103,7 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
 
     /**
      * Sets the approver's name.
-     * 
+     *
      * @param by Approver's name
      */
     public void setBy(String by) {
@@ -111,8 +112,8 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
 
     /**
      * Returns the approval score as an integer.
-     * 
-     * @return
+     *
+     * @return the integer approval score
      */
     public int getValueAsInt() {
         String value = getValue();

@@ -37,7 +37,7 @@ import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 /**
- * @author jhansche
+ * @author Joe Hansche
  */
 public class SubtaskReviewsTabPanelTest {
 

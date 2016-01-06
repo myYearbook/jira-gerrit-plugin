@@ -39,7 +39,7 @@ import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 
 /**
- * @author jhansche
+ * @author Joe Hansche
  */
 public class SubtaskReviewsIssueActionTest {
 

@@ -13,13 +13,6 @@
  */
 package com.meetme.plugins.jira.gerrit.workflow.function;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.user.preferences.UserPreferencesManager;
@@ -32,15 +25,19 @@ import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
 /**
- * <p>
  * A Workflow Function that can be used to perform Gerrit approvals as the result of a workflow
  * transition. The input argument is simply a command line argument string (such as "--verified +1",
  * or "--submit", etc). The argument will be appended to the <tt>gerrit review [ChangeId] ...</tt>
  * command line.
- * </p>
  *
- * <p>
  * This function can be used in combination with {@link ApprovalScore} workflow conditions, such
  * that, e.g., a "Merge Change" workflow transition can be used to automatically "submit" a Gerrit
  * review, iff all of the following conditions are met:
@@ -49,21 +46,16 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
  * <li>MUST have a Verified score &gt;= 1</li>
  * <li>Must NOT have a Code-Review score &lt; 0</li>
  * </ul>
- * </p>
  *
- * <p>
  * This ensures that the workflow transition is only available if the "submit" step will be
  * successful.
- * <p>
  *
- * <p>
  * Another common use for this function would be to automatically provide a "Verified +1" score, via
  * another workflow step, e.g., "Ready for Merge". In that way, a "Ready for Merge" transition may
  * then automatically enable the "Merge Change" transition, as a result of giving the Verified +1
  * score.
- * </p>
  *
- * @author jhansche
+ * @author Joe Hansche
  */
 public class ApprovalFunction extends AbstractJiraFunctionProvider {
     private static final Logger log = LoggerFactory.getLogger(ApprovalFunction.class);

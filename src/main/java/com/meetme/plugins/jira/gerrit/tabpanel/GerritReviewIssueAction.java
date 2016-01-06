@@ -1,23 +1,17 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
-
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
 
 import com.atlassian.core.util.map.EasyMap;
 import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueAction;
@@ -26,6 +20,12 @@ import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
 import com.atlassian.jira.web.util.OutlookDate;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
+import java.util.Collections;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+import java.util.NoSuchElementException;
 
 public class GerritReviewIssueAction extends AbstractIssueAction implements IssueAction {
     private String baseUrl;
@@ -69,9 +69,9 @@ public class GerritReviewIssueAction extends AbstractIssueAction implements Issu
 
     /**
      * Returns the lowest score below 0 if available; otherwise the highest score above 0.
-     * 
-     * @param approvals
-     * @return
+     *
+     * @param approvals the approvals found on the Gerrit review
+     * @return the approval that is deemed the "most significant"
      * @deprecated This functionality can now be found in the velocity template
      */
     @Deprecated
