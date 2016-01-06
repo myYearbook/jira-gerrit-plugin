@@ -13,7 +13,7 @@ import org.mockito.Mockito;
 
 import com.atlassian.core.util.collection.EasyList;
 import com.atlassian.core.util.map.EasyMap;
-import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.component.ComponentAccessor;
 import com.atlassian.jira.issue.MutableIssue;
 import com.atlassian.jira.mock.component.MockComponentWorker;
@@ -37,8 +37,9 @@ public abstract class AbstractWorkflowTest {
     protected Map transientVars, args;
     protected MockComponentWorker mockComponents;
     protected MutableIssue mockIssue;
-    protected User mockUser;
 
+    @Mock
+    protected ApplicationUser mockUser;
     @Mock
     protected IssueReviewsManager reviewsManager;
     @Mock
@@ -64,16 +65,14 @@ public abstract class AbstractWorkflowTest {
     }
 
     protected void setUpUser() {
-        MockUserManager mum = new MockUserManager();
-        mum.addUser(mockUser);
-        mockComponents.addMock(UserManager.class, mum);
         when(workflowContext.getCaller()).thenReturn(mockUser.getName());
   }
 
     private void createMocks() {
         mockComponents = new MockComponentWorker();
         mockIssue = new MockIssue();
-        mockUser = new MockUser("milton");
+
+        when(mockUser.getName()).thenReturn("milton");
     }
 
     private void stubMockMethods() {

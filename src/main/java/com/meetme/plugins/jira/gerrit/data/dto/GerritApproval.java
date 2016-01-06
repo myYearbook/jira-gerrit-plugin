@@ -18,12 +18,15 @@ import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
 
 import net.sf.json.JSONObject;
 
+import com.atlassian.jira.user.ApplicationUser;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.BY;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.EMAIL;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.NAME;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
 
 public class GerritApproval extends Approval implements Comparable<GerritApproval> {
     private static final Logger log = LoggerFactory.getLogger(GerritApproval.class);
@@ -33,7 +36,7 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
     /** The approver's email */
     private String byEmail;
     /** The JIRA user associated with the same email */
-    private User user;
+    private ApplicationUser user;
 
     public GerritApproval() {
         super();
@@ -48,11 +51,11 @@ public class GerritApproval extends Approval implements Comparable<GerritApprova
         super(json);
     }
 
-    public void setUser(User user) {
+    public void setUser(ApplicationUser user) {
         this.user = user;
     }
 
-    public User getUser() {
+    public ApplicationUser getUser() {
         return this.user;
     }
 

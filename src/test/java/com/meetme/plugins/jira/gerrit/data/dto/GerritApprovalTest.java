@@ -26,7 +26,8 @@ import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.user.ApplicationUser;
+
 
 public class GerritApprovalTest {
 
@@ -40,7 +41,7 @@ public class GerritApprovalTest {
     private static final String GREATER_VALUE = "2";
 
     @Mock
-    private User EXPECTED_USER;
+    private ApplicationUser EXPECTED_USER;
 
     @Before
     public void setUp() throws Exception {

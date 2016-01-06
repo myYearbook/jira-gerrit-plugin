@@ -17,10 +17,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.atlassian.crowd.embedded.api.User;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.plugin.webfragment.contextproviders.AbstractJiraContextProvider;
 import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
+import com.atlassian.jira.user.ApplicationUser;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
@@ -39,7 +39,7 @@ public class GerritReviewsIssueSidePanel extends AbstractJiraContextProvider {
     }
 
     @Override
-    public Map<String, Object> getContextMap(User user, JiraHelper jiraHelper) {
+    public Map<String, Object> getContextMap(ApplicationUser user, JiraHelper jiraHelper) {
         HashMap<String, Object> contextMap = new HashMap<String, Object>();
 
         Issue currentIssue = (Issue) jiraHelper.getContextParams().get(KEY_ISSUE);
