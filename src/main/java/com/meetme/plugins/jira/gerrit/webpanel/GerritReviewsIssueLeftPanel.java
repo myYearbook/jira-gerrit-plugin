@@ -146,7 +146,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
 
             if (IssueStatusOptionsFactory.isIssueOpen(subtask) || IssueStatusOptionsFactory.wantsUnresolved(gerritIssueStatus)) {
                 log.debug(" .. adding all changes for subtask: " + subtask.getKey());
-                changes.addAll(reviewsManager.getReviewsForIssue(subtask.getKey()));
+                changes.addAll(reviewsManager.getReviewsForIssue(subtask));
             }
         }
 
@@ -154,7 +154,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
     }
 
     private void addIssueChanges(List<GerritChange> changes, Issue issue) throws GerritQueryException {
-        changes.addAll(reviewsManager.getReviewsForIssue(issue.getKey()));
+        changes.addAll(reviewsManager.getReviewsForIssue(issue));
     }
 
     private void setUpRequestParams(Map<String, Object> context) {

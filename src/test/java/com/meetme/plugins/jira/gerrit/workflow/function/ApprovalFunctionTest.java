@@ -134,14 +134,14 @@ public abstract class ApprovalFunctionTest extends AbstractWorkflowTest {
     public void testGetReviews_failure() throws WorkflowException, GerritQueryException {
         stubFailingReviews();
         ApprovalFunction obj = new ApprovalFunction(configuration, reviewsManager, userPrefsManager);
-        obj.getReviews(mockIssue.getKey());
+        obj.getReviews(mockIssue);
     }
 
     @Test
     public void testGetReviews_success() throws WorkflowException, GerritQueryException {
         stubOneReview();
         ApprovalFunction obj = new ApprovalFunction(configuration, reviewsManager, userPrefsManager);
-        List<GerritChange> actual = obj.getReviews(mockIssue.getKey());
+        List<GerritChange> actual = obj.getReviews(mockIssue);
         assertEquals(1, actual.size());
     }
 
@@ -149,10 +149,10 @@ public abstract class ApprovalFunctionTest extends AbstractWorkflowTest {
     @Test(expected = WorkflowException.class)
     public void testExecute_gerritFailed() throws WorkflowException, IOException {
         ApprovalFunction obj = new ApprovalFunction(configuration, reviewsManager, userPrefsManager);
-        when(reviewsManager.doApprovals(Mockito.anyString(), Mockito.anyList(), Mockito.anyString(), eq(mockPrefs))).thenReturn(false);
+        when(reviewsManager.doApprovals(mockIssue, Mockito.anyList(), Mockito.anyString(), eq(mockPrefs))).thenReturn(false);
         obj.execute(transientVars, args, ps);
 
-        verify(reviewsManager, times(1)).doApprovals(anyString(), anyList(), anyString(), eq(mockPrefs));
+        verify(reviewsManager, times(1)).doApprovals(mockIssue, anyList(), anyString(), eq(mockPrefs));
     }
 
     @SuppressWarnings("unchecked")
@@ -161,19 +161,19 @@ public abstract class ApprovalFunctionTest extends AbstractWorkflowTest {
         IOException exc = new IOException();
 
         ApprovalFunction obj = new ApprovalFunction(configuration, reviewsManager, userPrefsManager);
-        when(reviewsManager.doApprovals(Mockito.anyString(), Mockito.anyList(), Mockito.anyString(), eq(mockPrefs))).thenThrow(exc);
+        when(reviewsManager.doApprovals(mockIssue, Mockito.anyList(), Mockito.anyString(), eq(mockPrefs))).thenThrow(exc);
         obj.execute(transientVars, args, ps);
 
-        verify(reviewsManager, times(1)).doApprovals(anyString(), anyList(), anyString(), eq(mockPrefs));
+        verify(reviewsManager, times(1)).doApprovals(mockIssue, anyList(), anyString(), eq(mockPrefs));
     }
 
     @SuppressWarnings("unchecked")
     @Test
     public void testExecute_success() throws WorkflowException, IOException {
         ApprovalFunction obj = new ApprovalFunction(configuration, reviewsManager, userPrefsManager);
-        when(reviewsManager.doApprovals(Mockito.anyString(), Mockito.anyList(), Mockito.anyString(), eq(mockPrefs))).thenReturn(true);
+        when(reviewsManager.doApprovals(mockIssue, Mockito.anyList(), Mockito.anyString(), eq(mockPrefs))).thenReturn(true);
         obj.execute(transientVars, args, ps);
 
-        verify(reviewsManager, times(1)).doApprovals(anyString(), anyList(), anyString(), eq(mockPrefs));
+        verify(reviewsManager, times(1)).doApprovals(mockIssue, anyList(), anyString(), eq(mockPrefs));
     }
 }

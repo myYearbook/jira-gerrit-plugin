@@ -87,14 +87,14 @@ public abstract class AbstractWorkflowTest {
 
     protected void stubFailingReviews() throws GerritQueryException {
         GerritQueryException gqe = new GerritQueryException("Expected exception");
-        when(reviewsManager.getReviewsForIssue(Mockito.anyString())).thenThrow(gqe);
+        when(reviewsManager.getReviewsForIssue(mockIssue)).thenThrow(gqe);
     }
 
     @SuppressWarnings("unchecked")
     protected void stubEmptyReviews() throws GerritQueryException {
         @SuppressWarnings("rawtypes")
         List reviews = EasyList.build();
-        when(reviewsManager.getReviewsForIssue(Mockito.anyString())).thenReturn(reviews);
+        when(reviewsManager.getReviewsForIssue(mockIssue)).thenReturn(reviews);
     }
 
     @SuppressWarnings("unchecked")
@@ -102,7 +102,7 @@ public abstract class AbstractWorkflowTest {
         GerritChange change = mock(GerritChange.class);
         @SuppressWarnings("rawtypes")
         List reviews = EasyList.build(change);
-        when(reviewsManager.getReviewsForIssue(Mockito.anyString())).thenReturn(reviews);
+        when(reviewsManager.getReviewsForIssue(mockIssue)).thenReturn(reviews);
     }
 
 }

@@ -24,50 +24,37 @@ import net.sf.json.JSONObject;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.Set;
 
 public interface IssueReviewsManager {
 
     /**
-     * Gets all Gerrit reviews related to the {@link Issue#getKey() issue key}.
+     * Gets all Gerrit reviews related to the {@link Issue#getKey() specified issue key and all previus keys associated with the issue}.
      *
-     * @param issueKey the JIRA issue key
+     * @param issue JIRA issue
+     * @return A set of unique issue keys, including actual one
+     */
+    Set<String> getIssueKeys(Issue issue);
+
+    /**
+     * Gets all Gerrit reviews related to the {@link Issue#getKey() specific issue key}.
+     *
+     * @param issue the JIRA issue
      * @return A list of {@link JSONObject}s, as retrieved from Gerrit.
      * @throws GerritQueryException If any failure occurs while querying the Gerrit server.
      * @see GerritQueryHandler
      */
-    List<GerritChange> getReviewsForIssue(String issueKey) throws GerritQueryException;
-
-    /**
-     * Gets all Gerrit reviews related to the {@link Project#getKey() project}.
-     *
-     * @param projectKey the JIRA Project key (i.e., {@code JIRA-123}'s projectKey would be {@code JIRA})
-     * @return A list of {@link JSONObject}s, as retrieved from Gerrit.
-     * @throws GerritQueryException If any failure occurs while querying the Gerrit server.
-     * @see GerritQueryHandler
-     */
-    List<GerritChange> getReviewsForProject(String projectKey) throws GerritQueryException;
-
-    /**
-     * Performs an approval/review of a change.
-     *
-     * @param issueKey the JIRA issue key
-     * @param change the Gerrit change
-     * @param args arguments to add to the approval
-     * @param prefs the {@link Preferences} for the viewing user
-     * @return whether the approval was successful
-     * @throws IOException if so
-     */
-    boolean doApproval(String issueKey, GerritChange change, String args, Preferences prefs) throws IOException;
+    List<GerritChange> getReviewsForIssue(Issue issue) throws GerritQueryException;
 
     /**
      * Performs approvals/reviews of all changes.
      *
-     * @param issueKey the JIRA issue key
+     * @param issue the JIRA issue
      * @param changes the set of Gerrit changes
      * @param args arguments to add to each approval
      * @param prefs the {@link Preferences} for the viewing user
      * @return whether the approvals were successful
      * @throws IOException if so
      */
-    boolean doApprovals(String issueKey, List<GerritChange> changes, String args, Preferences prefs) throws IOException;
+    boolean doApprovals(Issue issue, List<GerritChange> changes, String args, Preferences prefs) throws IOException;
 }

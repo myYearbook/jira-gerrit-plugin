@@ -56,11 +56,10 @@ public class ApprovalScore extends AbstractJiraCondition {
     public boolean passesCondition(@SuppressWarnings("rawtypes") Map transientVars, @SuppressWarnings("rawtypes") Map args, PropertySet ps)
             throws WorkflowException {
         Issue issue = getIssue(transientVars);
-        String issueKey = issue.getKey();
         List<GerritChange> reviews;
 
         try {
-            reviews = reviewsManager.getReviewsForIssue(issueKey);
+            reviews = reviewsManager.getReviewsForIssue(issue);
         } catch (GerritQueryException e) {
             // If there's an error, best not to block the workflow, and just act like it passes??
             throw new WorkflowException(e);
