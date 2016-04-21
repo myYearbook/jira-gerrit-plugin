@@ -79,7 +79,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
             issueActions.add(new GenericMessageAction("Configure Gerrit in Administration interface first."));
         } else {
             // List of items we will be showing in the tab panel.
-            issueActions = getActions(request.issue().getKey());
+            issueActions = getActions(request.issue());
         }
 
         return GetActionsReply.create(issueActions);
@@ -101,17 +101,17 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
      * Get all {@link GerritReviewIssueAction}s related to the specified {@link Issue#getKey() issue
      * key}.
      *
-     * @param issueKey the JIRA issue key
+     * @param issue the JIRA issue key
      * @return the set of {@link IssueAction}s for the issue
      */
-    private List<IssueAction> getActions(String issueKey) {
-        log.debug("Getting actions for issue: {0}", issueKey);
+    private List<IssueAction> getActions(Issue issue) {
+        log.debug("Getting actions for issue: {0}", issue.getKey());
 
         List<IssueAction> issueActions = new ArrayList<IssueAction>();
         List<GerritChange> reviews;
 
         try {
-            reviews = reviewsManager.getReviewsForIssue(issueKey);
+            reviews = reviewsManager.getReviewsForIssue(issue);
         } catch (GerritQueryException exc) {
             exc.printStackTrace();
             issueActions.add(new GenericMessageAction(exc.getMessage()));

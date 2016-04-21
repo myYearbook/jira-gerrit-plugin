@@ -15,7 +15,7 @@ package com.meetme.plugins.jira.gerrit.data;
 
 import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.project.Project;
+import com.atlassian.jira.issue.IssueManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryHandler;
@@ -28,11 +28,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 public class IssueReviewsImpl implements IssueReviewsManager {
     private static final Logger log = LoggerFactory.getLogger(IssueReviewsImpl.class);
@@ -54,47 +50,40 @@ public class IssueReviewsImpl implements IssueReviewsManager {
 
     private GerritConfiguration configuration;
 
-    public IssueReviewsImpl(GerritConfiguration configuration) {
+    private IssueManager jiraIssueManager;
+
+    public IssueReviewsImpl(GerritConfiguration configuration, IssueManager jiraIssueManager) {
         this.configuration = configuration;
-    }
-
-    public List<GerritChange> getReviews(Issue issue) throws GerritQueryException {
-        return getReviewsForIssue(issue.getKey());
-    }
-
-    public List<GerritChange> getReviews(Project project) throws GerritQueryException {
-        return getReviewsForProject(project.getKey());
+        this.jiraIssueManager = jiraIssueManager;
     }
 
     @Override
-    public List<GerritChange> getReviewsForIssue(String issueKey) throws GerritQueryException {
-        List<GerritChange> changes;
-
-        if (lruCache.containsKey(issueKey)) {
-            changes = lruCache.get(issueKey);
-        } else {
-            changes = getReviewsFromGerrit(String.format(configuration.getIssueSearchQuery(), issueKey));
-            lruCache.put(issueKey, changes);
-        }
-
-        return changes;
+    public Set<String> getIssueKeys(Issue issue) {
+        return jiraIssueManager.getAllIssueKeys(issue.getId());
     }
 
     @Override
-    public List<GerritChange> getReviewsForProject(String projectKey) throws GerritQueryException {
-        List<GerritChange> changes;
+    public List<GerritChange> getReviewsForIssue(Issue issue) throws GerritQueryException {
+        List<GerritChange> gerritChanges = new ArrayList<GerritChange>();
 
-        if (lruCache.containsKey(projectKey)) {
-            changes = lruCache.get(projectKey);
-        } else {
-            changes = getReviewsFromGerrit(String.format(configuration.getProjectSearchQuery(), projectKey));
-            lruCache.put(projectKey, changes);
+        Set<String> allIssueKeys = getIssueKeys(issue);
+        for (String key : allIssueKeys) {
+            List<GerritChange> changes;
+
+            if (lruCache.containsKey(key)) {
+                changes = lruCache.get(key);
+            } else {
+                changes = getReviewsFromGerrit(String.format(configuration.getIssueSearchQuery(), key));
+                lruCache.put(key, changes);
+            }
+
+            gerritChanges.addAll(changes);
         }
 
-        return changes;
+        return gerritChanges;
     }
 
-    private List<GerritChange> getReviewsFromGerrit(String searchQuery) throws GerritQueryException {
+    protected List<GerritChange> getReviewsFromGerrit(String searchQuery) throws GerritQueryException {
         List<GerritChange> changes;
         Authentication auth = new Authentication(configuration.getSshPrivateKey(), configuration.getSshUsername());
         GerritQueryHandler query = new GerritQueryHandler(configuration.getSshHostname(), configuration.getSshPort(), null, auth);
@@ -128,26 +117,25 @@ public class IssueReviewsImpl implements IssueReviewsManager {
     }
 
     @Override
-    public boolean doApproval(String issueKey, GerritChange change, String args, Preferences prefs) throws IOException {
-        GerritCommand command = new GerritCommand(configuration, prefs);
-        boolean result = command.doReview(change, args);
+    public boolean doApprovals(Issue issue, List<GerritChange> changes, String args, Preferences prefs) throws IOException {
+        Set<String> issueKeys = getIssueKeys(issue);
 
-        // Something probably changed!
-        lruCache.remove(issueKey);
-        return result;
-    }
+        boolean result = true;
+        for (String issueKey : issueKeys) {
+            GerritCommand command = new GerritCommand(configuration, prefs);
 
-    @Override
-    public boolean doApprovals(String issueKey, List<GerritChange> changes, String args, Preferences prefs) throws IOException {
-        GerritCommand command = new GerritCommand(configuration, prefs);
-        boolean result = command.doReviews(changes, args);
+            boolean commandResult = command.doReviews(changes, args);
+            result &= commandResult;
 
-        if (log.isDebugEnabled()) {
-            log.trace("doApprovals " + issueKey + ", " + changes + ", " + args + "; result=" + result);
+            if (log.isDebugEnabled())
+            {
+                log.trace("doApprovals " + issueKey + ", " + changes + ", " + args + "; result=" + commandResult);
+            }
+
+            // Something probably changed!
+            lruCache.remove(issueKey);
         }
 
-        // Something probably changed!
-        lruCache.remove(issueKey);
         return result;
     }
 

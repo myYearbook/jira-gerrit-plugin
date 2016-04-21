@@ -45,7 +45,7 @@ public class GerritReviewsIssueSidePanel extends AbstractJiraContextProvider {
         Issue currentIssue = (Issue) jiraHelper.getContextParams().get(KEY_ISSUE);
 
         try {
-            List<GerritChange> changes = reviewsManager.getReviewsForIssue(currentIssue.getKey());
+            List<GerritChange> changes = reviewsManager.getReviewsForIssue(currentIssue);
             contextMap.put(KEY_CHANGES, changes);
         } catch (GerritQueryException e) {
             contextMap.put(KEY_ERROR, e.getMessage());

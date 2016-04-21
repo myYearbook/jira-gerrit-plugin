@@ -14,6 +14,7 @@
 package com.meetme.plugins.jira.gerrit.workflow.function;
 
 import com.atlassian.core.user.preferences.Preferences;
+import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.preferences.UserPreferencesManager;
 import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
@@ -82,15 +83,15 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
             throw new IllegalStateException("Configure the Gerrit integration from the Administration panel first.");
         }
 
-        final String issueKey = getIssueKey(transientVars);
-        final List<GerritChange> issueReviews = getReviews(issueKey);
+        final Issue issue = getIssue(transientVars);
+        final List<GerritChange> issueReviews = getReviews(issue);
         final Preferences prefs = getUserPrefs(transientVars, args);
         final String cmdArgs = (String) args.get(KEY_CMD_ARGS);
 
         boolean success = false;
 
         try {
-            success = reviewsManager.doApprovals(issueKey, issueReviews, cmdArgs, prefs);
+            success = reviewsManager.doApprovals(issue, issueReviews, cmdArgs, prefs);
         } catch (IOException e) {
             throw new WorkflowException("An error occurred while approving the changes", e);
         }
@@ -110,9 +111,9 @@ public class ApprovalFunction extends AbstractJiraFunctionProvider {
         return getIssue(transientVars).getKey();
     }
 
-    protected List<GerritChange> getReviews(String issueKey) throws WorkflowException {
+    protected List<GerritChange> getReviews(Issue issue) throws WorkflowException {
         try {
-            return reviewsManager.getReviewsForIssue(issueKey);
+            return reviewsManager.getReviewsForIssue(issue);
         } catch (GerritQueryException e) {
             throw new WorkflowException("Unable to retrieve associated reviews", e);
         }

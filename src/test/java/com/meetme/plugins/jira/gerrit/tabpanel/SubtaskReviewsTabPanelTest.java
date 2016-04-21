@@ -168,7 +168,7 @@ public class SubtaskReviewsTabPanelTest {
         when(issue.getSubTaskObjects()).thenReturn(subtasks);
 
         GerritQueryException exc = new GerritQueryException();
-        when(reviewsManager.getReviewsForIssue("SUB-2")).thenThrow(exc);
+        when(reviewsManager.getReviewsForIssue(subtask2)).thenThrow(exc);
 
         obj.getActions(issue, user);
 
