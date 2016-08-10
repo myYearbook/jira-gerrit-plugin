@@ -108,6 +108,7 @@
 
         <div class="action-body">
             <div>$i18n.getText("gerrit.tabpanel.Project"): $change.project</div>
+            <div>$i18n.getText("gerrit.tabpanel.Branch"): $change.branch</div>
             <div>
                 $i18n.getText("gerrit.tabpanel.Status"):
                 #if ($change.isOpen())
