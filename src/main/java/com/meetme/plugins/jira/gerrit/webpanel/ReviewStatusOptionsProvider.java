@@ -13,25 +13,22 @@
  */
 package com.meetme.plugins.jira.gerrit.webpanel;
 
-import java.util.List;
-import java.util.Map;
+import com.meetme.plugins.jira.gerrit.SessionKeys;
 
 import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.plugin.webfragment.SimpleLinkFactory;
-import com.atlassian.jira.plugin.webfragment.descriptors.SimpleLinkFactoryModuleDescriptor;
-import com.atlassian.jira.plugin.webfragment.model.SimpleLink;
-import com.atlassian.jira.plugin.webfragment.model.SimpleLinkImpl;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.util.I18nHelper;
 import com.atlassian.jira.util.collect.CollectionBuilder;
 import com.atlassian.jira.util.velocity.VelocityRequestContext;
 import com.atlassian.jira.util.velocity.VelocityRequestContextFactory;
 import com.atlassian.jira.util.velocity.VelocityRequestSession;
-import com.meetme.plugins.jira.gerrit.SessionKeys;
+import com.atlassian.plugin.web.api.WebItem;
+import com.atlassian.plugin.web.api.model.WebFragmentBuilder;
+import com.atlassian.plugin.web.api.provider.WebItemProvider;
 
-public class ReviewStatusOptionsFactory implements SimpleLinkFactory
-{
+import java.util.Map;
+
+public class ReviewStatusOptionsProvider implements WebItemProvider {
     public static final String STATUS_OPEN = "Open";
     public static final String STATUS_ALL = "All";
     public static final String DEFAULT_STATUS = STATUS_OPEN;
@@ -39,17 +36,13 @@ public class ReviewStatusOptionsFactory implements SimpleLinkFactory
     private VelocityRequestContextFactory requestContextFactory;
     private JiraAuthenticationContext authenticationContext;
 
-    public ReviewStatusOptionsFactory(VelocityRequestContextFactory requestContextFactory, JiraAuthenticationContext authenticationContext) {
+    public ReviewStatusOptionsProvider(VelocityRequestContextFactory requestContextFactory, JiraAuthenticationContext authenticationContext) {
         this.requestContextFactory = requestContextFactory;
         this.authenticationContext = authenticationContext;
     }
 
     @Override
-    public void init(SimpleLinkFactoryModuleDescriptor arg0) {
-    }
-
-    @Override
-    public List<SimpleLink> getLinks(ApplicationUser user, Map<String, Object> params) {
+    public Iterable<WebItem> getItems(Map<String, Object> params) {
         final VelocityRequestContext requestContext = requestContextFactory.getJiraVelocityRequestContext();
         final I18nHelper i18n = authenticationContext.getI18nHelper();
         final Issue issue = (Issue) params.get("issue");
@@ -63,15 +56,23 @@ public class ReviewStatusOptionsFactory implements SimpleLinkFactory
             reviewStatus = DEFAULT_STATUS;
         }
 
-        final SimpleLink allLink = new SimpleLinkImpl("reviews-reviewstatus-all",
-                i18n.getText("gerrit-reviews-left-panel.options.reviewstatus.all"), null, null,
-                getStyleFor(reviewStatus, STATUS_ALL),
-                getUrlForType(STATUS_ALL, baseUrl, issue), null);
+        int weight = 10;
 
-        final SimpleLink openLink = new SimpleLinkImpl("reviews-reviewstatus-open",
-                i18n.getText("gerrit-reviews-left-panel.options.reviewstatus.open"), null, null,
-                getStyleFor(reviewStatus, STATUS_OPEN),
-                getUrlForType(STATUS_OPEN, baseUrl, issue), null);
+        final WebItem allLink = new WebFragmentBuilder(weight += 10)
+                .id("reviews-reviewstatus-all")
+                .label(i18n.getText("gerrit-reviews-left-panel.options.reviewstatus.all"))
+                .styleClass(getStyleFor(reviewStatus, STATUS_ALL))
+                .webItem("reviewstatus-view-options")
+                .url(getUrlForType(STATUS_ALL, baseUrl, issue))
+                .build();
+
+        final WebItem openLink = new WebFragmentBuilder(weight += 10)
+                .id("reviews-reviewstatus-open")
+                .label(i18n.getText("gerrit-reviews-left-panel.options.reviewstatus.open"))
+                .styleClass(getStyleFor(reviewStatus, STATUS_OPEN))
+                .webItem("reviewstatus-view-options")
+                .url(getUrlForType(STATUS_OPEN, baseUrl, issue))
+                .build();
 
         return CollectionBuilder.list(allLink, openLink);
     }

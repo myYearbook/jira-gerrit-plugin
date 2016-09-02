@@ -1,17 +1,34 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
 package com.meetme.plugins.jira.gerrit.webpanel;
+
+import com.meetme.plugins.jira.gerrit.SessionKeys;
+import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
+import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.plugin.webfragment.CacheableContextProvider;
+import com.atlassian.jira.plugin.webfragment.JiraWebInterfaceManager;
+import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
+import com.atlassian.jira.util.collect.MapBuilder;
+import com.atlassian.plugin.PluginParseException;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -20,23 +37,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import webwork.action.ActionContext;
-
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.plugin.webfragment.CacheableContextProvider;
-import com.atlassian.jira.plugin.webfragment.JiraWebInterfaceManager;
-import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
-import com.atlassian.jira.util.collect.MapBuilder;
-import com.atlassian.plugin.PluginParseException;
-import com.meetme.plugins.jira.gerrit.SessionKeys;
-import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
-import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
     private static final Logger log = LoggerFactory.getLogger(GerritReviewsIssueLeftPanel.class);
@@ -97,16 +98,16 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
         List<GerritChange> changes = new ArrayList<GerritChange>();
 
         try {
-            if (IssueTypeOptionsFactory.wantsIssue(gerritIssueType)
+            if (IssueTypeOptionsProvider.wantsIssue(gerritIssueType)
                     && (IssueStatusOptionsFactory.wantsUnresolved(gerritIssueStatus) || IssueStatusOptionsFactory.isIssueOpen(issue))) {
                 addIssueChanges(changes, issue);
             }
 
-            if (IssueTypeOptionsFactory.wantsSubtasks(gerritIssueType)) {
+            if (IssueTypeOptionsProvider.wantsSubtasks(gerritIssueType)) {
                 addSubtaskChanges(changes, issue, gerritIssueStatus);
             }
 
-            if (!ReviewStatusOptionsFactory.wantsClosedReviews(gerritReviewStatus)) {
+            if (!ReviewStatusOptionsProvider.wantsClosedReviews(gerritReviewStatus)) {
                 removeClosedReviews(changes);
             }
 
@@ -193,7 +194,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
         }
 
         if (gerritIssueType == null) {
-            gerritIssueType = IssueTypeOptionsFactory.DEFAULT_ISSUE_TYPE;
+            gerritIssueType = IssueTypeOptionsProvider.DEFAULT_ISSUE_TYPE;
         }
 
         return gerritIssueType;
@@ -201,7 +202,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
 
     @SuppressWarnings("unchecked")
     public void setGerritIssueType(final String gerritIssueType) {
-        if (!StringUtils.isBlank(gerritIssueType) && !gerritIssueType.equals(IssueTypeOptionsFactory.DEFAULT_ISSUE_TYPE)) {
+        if (!StringUtils.isBlank(gerritIssueType) && !gerritIssueType.equals(IssueTypeOptionsProvider.DEFAULT_ISSUE_TYPE)) {
             this.gerritIssueType = gerritIssueType;
             ActionContext.getSession().put(SessionKeys.VIEWISSUE_REVIEWS_ISSUETYPE, gerritIssueType);
         } else {
@@ -216,7 +217,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
         }
 
         if (gerritReviewStatus == null) {
-            gerritReviewStatus = ReviewStatusOptionsFactory.DEFAULT_STATUS;
+            gerritReviewStatus = ReviewStatusOptionsProvider.DEFAULT_STATUS;
         }
 
         return gerritReviewStatus;
@@ -224,7 +225,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
 
     @SuppressWarnings("unchecked")
     public void setGerritReviewStatus(String gerritReviewStatus) {
-        if (!StringUtils.isBlank(gerritReviewStatus) && !gerritReviewStatus.equals(ReviewStatusOptionsFactory.DEFAULT_STATUS)) {
+        if (!StringUtils.isBlank(gerritReviewStatus) && !gerritReviewStatus.equals(ReviewStatusOptionsProvider.DEFAULT_STATUS)) {
             this.gerritReviewStatus = gerritReviewStatus;
             ActionContext.getSession().put(SessionKeys.VIEWISSUE_REVIEWS_REVIEWSTATUS, gerritReviewStatus);
         } else {

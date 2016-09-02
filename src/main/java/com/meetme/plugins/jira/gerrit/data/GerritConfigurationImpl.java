@@ -15,6 +15,7 @@ package com.meetme.plugins.jira.gerrit.data;
 
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
+import com.google.common.base.Strings;
 
 import java.io.File;
 import java.net.URI;
@@ -126,6 +127,14 @@ public class GerritConfigurationImpl implements GerritConfiguration {
     @Override
     public void setSshUsername(String username) {
         settings.put(FIELD_SSH_USERNAME, username);
+    }
+
+    @Override
+    public boolean isSshValid() {
+        return !Strings.isNullOrEmpty(getSshHostname())
+                && !Strings.isNullOrEmpty(getSshUsername())
+                && getSshPrivateKey() != null
+                && getSshPrivateKey().exists();
     }
 
     @Override

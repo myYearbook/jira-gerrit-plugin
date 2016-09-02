@@ -13,10 +13,11 @@
  */
 package com.meetme.plugins.jira.gerrit.data;
 
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
 import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryHandler;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
@@ -28,7 +29,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 public class IssueReviewsImpl implements IssueReviewsManager {
     private static final Logger log = LoggerFactory.getLogger(IssueReviewsImpl.class);
@@ -41,7 +47,7 @@ public class IssueReviewsImpl implements IssueReviewsManager {
 
     /**
      * LRU (least recently used) Cache object to avoid slamming the Gerrit server too many times.
-     *
+     * <p>
      * XXX: This might result in an issue using a stale cache for reviews that change often, but
      * corresponding issues viewed rarely! To account for that, we also have a cache expiration, so
      * that at least after the cache expires, it'll get back in sync.
@@ -85,6 +91,12 @@ public class IssueReviewsImpl implements IssueReviewsManager {
 
     protected List<GerritChange> getReviewsFromGerrit(String searchQuery) throws GerritQueryException {
         List<GerritChange> changes;
+
+        if (!configuration.isSshValid()) {
+            // return Collections.emptyList();
+            throw new GerritConfiguration.NotConfiguredException("Not configured for SSH access");
+        }
+
         Authentication auth = new Authentication(configuration.getSshPrivateKey(), configuration.getSshUsername());
         GerritQueryHandler query = new GerritQueryHandler(configuration.getSshHostname(), configuration.getSshPort(), null, auth);
         List<JSONObject> reviews;
@@ -127,8 +139,7 @@ public class IssueReviewsImpl implements IssueReviewsManager {
             boolean commandResult = command.doReviews(changes, args);
             result &= commandResult;
 
-            if (log.isDebugEnabled())
-            {
+            if (log.isDebugEnabled()) {
                 log.trace("doApprovals " + issueKey + ", " + changes + ", " + args + "; result=" + commandResult);
             }
 

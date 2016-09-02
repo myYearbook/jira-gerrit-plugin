@@ -17,56 +17,78 @@ import java.io.File;
 import java.net.URI;
 
 public interface GerritConfiguration {
-    public static final int DEFAULT_SSH_PORT = 29418;
-    public static final String DEFAULT_QUERY_ISSUE = "tr:%s";
-    public static final String DEFAULT_QUERY_PROJECT = "message:%s-*";
+    int DEFAULT_SSH_PORT = 29418;
+    String DEFAULT_QUERY_ISSUE = "tr:%s";
+    String DEFAULT_QUERY_PROJECT = "message:%s-*";
 
-    public static String FIELD_SSH_HOSTNAME = "sshHostname";
-    public static String FIELD_SSH_USERNAME = "sshUsername";
-    public static String FIELD_SSH_PORT = "sshPort";
-    public static String FIELD_SSH_PRIVATE_KEY = "sshPrivateKey";
+    String FIELD_SSH_HOSTNAME = "sshHostname";
+    String FIELD_SSH_USERNAME = "sshUsername";
+    String FIELD_SSH_PORT = "sshPort";
+    String FIELD_SSH_PRIVATE_KEY = "sshPrivateKey";
 
-    public static String FIELD_QUERY_ISSUE = "issueSearchQuery";
-    public static String FIELD_QUERY_PROJECT = "projectSearchQuery";
+    String FIELD_QUERY_ISSUE = "issueSearchQuery";
+    String FIELD_QUERY_PROJECT = "projectSearchQuery";
 
-    public static String FIELD_HTTP_BASE_URL = "httpBaseUrl";
-    public static String FIELD_HTTP_USERNAME = "httpUsername";
-    public static String FIELD_HTTP_PASSWORD = "httpPassword";
+    String FIELD_HTTP_BASE_URL = "httpBaseUrl";
+    String FIELD_HTTP_USERNAME = "httpUsername";
+    String FIELD_HTTP_PASSWORD = "httpPassword";
 
-    public abstract URI getHttpBaseUrl();
+    URI getHttpBaseUrl();
 
-    public abstract String getHttpPassword();
+    String getHttpPassword();
 
-    public abstract String getHttpUsername();
+    String getHttpUsername();
 
-    public abstract String getIssueSearchQuery();
+    String getIssueSearchQuery();
 
-    public abstract String getProjectSearchQuery();
+    String getProjectSearchQuery();
 
-    public abstract String getSshHostname();
+    String getSshHostname();
 
-    public abstract int getSshPort();
+    int getSshPort();
 
-    public abstract File getSshPrivateKey();
+    File getSshPrivateKey();
 
-    public abstract String getSshUsername();
+    String getSshUsername();
 
-    public abstract void setHttpBaseUrl(String httpBaseUrl);
+    void setHttpBaseUrl(String httpBaseUrl);
 
-    public abstract void setHttpPassword(String httpPassword);
+    void setHttpPassword(String httpPassword);
 
-    public abstract void setHttpUsername(String httpUsername);
+    void setHttpUsername(String httpUsername);
 
-    public abstract void setIssueSearchQuery(String query);
+    void setIssueSearchQuery(String query);
 
-    public abstract void setProjectSearchQuery(String query);
+    void setProjectSearchQuery(String query);
 
-    public abstract void setSshHostname(String hostname);
+    void setSshHostname(String hostname);
 
-    public abstract void setSshPort(int port);
+    void setSshPort(int port);
 
-    public abstract void setSshPrivateKey(File sshPrivateKey);
+    void setSshPrivateKey(File sshPrivateKey);
 
-    public abstract void setSshUsername(String username);
+    void setSshUsername(String username);
 
+    boolean isSshValid();
+
+    class NotConfiguredException extends RuntimeException {
+        public NotConfiguredException() {
+        }
+
+        public NotConfiguredException(String message) {
+            super(message);
+        }
+
+        public NotConfiguredException(String message, Throwable cause) {
+            super(message, cause);
+        }
+
+        public NotConfiguredException(Throwable cause) {
+            super(cause);
+        }
+
+        public NotConfiguredException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+            super(message, cause, enableSuppression, writableStackTrace);
+        }
+    }
 }

@@ -1,5 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<!--
+<?xml version="1.0" encoding="UTF-8"?><!--
     Copyright 2012 MeetMe, Inc.
 
     Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,7 +13,9 @@
     See the License for the specific language governing permissions and
     limitations under the License.
 -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns="http://maven.apache.org/POM/4.0.0"
+        xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.meetme.plugins.jira</groupId>
@@ -65,7 +66,6 @@
         <dependency>
             <groupId>com.atlassian.jira</groupId>
             <artifactId>jira-api</artifactId>
-            <!--<artifactId>atlassian-jira</artifactId>-->
             <version>${jira.version}</version>
             <scope>provided</scope>
         </dependency>
@@ -100,6 +100,13 @@
             <artifactId>mockito-all</artifactId>
             <version>1.9.5</version>
             <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>com.atlassian.plugin</groupId>
+            <artifactId>atlassian-spring-scanner-annotation</artifactId>
+            <version>${atlassian.spring.scanner.version}</version>
+            <scope>compile</scope>
         </dependency>
 
         <!-- Project Atlassian requirements -->
@@ -172,6 +179,15 @@
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.version}</productDataVersion>
                     <log4jProperties>src/aps/resources/log4j.properties</log4jProperties>
+                    <enableFastdev>false</enableFastdev>
+
+                    <pluginArtifacts>
+                        <pluginArtifact>
+                            <groupId>com.atlassian.labs.plugins</groupId>
+                            <artifactId>quickreload</artifactId>
+                            <version>${quick.reload.version}</version>
+                        </pluginArtifact>
+                    </pluginArtifacts>
 
                     <products>
                         <product>
@@ -188,19 +204,46 @@
                     <target>1.6</target>
                 </configuration>
             </plugin>
+            <plugin>
+                <groupId>com.atlassian.plugin</groupId>
+                <artifactId>atlassian-spring-scanner-maven-plugin</artifactId>
+                <version>${atlassian.spring.scanner.version}</version>
+                <executions>
+                    <execution>
+                        <goals>
+                            <goal>atlassian-spring-scanner</goal>
+                        </goals>
+                        <phase>process-classes</phase>
+                    </execution>
+                </executions>
+                <configuration>
+                    <scannedDependencies>
+                        <dependency>
+                            <groupId>com.atlassian.plugin</groupId>
+                            <artifactId>atlassian-spring-scanner-external-jar</artifactId>
+                        </dependency>
+                    </scannedDependencies>
+                    <verbose>false</verbose>
+                </configuration>
+            </plugin>
         </plugins>
     </build>
 
     <properties>
-        <jira.version>7.0.5</jira.version>
-        <jira.test.version>7.0.5</jira.test.version>
-        <jira.data.version>7.0.5</jira.data.version>
+        <jira.version>7.2.0</jira.version>
+        <amps.version>6.2.6</amps.version>
+        <plugin.testrunner.version>1.2.3</plugin.testrunner.version>
+        <atlassian.spring.scanner.version>1.2.13</atlassian.spring.scanner.version>
+        <atlassian.plugin.key>${project.groupId}.${project.artifactId}</atlassian.plugin.key>
+        <testkit.version>6.3.11</testkit.version>
+        <quick.reload.version>1.30.5</quick.reload.version>
+
+        <jira.test.version>7.2.0</jira.test.version>
+        <jira.data.version>7.2.0</jira.data.version>
         <jira.rest.version>3.0.8</jira.rest.version>
         <atlas.template.version>3.0.0</atlas.template.version>
         <atlas.concurrent.version>3.0.0</atlas.concurrent.version>
         <atlas.sal.version>3.0.5</atlas.sal.version>
-        <amps.version>6.2.1</amps.version>
-        <plugin.testrunner.version>1.1.2</plugin.testrunner.version>
     </properties>
 
     <profiles>
@@ -230,7 +273,7 @@
         <connection>scm:git:git://github.com/MeetMe/jira-gerrit-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/MeetMe/jira-gerrit-plugin.git</developerConnection>
         <url>https://github.com/MeetMe/jira-gerrit-plugin</url>
-      <tag>HEAD</tag>
-  </scm>
+        <tag>HEAD</tag>
+    </scm>
 
 </project>

@@ -25,6 +25,19 @@
         <form id="admin" class="aui" enctype="multipart/form-data" method="post" action="">
             <h2>$i18n.getText("gerrit.admin.label")</h2>
 
+            #if ($!testResult == "true")
+                <div class="aui-message aui-message-success">
+                    <div><b>Success!</b></div>
+                    <div>The connection to Gerrit was successful.</div>
+                </div>
+            #elseif ($!testResult == "false")
+                <div class="aui-message aui-message-error">
+                    <div><b>Connection Failed!</b></div>
+                    <div>An error occurred while testing the connection to Gerrit.</div>
+                    <blockquote>$!testError</blockquote>
+                </div>
+            #end
+
             <h3>$i18n.getText("gerrit.admin.ssh.label")</h3>
             <div class="field-group">
                 <label for="sshHostname">
@@ -117,11 +130,12 @@
 
             <div class="buttons-container">
                 <div class="buttons">
-                    <input type="submit" name="action" value="Save" class="button submit" />
-                    <button type="button" name="action" value="Test Config" id="gerritTest" class="button">Test Config</button>
+                    <button type="submit" name="action" value="save" class="button submit">Save</button>
+                    <button type="submit" name="action" value="test" class="button submit">Test Config</button>
+
                     #*
-                    ## Clear cache button?
-                    *#
+                     * Clear cache button?
+                     *#
                 </div>
             </div>
         </form>
