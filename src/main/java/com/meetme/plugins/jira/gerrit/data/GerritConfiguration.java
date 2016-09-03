@@ -33,6 +33,8 @@ public interface GerritConfiguration {
     String FIELD_HTTP_USERNAME = "httpUsername";
     String FIELD_HTTP_PASSWORD = "httpPassword";
 
+    String FIELD_SHOW_EMPTY_PANEL = "showEmptyPanel";
+
     URI getHttpBaseUrl();
 
     String getHttpPassword();
@@ -51,6 +53,8 @@ public interface GerritConfiguration {
 
     String getSshUsername();
 
+    boolean getShowsEmptyPanel();
+
     void setHttpBaseUrl(String httpBaseUrl);
 
     void setHttpPassword(String httpPassword);
@@ -68,6 +72,8 @@ public interface GerritConfiguration {
     void setSshPrivateKey(File sshPrivateKey);
 
     void setSshUsername(String username);
+
+    void setShowEmptyPanel(boolean show);
 
     boolean isSshValid();
 

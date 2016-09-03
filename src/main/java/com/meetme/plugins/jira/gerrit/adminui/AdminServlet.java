@@ -39,8 +39,10 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -104,6 +106,8 @@ public class AdminServlet extends HttpServlet {
             map.put(GerritConfiguration.FIELD_HTTP_USERNAME, config.getHttpUsername());
             map.put(GerritConfiguration.FIELD_HTTP_PASSWORD, config.getHttpPassword());
         }
+
+        map.put(GerritConfiguration.FIELD_SHOW_EMPTY_PANEL, String.valueOf(config.getShowsEmptyPanel()));
 
         return map;
     }
@@ -203,8 +207,11 @@ public class AdminServlet extends HttpServlet {
     }
 
     private void setAllFields(final List<FileItem> items) {
+        Set<String> allFields = new HashSet<>();
+
         for (FileItem item : items) {
             final String fieldName = item.getFieldName();
+            allFields.add(fieldName);
 
             if (GerritConfiguration.FIELD_HTTP_BASE_URL.equals(fieldName)) {
                 configurationManager.setHttpBaseUrl(item.getString());
@@ -224,6 +231,9 @@ public class AdminServlet extends HttpServlet {
                 configurationManager.setProjectSearchQuery(item.getString());
             }
         }
+
+        boolean showsEmptyPanelChecked = allFields.contains(GerritConfiguration.FIELD_SHOW_EMPTY_PANEL);
+        configurationManager.setShowEmptyPanel(showsEmptyPanelChecked);
     }
 
     private File doUploadPrivateKey(final List<FileItem> items, final String sshHostname) throws IOException {

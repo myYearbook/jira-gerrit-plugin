@@ -132,6 +132,7 @@
         <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueLeftPanel" />
         <resource name="i18n" location="i18n.webpanel" type="i18n" />
         <resource name="view" location="templates/gerrit-reviews-left-panel.vm" type="velocity" />
+        <condition class="com.meetme.plugins.jira.gerrit.webpanel.ShowReviewsWebPanelCondition" />
         <supports-ajax-load>true</supports-ajax-load>
     </web-panel>
 

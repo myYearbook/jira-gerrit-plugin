@@ -130,6 +130,18 @@ public class GerritConfigurationImpl implements GerritConfiguration {
     }
 
     @Override
+    public boolean getShowsEmptyPanel() {
+        String shows = (String) settings.get(FIELD_SHOW_EMPTY_PANEL);
+        // if not already set, defaults to true
+        return shows == null || "true".equals(shows);
+    }
+
+    @Override
+    public void setShowEmptyPanel(boolean show) {
+        settings.put(FIELD_SHOW_EMPTY_PANEL, String.valueOf(show));
+    }
+
+    @Override
     public boolean isSshValid() {
         return !Strings.isNullOrEmpty(getSshHostname())
                 && !Strings.isNullOrEmpty(getSshUsername())
