@@ -31,7 +31,7 @@ import java.util.Map;
 public class ReviewStatusOptionsProvider implements WebItemProvider {
     public static final String STATUS_OPEN = "Open";
     public static final String STATUS_ALL = "All";
-    public static final String DEFAULT_STATUS = STATUS_OPEN;
+    public static final String DEFAULT_STATUS = STATUS_ALL;
 
     private VelocityRequestContextFactory requestContextFactory;
     private JiraAuthenticationContext authenticationContext;

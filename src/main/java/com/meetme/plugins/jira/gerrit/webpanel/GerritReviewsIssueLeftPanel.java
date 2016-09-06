@@ -99,7 +99,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
 
         try {
             if (IssueTypeOptionsProvider.wantsIssue(gerritIssueType)
-                    && (IssueStatusOptionsFactory.wantsUnresolved(gerritIssueStatus) || IssueStatusOptionsFactory.isIssueOpen(issue))) {
+                    && (IssueStatusOptionsProvider.wantsUnresolved(gerritIssueStatus) || IssueStatusOptionsProvider.isIssueOpen(issue))) {
                 addIssueChanges(changes, issue);
             }
 
@@ -142,10 +142,10 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
         for (Issue subtask : issue.getSubTaskObjects()) {
             log.trace(" .. checking for " + subtask.getKey());
 
-            log.debug("wants unresolved: " + IssueStatusOptionsFactory.wantsUnresolved(gerritIssueStatus) + ", or isopen " + subtask.getKey() + ": "
-                    + IssueStatusOptionsFactory.isIssueOpen(subtask));
+            log.debug("wants unresolved: " + IssueStatusOptionsProvider.wantsUnresolved(gerritIssueStatus) + ", or isopen " + subtask.getKey() + ": "
+                    + IssueStatusOptionsProvider.isIssueOpen(subtask));
 
-            if (IssueStatusOptionsFactory.isIssueOpen(subtask) || IssueStatusOptionsFactory.wantsUnresolved(gerritIssueStatus)) {
+            if (IssueStatusOptionsProvider.isIssueOpen(subtask) || IssueStatusOptionsProvider.wantsUnresolved(gerritIssueStatus)) {
                 log.debug(" .. adding all changes for subtask: " + subtask.getKey());
                 changes.addAll(reviewsManager.getReviewsForIssue(subtask));
             }
@@ -240,7 +240,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
         }
 
         if (gerritIssueStatus == null) {
-            gerritIssueStatus = IssueStatusOptionsFactory.DEFAULT_STATUS;
+            gerritIssueStatus = IssueStatusOptionsProvider.DEFAULT_STATUS;
         }
 
         return gerritIssueStatus;
@@ -248,7 +248,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
 
     @SuppressWarnings("unchecked")
     public void setGerritIssueStatus(String gerritIssueStatus) {
-        if (!StringUtils.isBlank(gerritIssueStatus) && !gerritIssueStatus.equals(IssueStatusOptionsFactory.DEFAULT_STATUS)) {
+        if (!StringUtils.isBlank(gerritIssueStatus) && !gerritIssueStatus.equals(IssueStatusOptionsProvider.DEFAULT_STATUS)) {
             this.gerritIssueStatus = gerritIssueStatus;
             ActionContext.getSession().put(SessionKeys.VIEWISSUE_REVIEWS_ISSUESTATUS, gerritIssueStatus);
         } else {

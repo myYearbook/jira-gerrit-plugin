@@ -13,49 +13,42 @@
  */
 package com.meetme.plugins.jira.gerrit.webpanel;
 
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import com.meetme.plugins.jira.gerrit.SessionKeys;
 
 import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.plugin.webfragment.SimpleLinkFactory;
-import com.atlassian.jira.plugin.webfragment.descriptors.SimpleLinkFactoryModuleDescriptor;
-import com.atlassian.jira.plugin.webfragment.model.SimpleLink;
-import com.atlassian.jira.plugin.webfragment.model.SimpleLinkImpl;
 import com.atlassian.jira.security.JiraAuthenticationContext;
-import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.util.I18nHelper;
 import com.atlassian.jira.util.collect.CollectionBuilder;
 import com.atlassian.jira.util.velocity.VelocityRequestContext;
 import com.atlassian.jira.util.velocity.VelocityRequestContextFactory;
 import com.atlassian.jira.util.velocity.VelocityRequestSession;
-import com.meetme.plugins.jira.gerrit.SessionKeys;
+import com.atlassian.plugin.web.api.WebItem;
+import com.atlassian.plugin.web.api.model.WebFragmentBuilder;
+import com.atlassian.plugin.web.api.provider.WebItemProvider;
 
-public class IssueStatusOptionsFactory implements SimpleLinkFactory
-{
-    private static final Logger log = LoggerFactory.getLogger(IssueStatusOptionsFactory.class);
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-    public static final String STATUS_OPEN = "Open";
-    public static final String STATUS_ALL = "All";
-    public static final String DEFAULT_STATUS = STATUS_OPEN;
+import java.util.Collections;
+import java.util.Map;
+
+public class IssueStatusOptionsProvider implements WebItemProvider {
+    private static final Logger log = LoggerFactory.getLogger(IssueStatusOptionsProvider.class);
+
+    private static final String STATUS_OPEN = "Open";
+    private static final String STATUS_ALL = "All";
+    static final String DEFAULT_STATUS = STATUS_OPEN;
 
     private VelocityRequestContextFactory requestContextFactory;
     private JiraAuthenticationContext authenticationContext;
 
-    public IssueStatusOptionsFactory(VelocityRequestContextFactory requestContextFactory, JiraAuthenticationContext authenticationContext) {
+    public IssueStatusOptionsProvider(VelocityRequestContextFactory requestContextFactory, JiraAuthenticationContext authenticationContext) {
         this.requestContextFactory = requestContextFactory;
         this.authenticationContext = authenticationContext;
     }
 
     @Override
-    public void init(SimpleLinkFactoryModuleDescriptor descriptor) {
-    }
-
-    @Override
-    public List<SimpleLink> getLinks(ApplicationUser user, Map<String, Object> params) {
+    public Iterable<WebItem> getItems(Map<String, Object> params) {
         final VelocityRequestContext requestContext = requestContextFactory.getJiraVelocityRequestContext();
         final I18nHelper i18n = authenticationContext.getI18nHelper();
         final Issue issue = (Issue) params.get("issue");
@@ -73,15 +66,23 @@ public class IssueStatusOptionsFactory implements SimpleLinkFactory
             return Collections.emptyList();
         }
 
-        final SimpleLink allLink = new SimpleLinkImpl("reviews-issuestatus-all",
-                i18n.getText("gerrit-reviews-left-panel.options.issuestatus.all"), null, null,
-                getStyleFor(issueStatus, STATUS_ALL),
-                getUrlForType(STATUS_ALL, baseUrl, issue), null);
+        int weight = 10;
 
-        final SimpleLink openLink = new SimpleLinkImpl("reviews-issuestatus-open",
-                i18n.getText("gerrit-reviews-left-panel.options.issuestatus.open"), null, null,
-                getStyleFor(issueStatus, STATUS_OPEN),
-                getUrlForType(STATUS_OPEN, baseUrl, issue), null);
+        final WebItem allLink = new WebFragmentBuilder(weight += 10)
+                .id("reviews-issuestatus-all")
+                .label(i18n.getText("gerrit-reviews-left-panel.options.issuestatus.all"))
+                .styleClass(getStyleFor(issueStatus, STATUS_ALL))
+                .webItem("issuestatus-view-options")
+                .url(getUrlForType(STATUS_ALL, baseUrl, issue))
+                .build();
+
+        WebItem openLink = new WebFragmentBuilder(weight += 10)
+                .id("reviews-issuestatus-open")
+                .label(i18n.getText("gerrit-reviews-left-panel.options.issuestatus.open"))
+                .styleClass(getStyleFor(issueStatus, STATUS_OPEN))
+                .webItem("issuestatus-view-options")
+                .url(getUrlForType(STATUS_OPEN, baseUrl, issue))
+                .build();
 
         return CollectionBuilder.list(allLink, openLink);
     }
@@ -94,12 +95,12 @@ public class IssueStatusOptionsFactory implements SimpleLinkFactory
         return expecting.equals(type) ? "aui-list-checked aui-checked" : "aui-list-checked";
     }
 
-    public static boolean isIssueOpen(Issue issue) {
+    static boolean isIssueOpen(Issue issue) {
         log.debug("Checking if " + issue.getKey() + " is open: " + issue.getResolutionObject());
         return issue.getResolutionObject() == null;
     }
 
-    public static final boolean wantsUnresolved(final String gerritIssueStatus) {
+    static boolean wantsUnresolved(final String gerritIssueStatus) {
         return STATUS_ALL.equals(gerritIssueStatus);
     }
 }

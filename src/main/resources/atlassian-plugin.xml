@@ -166,8 +166,8 @@
             location="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop"
             weight="30" />
 
-    <simple-link-factory name="Issue Status View Options Factory"
-            class="com.meetme.plugins.jira.gerrit.webpanel.IssueStatusOptionsFactory"
+    <web-item-provider name="Issue Status View Options Factory"
+            class="com.meetme.plugins.jira.gerrit.webpanel.IssueStatusOptionsProvider"
             key="issuestatus-view-options-factory"
             lazy="false"
             section="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop/issuestatus-view-options"
