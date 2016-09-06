@@ -258,14 +258,14 @@
 
     <distributionManagement>
         <repository>
-            <id>atlassian-contrib</id>
-            <name>Atlassian Contrib Repository</name>
-            <url>dav:https://maven.atlassian.com/contrib</url>
+            <id>releases</id>
+            <name>MeetMe Release Repository</name>
+            <url>https://nexus.meetmecorp.com/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
-            <id>atlassian-contrib-snapshot</id>
-            <name>Atlassian Contrib Snapshot Repository</name>
-            <url>dav:https://maven.atlassian.com/contrib-snapshot</url>
+            <id>snapshots</id>
+            <name>MeetMe Snapshot Repository</name>
+            <url>https://nexus.meetmecorp.com/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
 
