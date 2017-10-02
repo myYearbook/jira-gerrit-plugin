@@ -157,7 +157,19 @@
             <!-- Using this for gerrit integration -->
             <groupId>com.sonyericsson.hudson.plugins.gerrit</groupId>
             <artifactId>gerrit-events</artifactId>
-            <version>1.5.2</version>
+            <version>1.99.1</version>
+            <exclusions>
+                <exclusion>
+                    <groupId>com.jcraft</groupId>
+                    <artifactId>jsch</artifactId>
+                </exclusion>
+            </exclusions>
+        </dependency>
+        <dependency>
+            <!-- Using this for ssh -->
+            <groupId>com.jcraft</groupId>
+            <artifactId>jsch</artifactId>
+            <version>0.1.54</version>
         </dependency>
         <dependency>
             <groupId>commons-fileupload</groupId>
