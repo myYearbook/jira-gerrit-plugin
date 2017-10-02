@@ -65,6 +65,10 @@ limitations under the License.
             <a href="$change.url" title="$change.subject" target="gerrit-review-$change.number,$change.patchSet.number">$change.subject</a>
         </td>
 
+        <td class="nav gerrit-branch">
+            $change.branch
+        </td>
+
         <td class="nav gerrit-project">
             $change.project
         </td>
@@ -117,6 +121,7 @@ limitations under the License.
             <tr>
                 <th>#</th>
                 <th>Subject</th>
+                <th>Branch</th>
                 <th>Project</th>
                 <th>Status</th>
                 <th title="$i18n.getText('gerrit.tabpanel.most_significant_score')">CR</th>
