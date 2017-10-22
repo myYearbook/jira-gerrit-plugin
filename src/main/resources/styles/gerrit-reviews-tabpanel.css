@@ -87,6 +87,7 @@ span.gerrit-no-reviews
 {
   text-indent: 9999px;
   vertical-align: middle;
+  overflow: hidden;
 }
 
 #gerrit-reviews-side-panel span.twixi
