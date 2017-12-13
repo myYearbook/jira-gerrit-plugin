@@ -57,6 +57,7 @@
     <!-- Admin panel -->
     <web-resource name="Admin Web Resources" key="admin-resources">
         <dependency>com.atlassian.auiplugin:ajs</dependency>
+        <dependency>com.atlassian.auiplugin:aui-select2</dependency>
         <!--<resource type="download" name="admin.js" location="js/admin.js" />-->
     </web-resource>
 

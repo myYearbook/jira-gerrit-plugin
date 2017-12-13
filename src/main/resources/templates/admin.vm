@@ -120,20 +120,48 @@
                 <input type="text" id="issueSearchQuery" name="issueSearchQuery" class="text" value="$!issueSearchQuery" />
                 <div class="description">$i18n.getText("gerrit.admin.issueSearchQuery.description")</div>
             </div>
-            #*
-            <div class="field-group">
-                <label for="projectSearchQuery">$i18n.getText("gerrit.admin.projectSearchQuery.label")</label>
-                <input type="text" id="projectSearchQuery" name="projectSearchQuery" class="text" value="$!projectSearchQuery" />
-                <div class="description">$i18n.getText("gerrit.admin.projectSearchQuery.description")</div>
-            </div>
-            *#
 
             <h3>$i18n.getText("gerrit.admin.project.settings")</h3>
+
             <fieldset class="group">
-                <input class="checkbox" type="checkbox" id="showEmptyPanel" name="showEmptyPanel" value="true" #if ($!showEmptyPanel == "true") checked="checked" #end />
+                <input class="checkbox" type="checkbox" id="showEmptyPanel" name="showEmptyPanel" value="true"
+                    #if ($!showEmptyPanel == "true") checked="checked" #end />
                 <label for="showEmptyPanel">$i18n.getText("gerrit.admin.showEmptyPanel.label")</label>
                 <div class="description">$i18n.getText("gerrit.admin.showEmptyPanel.description")</div>
             </fieldset>
+
+            <fieldset class="group">
+                <input class="checkbox" type="checkbox" id="useGerritProjectWhitelist" name="useGerritProjectWhitelist"
+                       value="false"
+                    #if ($!useGerritProjectWhitelist == "true") checked="checked" #end
+                       onchange="if (document.getElementById('useGerritProjectWhitelist').checked)
+                                    {document.getElementById('gerritProjectDiv').style.display= '';}
+                                 else
+                                    { document.getElementById('gerritProjectDiv').style.display= 'none';}"
+                />
+
+                <label for="useGerritProjectWhitelist">$i18n.getText("gerrit.admin.project.useWhiteList.label")</label>
+                <div class="description">$i18n.getText("gerrit.admin.project.useWhiteList.description")</div>
+            </fieldset>
+
+            <div class="field-group" id="gerritProjectDiv"
+                #if ($!useGerritProjectWhitelist == "false") style="display:none;" #end
+                >
+                <label for="projectsUsingGerrit">$i18n.getText("gerrit.admin.project.whitelist")</label>
+                <select id="allProjects" name="knownGerritProjects" multiple="">
+                    #foreach ($project in $allProjects)
+                        <option value="$project.id"
+                            #if ($knownGerritProjects.isEmpty() == false && $knownGerritProjects.contains($project))
+                                selected="selected"
+                            #end title="$project.id">$project.name
+                        </option>
+                    #end
+                </select>
+                <script>
+                    AJS.$("#allProjects").auiSelect2();
+                </script>
+                <div class="description">$i18n.getText("gerrit.admin.project.whitelist.description")</div>
+            </div>
 
             <div class="buttons-container">
                 <div class="buttons">
