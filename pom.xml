@@ -18,7 +18,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.meetme.plugins.jira</groupId>
     <artifactId>gerrit-plugin</artifactId>
-    <version>3.4-SNAPSHOT</version>
+    <version>3.4</version>
 
     <organization>
         <name>MeetMe, Inc.</name>
@@ -303,7 +303,7 @@
         <connection>scm:git:git://github.com/MeetMe/jira-gerrit-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/MeetMe/jira-gerrit-plugin.git</developerConnection>
         <url>https://github.com/MeetMe/jira-gerrit-plugin</url>
-        <tag>HEAD</tag>
+        <tag>gerrit-plugin-3.4</tag>
     </scm>
 
 </project>
