@@ -13,16 +13,18 @@
  */
 package com.meetme.plugins.jira.gerrit.adminui;
 
-import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
-
 import com.atlassian.jira.config.util.JiraHome;
+import com.atlassian.jira.project.Project;
+import com.atlassian.jira.project.ProjectManager;
 import com.atlassian.sal.api.auth.LoginUriProvider;
 import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
+import com.google.common.collect.Lists;
+import com.google.common.collect.Sets;
+import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryHandler;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
-
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -33,21 +35,20 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
+import java.util.stream.Collectors;
 
 public class AdminServlet extends HttpServlet {
     private static final long serialVersionUID = -9175363090552720328L;
@@ -66,15 +67,17 @@ public class AdminServlet extends HttpServlet {
     private final TemplateRenderer renderer;
     private final LoginUriProvider loginUriProvider;
     private final JiraHome jiraHome;
+    private final ProjectManager projectManager;
     private final GerritConfiguration configurationManager;
 
     public AdminServlet(final UserManager userManager, final LoginUriProvider loginUriProvider, final TemplateRenderer renderer,
-            final JiraHome jiraHome, final GerritConfiguration configurationManager) {
+            final JiraHome jiraHome, final GerritConfiguration configurationManager, final ProjectManager projectManager) {
         this.userManager = userManager;
         this.loginUriProvider = loginUriProvider;
         this.renderer = renderer;
         this.jiraHome = jiraHome;
         this.configurationManager = configurationManager;
+        this.projectManager = projectManager;
     }
 
     @Override
@@ -91,7 +94,7 @@ public class AdminServlet extends HttpServlet {
     }
 
     private Map<String, Object> configToMap(final GerritConfiguration config) {
-        Map<String, Object> map = new HashMap<String, Object>();
+        Map<String, Object> map = new HashMap<>();
 
         map.put(GerritConfiguration.FIELD_SSH_HOSTNAME, config.getSshHostname());
         map.put(GerritConfiguration.FIELD_SSH_PORT, config.getSshPort());
@@ -108,6 +111,14 @@ public class AdminServlet extends HttpServlet {
         }
 
         map.put(GerritConfiguration.FIELD_SHOW_EMPTY_PANEL, String.valueOf(config.getShowsEmptyPanel()));
+        map.put(GerritConfiguration.FIELD_ALL_PROJECTS, projectManager.getProjects());
+
+        List<Project> projectsUsingGerrit = configurationManager.getIdsOfKnownGerritProjects().stream()
+                .map(Long::parseLong).map(projectManager::getProjectObj).collect(Collectors.toList());
+
+        map.put(GerritConfiguration.FIELD_KNOWN_GERRIT_PROJECTS, projectsUsingGerrit);
+        map.put(GerritConfiguration.FIELD_USE_GERRIT_PROJECT_WHITELIST, String.valueOf(config
+                .getUseGerritProjectWhitelist()));
 
         return map;
     }
@@ -155,10 +166,12 @@ public class AdminServlet extends HttpServlet {
         if (privateKeyPath != null) {
             // We'll store the *path* to the file in ConfigResource, to make it easy to look it
             // up in the future.
-            log.debug("---- Saved ssh private key at: " + privateKeyPath.toString() + " ----");
+            if (log.isDebugEnabled())
+                log.debug("---- Saved ssh private key at: " + privateKeyPath.toString() + " ----");
             configurationManager.setSshPrivateKey(privateKeyPath);
         } else if (configurationManager.getSshPrivateKey() != null) {
-            log.debug("---- Private key is already on file, and not being replaced. ----");
+            if (log.isDebugEnabled())
+                log.debug("---- Private key is already on file, and not being replaced. ----");
         } else {
             // TODO: is this a failure?
             log.info("**** No private key was uploaded, and no key currently on file!  Requests will fail. ****");
@@ -207,7 +220,8 @@ public class AdminServlet extends HttpServlet {
     }
 
     private void setAllFields(final List<FileItem> items) {
-        Set<String> allFields = new HashSet<>();
+        Set<String> allFields = Sets.newHashSet();
+        List<String> idsOfSelectedGerritProjects = Lists.newArrayList();
 
         for (FileItem item : items) {
             final String fieldName = item.getFieldName();
@@ -229,11 +243,18 @@ public class AdminServlet extends HttpServlet {
                 configurationManager.setIssueSearchQuery(item.getString());
             } else if (GerritConfiguration.FIELD_QUERY_PROJECT.equals(fieldName)) {
                 configurationManager.setProjectSearchQuery(item.getString());
+            } else if (GerritConfiguration.FIELD_KNOWN_GERRIT_PROJECTS.equals(fieldName)) {
+                idsOfSelectedGerritProjects.add(item.getString());
             }
         }
 
         boolean showsEmptyPanelChecked = allFields.contains(GerritConfiguration.FIELD_SHOW_EMPTY_PANEL);
         configurationManager.setShowEmptyPanel(showsEmptyPanelChecked);
+
+        boolean useGerritProjectWhitelist = allFields.contains(GerritConfiguration.FIELD_USE_GERRIT_PROJECT_WHITELIST);
+        configurationManager.setUseGerritProjectWhitelist(useGerritProjectWhitelist);
+
+        configurationManager.setIdsOfKnownGerritProjects(idsOfSelectedGerritProjects);
     }
 
     private File doUploadPrivateKey(final List<FileItem> items, final String sshHostname) throws IOException {

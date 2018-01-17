@@ -15,6 +15,7 @@ package com.meetme.plugins.jira.gerrit.data;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 public interface GerritConfiguration {
     int DEFAULT_SSH_PORT = 29418;
@@ -34,6 +35,9 @@ public interface GerritConfiguration {
     String FIELD_HTTP_PASSWORD = "httpPassword";
 
     String FIELD_SHOW_EMPTY_PANEL = "showEmptyPanel";
+    String FIELD_ALL_PROJECTS = "allProjects";
+    String FIELD_KNOWN_GERRIT_PROJECTS = "knownGerritProjects";
+    String FIELD_USE_GERRIT_PROJECT_WHITELIST = "useGerritProjectWhitelist";
 
     URI getHttpBaseUrl();
 
@@ -76,6 +80,12 @@ public interface GerritConfiguration {
     void setShowEmptyPanel(boolean show);
 
     boolean isSshValid();
+
+    List<String> getIdsOfKnownGerritProjects();
+    void setIdsOfKnownGerritProjects(List<String> idsOfSelectedGerritProjects);
+
+    boolean getUseGerritProjectWhitelist();
+    void setUseGerritProjectWhitelist(boolean useGerritProjectWhitelist);
 
     class NotConfiguredException extends RuntimeException {
         public NotConfiguredException() {

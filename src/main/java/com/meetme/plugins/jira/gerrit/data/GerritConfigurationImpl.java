@@ -16,9 +16,11 @@ package com.meetme.plugins.jira.gerrit.data;
 import com.atlassian.sal.api.pluginsettings.PluginSettings;
 import com.atlassian.sal.api.pluginsettings.PluginSettingsFactory;
 import com.google.common.base.Strings;
+import com.google.common.collect.Lists;
 
 import java.io.File;
 import java.net.URI;
+import java.util.List;
 
 /**
  * {@link GerritConfiguration} implementation that uses {@link PluginSettings} to store
@@ -147,6 +149,29 @@ public class GerritConfigurationImpl implements GerritConfiguration {
                 && !Strings.isNullOrEmpty(getSshUsername())
                 && getSshPrivateKey() != null
                 && getSshPrivateKey().exists();
+    }
+
+    @Override
+    public List<String> getIdsOfKnownGerritProjects() {
+        List<String> idsOfKnownGerritProjects = (List) settings.get(FIELD_KNOWN_GERRIT_PROJECTS);
+        return idsOfKnownGerritProjects != null ? idsOfKnownGerritProjects : Lists.newArrayList();
+    }
+
+    @Override
+    public void setIdsOfKnownGerritProjects(final List<String> idsOfSelectedGerritProjects) {
+        settings.put(FIELD_KNOWN_GERRIT_PROJECTS, idsOfSelectedGerritProjects);
+    }
+
+    @Override
+    public boolean getUseGerritProjectWhitelist() {
+        String useGerritProjectWhitelist = (String) settings.get(FIELD_USE_GERRIT_PROJECT_WHITELIST);
+        // Defaults to the behavior without whitelist:
+        return useGerritProjectWhitelist == null ? false : "true".equals(useGerritProjectWhitelist);
+    }
+
+    @Override
+    public void setUseGerritProjectWhitelist(boolean useGerritProjectWhitelist) {
+        settings.put(FIELD_USE_GERRIT_PROJECT_WHITELIST, String.valueOf(useGerritProjectWhitelist));
     }
 
     @Override

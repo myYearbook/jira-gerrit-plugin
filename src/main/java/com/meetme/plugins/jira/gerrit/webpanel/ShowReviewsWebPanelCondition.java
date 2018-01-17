@@ -1,53 +1,75 @@
 package com.meetme.plugins.jira.gerrit.webpanel;
 
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.plugin.web.Condition;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
-
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.plugin.PluginParseException;
-import com.atlassian.plugin.web.Condition;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.util.List;
 import java.util.Map;
+
+import static org.apache.commons.collections.CollectionUtils.isEmpty;
 
 /**
  * Created by jhansche on 9/2/16.
  */
 public class ShowReviewsWebPanelCondition implements Condition {
+
+    private static final Logger log = LoggerFactory.getLogger(ShowReviewsWebPanelCondition.class);
+
     private static final String KEY_ISSUE = "issue";
 
-    private final GerritConfiguration mConfiguration;
-    private final IssueReviewsManager mReviewsManager;
+    private final GerritConfiguration gerritConfiguration;
+    private final IssueReviewsManager issueReviewsManager;
 
-    public ShowReviewsWebPanelCondition(IssueReviewsManager reviewsManager,
-            GerritConfiguration configurationManager) {
-        mReviewsManager = reviewsManager;
-        mConfiguration = configurationManager;
+    public ShowReviewsWebPanelCondition(IssueReviewsManager reviewsManager, GerritConfiguration configurationManager) {
+
+        issueReviewsManager = reviewsManager;
+        gerritConfiguration = configurationManager;
     }
 
     @Override
-    public void init(Map<String, String> map) throws PluginParseException {
+    public void init(Map<String, String> map) {
     }
 
     @Override
     public boolean shouldDisplay(Map<String, Object> map) {
-        // TODO: allow per-project configuration to hide this
 
-        // Short circuit if we always want to show
-        if (mConfiguration.getShowsEmptyPanel()) return true;
+        if (map == null)
+            return false;
 
         final Issue issue = (Issue) map.get(KEY_ISSUE);
 
-        List<GerritChange> reviews = null;
+        if (issue == null)
+            return false;
+
+        // Shall the system use the white list and does the issue belongs to a project, that uses gerrit:
+        if (gerritConfiguration.getUseGerritProjectWhitelist() && ! isGerritProject(issue))
+            return false;
+
+        // Even though there are no reviews, the gerrit panel shall be displayed:
+        if (gerritConfiguration.getShowsEmptyPanel())
+            return true;
 
         try {
-            reviews = mReviewsManager.getReviewsForIssue(issue);
-        } catch (GerritQueryException e) {
-            e.printStackTrace();
+
+           return ! isEmpty(issueReviewsManager.getReviewsForIssue(issue));
+
+        } catch (GerritQueryException gerritQueryException) {
+
+            log.warn(gerritQueryException.getLocalizedMessage(), gerritQueryException);
+            return false;
         }
-//
-        return reviews != null && !reviews.isEmpty();
+    }
+
+    private boolean isGerritProject(final Issue issue) {
+
+        if (issue.getProjectId() == null)
+           return false;
+
+        return ! isEmpty(gerritConfiguration.getIdsOfKnownGerritProjects()) &&
+                gerritConfiguration.getIdsOfKnownGerritProjects().contains(issue.getProjectId().toString());
     }
 }
