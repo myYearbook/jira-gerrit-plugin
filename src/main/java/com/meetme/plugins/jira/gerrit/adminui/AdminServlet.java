@@ -224,24 +224,34 @@ public class AdminServlet extends HttpServlet {
             final String fieldName = item.getFieldName();
             allFields.add(fieldName);
 
-            if (GerritConfiguration.FIELD_HTTP_BASE_URL.equals(fieldName)) {
-                configurationManager.setHttpBaseUrl(item.getString());
-            } else if (GerritConfiguration.FIELD_HTTP_USERNAME.equals(fieldName)) {
-                configurationManager.setHttpUsername(item.getString());
-            } else if (GerritConfiguration.FIELD_HTTP_PASSWORD.equals(fieldName)) {
-                configurationManager.setHttpPassword(item.getString());
-            } else if (GerritConfiguration.FIELD_SSH_HOSTNAME.equals(fieldName)) {
-                configurationManager.setSshHostname(item.getString());
-            } else if (GerritConfiguration.FIELD_SSH_USERNAME.equals(fieldName)) {
-                configurationManager.setSshUsername(item.getString());
-            } else if (GerritConfiguration.FIELD_SSH_PORT.equals(fieldName)) {
-                configurationManager.setSshPort(Integer.parseInt(item.getString()));
-            } else if (GerritConfiguration.FIELD_QUERY_ISSUE.equals(fieldName)) {
-                configurationManager.setIssueSearchQuery(item.getString());
-            } else if (GerritConfiguration.FIELD_QUERY_PROJECT.equals(fieldName)) {
-                configurationManager.setProjectSearchQuery(item.getString());
-            } else if (GerritConfiguration.FIELD_KNOWN_GERRIT_PROJECTS.equals(fieldName)) {
-                idsOfSelectedGerritProjects.add(item.getString());
+            switch (fieldName) {
+                case GerritConfiguration.FIELD_HTTP_BASE_URL:
+                    configurationManager.setHttpBaseUrl(item.getString());
+                    break;
+                case GerritConfiguration.FIELD_HTTP_USERNAME:
+                    configurationManager.setHttpUsername(item.getString());
+                    break;
+                case GerritConfiguration.FIELD_HTTP_PASSWORD:
+                    configurationManager.setHttpPassword(item.getString());
+                    break;
+                case GerritConfiguration.FIELD_SSH_HOSTNAME:
+                    configurationManager.setSshHostname(item.getString());
+                    break;
+                case GerritConfiguration.FIELD_SSH_USERNAME:
+                    configurationManager.setSshUsername(item.getString());
+                    break;
+                case GerritConfiguration.FIELD_SSH_PORT:
+                    configurationManager.setSshPort(Integer.parseInt(item.getString()));
+                    break;
+                case GerritConfiguration.FIELD_QUERY_ISSUE:
+                    configurationManager.setIssueSearchQuery(item.getString());
+                    break;
+                case GerritConfiguration.FIELD_QUERY_PROJECT:
+                    configurationManager.setProjectSearchQuery(item.getString());
+                    break;
+                case GerritConfiguration.FIELD_KNOWN_GERRIT_PROJECTS:
+                    idsOfSelectedGerritProjects.add(item.getString());
+                    break;
             }
         }
 
