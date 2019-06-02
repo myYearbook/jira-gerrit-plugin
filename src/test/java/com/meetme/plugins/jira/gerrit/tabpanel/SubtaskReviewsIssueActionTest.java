@@ -102,7 +102,7 @@ public class SubtaskReviewsIssueActionTest {
      */
     @Test
     public void testPopulateVelocityParamsMap_nullChanges() {
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         SubtaskReviewsIssueAction obj = new SubtaskReviewsIssueAction(descriptor, subtask, null);
 
         obj.populateVelocityParams(params);
@@ -117,7 +117,7 @@ public class SubtaskReviewsIssueActionTest {
     @SuppressWarnings("rawtypes")
     @Test
     public void testPopulateVelocityParamsMap() {
-        Map<String, Object> params = new HashMap<String, Object>();
+        Map<String, Object> params = new HashMap<>();
         List changes = EasyList.build(change1, change2);
 
         @SuppressWarnings("unchecked")

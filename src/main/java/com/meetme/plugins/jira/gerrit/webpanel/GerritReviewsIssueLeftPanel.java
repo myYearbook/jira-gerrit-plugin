@@ -95,7 +95,7 @@ public class GerritReviewsIssueLeftPanel implements CacheableContextProvider {
             }
         }
 
-        List<GerritChange> changes = new ArrayList<GerritChange>();
+        List<GerritChange> changes = new ArrayList<>();
 
         try {
             if (IssueTypeOptionsProvider.wantsIssue(gerritIssueType)

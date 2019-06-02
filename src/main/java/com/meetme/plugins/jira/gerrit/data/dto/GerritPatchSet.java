@@ -63,7 +63,7 @@ public class GerritPatchSet extends PatchSet {
     }
 
     public Map<String, List<GerritApproval>> getApprovalsByLabel() {
-        Map<String, List<GerritApproval>> map = new HashMap<String, List<GerritApproval>>();
+        Map<String, List<GerritApproval>> map = new HashMap<>();
         List<GerritApproval> l;
 
         for (GerritApproval approval : approvals) {
@@ -72,7 +72,7 @@ public class GerritPatchSet extends PatchSet {
             l = map.get(type);
 
             if (l == null) {
-                l = new ArrayList<GerritApproval>();
+                l = new ArrayList<>();
                 map.put(type, l);
             }
 
@@ -83,7 +83,7 @@ public class GerritPatchSet extends PatchSet {
     }
 
     public List<GerritApproval> getApprovalsForLabel(String label) {
-        List<GerritApproval> filtered = new ArrayList<GerritApproval>();
+        List<GerritApproval> filtered = new ArrayList<>();
 
         if (approvals != null) {
             for (GerritApproval approval : approvals) {

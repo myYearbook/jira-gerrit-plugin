@@ -43,7 +43,7 @@ public class SubtaskReviewsTabPanel extends AbstractIssueTabPanel2 implements Is
     @Override
     public GetActionsReply getActions(GetActionsRequest request) {
         Collection<Issue> subtasks = request.issue().getSubTaskObjects();
-        List<IssueAction> actions = new ArrayList<IssueAction>();
+        List<IssueAction> actions = new ArrayList<>();
         List<GerritChange> changes;
 
         for (Issue subtask : subtasks) {

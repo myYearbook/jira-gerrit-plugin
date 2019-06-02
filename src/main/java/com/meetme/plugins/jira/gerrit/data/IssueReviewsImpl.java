@@ -56,7 +56,7 @@ public class IssueReviewsImpl implements IssueReviewsManager {
 
     @Override
     public List<GerritChange> getReviewsForIssue(Issue issue) throws GerritQueryException {
-        List<GerritChange> gerritChanges = new ArrayList<GerritChange>();
+        List<GerritChange> gerritChanges = new ArrayList<>();
 
         Set<String> allIssueKeys = getIssueKeys(issue);
         for (String key : allIssueKeys) {
@@ -97,7 +97,7 @@ public class IssueReviewsImpl implements IssueReviewsManager {
             throw new GerritQueryException("An error occurred while querying for reviews.", e);
         }
 
-        changes = new ArrayList<GerritChange>(reviews.size());
+        changes = new ArrayList<>(reviews.size());
 
         for (JSONObject obj : reviews) {
             if (obj.has("type") && "stats".equalsIgnoreCase(obj.getString("type"))) {

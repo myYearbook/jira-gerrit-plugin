@@ -42,7 +42,7 @@ public class IssueReviewsCache {
         public TimedCache(final int capacity, final long expiration) {
             super(capacity + 1, 1.0f, true);
             this.capacity = capacity;
-            this.timestamps = new LinkedHashMap<String, Long>(capacity + 1, 1.0f, true);
+            this.timestamps = new LinkedHashMap<>(capacity + 1, 1.0f, true);
             this.expiration = expiration;
         }
 
