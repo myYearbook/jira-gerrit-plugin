@@ -201,10 +201,7 @@ public class AdminServlet extends HttpServlet {
         try {
             query.queryJava("limit:1", false, false, false);
             map.put("testResult", Boolean.TRUE);
-        } catch (IOException e) {
-            e.printStackTrace();
-            map.put("testError", e.getMessage());
-        } catch (GerritQueryException e) {
+        } catch (IOException | GerritQueryException e) {
             e.printStackTrace();
             map.put("testError", e.getMessage());
         }
