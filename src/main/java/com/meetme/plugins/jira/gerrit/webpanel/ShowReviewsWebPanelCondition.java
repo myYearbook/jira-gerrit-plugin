@@ -66,10 +66,7 @@ public class ShowReviewsWebPanelCondition implements Condition {
 
     private boolean isGerritProject(final Issue issue) {
 
-        if (issue.getProjectId() == null)
-           return false;
+        return issue.getProjectId() != null && !isEmpty(gerritConfiguration.getIdsOfKnownGerritProjects()) && gerritConfiguration.getIdsOfKnownGerritProjects().contains(issue.getProjectId().toString());
 
-        return ! isEmpty(gerritConfiguration.getIdsOfKnownGerritProjects()) &&
-                gerritConfiguration.getIdsOfKnownGerritProjects().contains(issue.getProjectId().toString());
     }
 }

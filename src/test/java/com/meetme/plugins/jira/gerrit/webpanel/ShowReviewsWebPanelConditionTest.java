@@ -67,7 +67,7 @@ public class ShowReviewsWebPanelConditionTest {
         when(gerritConfiguration.getIdsOfKnownGerritProjects()).thenReturn(projects.stream().map(p -> p.getId()
                 .toString()).collect(Collectors.toList()));
 
-        assertTrue(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", (Object) issue)));
+        assertTrue(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", issue)));
     }
 
     @Test
@@ -89,7 +89,7 @@ public class ShowReviewsWebPanelConditionTest {
         when(gerritConfiguration.getShowsEmptyPanel()).thenReturn(false);
         when(gerritConfiguration.getIdsOfKnownGerritProjects()).thenReturn(Lists.newArrayList());
 
-        assertFalse(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", (Object) issue)));
+        assertFalse(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", issue)));
     }
 
     @Test
@@ -98,7 +98,7 @@ public class ShowReviewsWebPanelConditionTest {
         when(issueReviewsManager.getReviewsForIssue(any(Issue.class))).thenReturn(singletonList(new GerritChange()));
         when(gerritConfiguration.getIdsOfKnownGerritProjects()).thenReturn(projects.stream().map(p -> p.getId()
                 .toString()).collect(Collectors.toList()));
-        assertTrue(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", (Object) issue)));
+        assertTrue(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", issue)));
     }
 
     @Test
@@ -106,7 +106,7 @@ public class ShowReviewsWebPanelConditionTest {
         when(gerritConfiguration.getShowsEmptyPanel()).thenReturn(false);
         when(gerritConfiguration.getIdsOfKnownGerritProjects()).thenReturn(projects.stream().filter(project -> ! project
                 .getId().equals(1L)).map(project -> project.getId().toString()).collect(Collectors.toList()));
-        assertFalse(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", (Object) issue)));
+        assertFalse(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", issue)));
     }
 
     @Test
@@ -118,10 +118,10 @@ public class ShowReviewsWebPanelConditionTest {
         when(issueReviewsManager.getReviewsForIssue(any(Issue.class))).thenThrow(new GerritQueryException());
 
         when(gerritConfiguration.getShowsEmptyPanel()).thenReturn(true);
-        assertTrue(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", (Object) issue)));
+        assertTrue(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", issue)));
 
         when(gerritConfiguration.getShowsEmptyPanel()).thenReturn(false);
-        assertFalse(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", (Object) issue)));
+        assertFalse(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", issue)));
     }
 
     @Test
