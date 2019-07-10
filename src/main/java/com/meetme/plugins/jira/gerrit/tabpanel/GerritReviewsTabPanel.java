@@ -19,11 +19,13 @@ import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritPatchSet;
 
+import com.atlassian.jira.bc.user.search.UserSearchService;
 import com.atlassian.jira.datetime.DateTimeFormatter;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
 import com.atlassian.jira.plugin.issuetabpanel.*;
 import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.user.UserUtils;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.sal.api.ApplicationProperties;
 import com.atlassian.sal.api.message.I18nResolver;
@@ -33,6 +35,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 /**
@@ -50,10 +53,13 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
     private final IssueReviewsManager reviewsManager;
     private final I18nResolver i18n;
 
+    @Deprecated
     private final UserManager userManager;
+    private final UserSearchService userSearchService;
 
     public GerritReviewsTabPanel(
-            UserManager userManager,
+            @Deprecated UserManager userManager,
+            UserSearchService userSearchService,
             DateTimeFormatter dateTimeFormatter,
             ApplicationProperties applicationProperties,
             GerritConfiguration configuration,
@@ -61,6 +67,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
             I18nResolver i18n
     ) {
         this.userManager = userManager;
+        this.userSearchService = userSearchService;
         this.dateTimeFormatter = dateTimeFormatter;
         this.applicationProperties = applicationProperties;
         this.configuration = configuration;
@@ -133,10 +140,17 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
         ApplicationUser user = null;
 
         if (email != null) {
-            for (ApplicationUser iUser : userManager.getUsers()) {
-                if (email.equalsIgnoreCase(iUser.getEmailAddress())) {
-                    user = iUser;
-                    break;
+            Iterator<ApplicationUser> users = userSearchService.findUsersByEmail(email).iterator();
+            if (users.hasNext()) user = users.next();
+
+            if (user == null) user = UserUtils.getUserByEmail(email);
+
+            if (user == null) {
+                for (ApplicationUser iUser : userManager.getUsers()) {
+                    if (email.equalsIgnoreCase(iUser.getEmailAddress())) {
+                        user = iUser;
+                        break;
+                    }
                 }
             }
         }
