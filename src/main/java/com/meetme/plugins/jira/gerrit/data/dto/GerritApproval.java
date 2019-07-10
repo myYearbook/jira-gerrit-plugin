@@ -13,12 +13,10 @@
  */
 package com.meetme.plugins.jira.gerrit.data.dto;
 
-import com.atlassian.crowd.embedded.api.User;
+import com.atlassian.jira.user.ApplicationUser;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
 
 import net.sf.json.JSONObject;
-
-import com.atlassian.jira.user.ApplicationUser;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,7 +24,6 @@ import org.slf4j.LoggerFactory;
 import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.BY;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.EMAIL;
 import static com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.GerritEventKeys.NAME;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Approval;
 
 public class GerritApproval extends Approval implements Comparable<GerritApproval> {
     private static final Logger log = LoggerFactory.getLogger(GerritApproval.class);

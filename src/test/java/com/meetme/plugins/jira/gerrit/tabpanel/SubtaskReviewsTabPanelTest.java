@@ -1,11 +1,11 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,28 +13,27 @@
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
+import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.List;
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
+import com.atlassian.jira.user.ApplicationUser;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
-import com.atlassian.jira.user.ApplicationUser;
-import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
-import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * @author Joe Hansche
@@ -171,7 +170,6 @@ public class SubtaskReviewsTabPanelTest {
         when(reviewsManager.getReviewsForIssue(subtask2)).thenThrow(exc);
 
         obj.getActions(issue, user);
-
     }
 
     /**

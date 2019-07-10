@@ -13,30 +13,24 @@
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertSame;
-import static org.junit.Assert.assertTrue;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritPatchSet;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.atlassian.core.util.map.EasyMap;
+import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
+import com.atlassian.jira.web.util.OutlookDate;
 
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 
-import com.atlassian.core.util.map.EasyMap;
-import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
-import com.atlassian.jira.web.util.OutlookDate;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritPatchSet;
+import java.util.*;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 public class GerritReviewIssueActionTest {
     private static final String BASE_URL = "http://localhost:2990/jira";
@@ -76,7 +70,6 @@ public class GerritReviewIssueActionTest {
         setUpApprovals();
         setUpGerritChange();
         action = new GerritReviewIssueAction(descriptor, change, dateTimeFormatter, BASE_URL);
-
     }
 
     @After

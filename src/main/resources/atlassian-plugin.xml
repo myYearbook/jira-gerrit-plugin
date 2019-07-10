@@ -50,9 +50,9 @@
     </component>
 
     <template-context-item name="Application Properties Context Item"
-            component-ref="applicationProperties"
-            context-key="applicationProperties"
-            key="applicationPropertiesContextItem" />
+        component-ref="applicationProperties"
+        context-key="applicationProperties"
+        key="applicationPropertiesContextItem" />
 
     <!-- Admin panel -->
     <web-resource name="Admin Web Resources" key="admin-resources">
@@ -75,9 +75,9 @@
     <!-- Issue tab for Gerrit Reviews -->
 
     <issue-tabpanel name="Gerrit Reviews Tab Panel"
-            class="com.meetme.plugins.jira.gerrit.tabpanel.GerritReviewsTabPanel"
-            key="gerrit-reviews-tabpanel"
-            state="disabled">
+        class="com.meetme.plugins.jira.gerrit.tabpanel.GerritReviewsTabPanel"
+        key="gerrit-reviews-tabpanel"
+        state="disabled">
         <description>Show Gerrit reviews related to an issue in an issue tab panel.</description>
         <label key="gerrit.tabpanel.label">Gerrit Reviews</label>
         <resource name="view" location="templates/gerrit-reviews-tabpanel-item.vm" type="velocity" />
@@ -97,9 +97,9 @@
     <!-- Tab panel to list Gerrit Reviews for each subtask -->
 
     <issue-tabpanel name="Subtask Gerrit Reviews Tab Panel"
-            class="com.meetme.plugins.jira.gerrit.tabpanel.SubtaskReviewsTabPanel"
-            key="subtask-reviews-tabpanel"
-            state="disabled">
+        class="com.meetme.plugins.jira.gerrit.tabpanel.SubtaskReviewsTabPanel"
+        key="subtask-reviews-tabpanel"
+        state="disabled">
         <description>Show Gerrit reviews related issue subtasks in the parent issue's tab panel.</description>
         <label key="gerrit.tabpanel.subtasks.label">Gerrit Subtask Reviews</label>
         <resource name="view" location="templates/subtask-reviews-tabpanel-item.vm" type="velocity" />
@@ -111,10 +111,10 @@
     <!-- View Issue right-side panel (disabled by default) -->
 
     <web-panel name="Gerrit Reviews Side Panel"
-            i18n-name-key="gerrit-reviews-side-panel.name"
-            key="gerrit-reviews-side-panel"
-            location="atl.jira.view.issue.right.context"
-            state="disabled">
+        i18n-name-key="gerrit-reviews-side-panel.name"
+        key="gerrit-reviews-side-panel"
+        location="atl.jira.view.issue.right.context"
+        state="disabled">
         <description key="gerrit-reviews-side-panel.description">Show Gerrit reviews in the View Issue side panel</description>
         <label key="gerrit-reviews-side-panel.label">Gerrit Reviews</label>
         <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueSidePanel" />
@@ -125,10 +125,10 @@
     <!-- View Issue left-side panel -->
 
     <web-panel name="Gerrit Reviews Main Panel"
-            i18n-name-key="gerrit-reviews-left-panel.name"
-            key="gerritreviewsmodule"
-            location="atl.jira.view.issue.left.context"
-            weight="750">
+        i18n-name-key="gerrit-reviews-left-panel.name"
+        key="gerritreviewsmodule"
+        location="atl.jira.view.issue.left.context"
+        weight="750">
         <description key="gerrit-reviews-left-panel.description">Show Gerrit reviews in a View Issue panel</description>
         <label key="gerrit-reviews-left-panel.label">Gerrit Reviews</label>
         <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueLeftPanel" />
@@ -140,47 +140,47 @@
 
     <!-- TODO: add conditions for some of these view options, and maybe even for the module itself? -->
     <web-section name="Issue Type View Options Section"
-            key="issuetype-view-options"
-            location="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop"
-            weight="10" />
+        key="issuetype-view-options"
+        location="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop"
+        weight="10" />
 
     <web-item-provider name="View Reviews View Options Provider"
-            class="com.meetme.plugins.jira.gerrit.webpanel.IssueTypeOptionsProvider"
-            key="issuetype-view-options-factory"
-            lazy="false"
-            section="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop/issuetype-view-options"
-            weight="10" />
+        class="com.meetme.plugins.jira.gerrit.webpanel.IssueTypeOptionsProvider"
+        key="issuetype-view-options-factory"
+        lazy="false"
+        section="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop/issuetype-view-options"
+        weight="10" />
 
     <web-section name="Review Status View Options Section"
-            key="reviewstatus-view-options"
-            location="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop"
-            weight="20" />
+        key="reviewstatus-view-options"
+        location="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop"
+        weight="20" />
 
     <web-item-provider name="View Reviews View Options Factory"
-            class="com.meetme.plugins.jira.gerrit.webpanel.ReviewStatusOptionsProvider"
-            key="reviewstatus-view-options-factory"
-            lazy="false"
-            section="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop/reviewstatus-view-options"
-            weight="10" />
+        class="com.meetme.plugins.jira.gerrit.webpanel.ReviewStatusOptionsProvider"
+        key="reviewstatus-view-options-factory"
+        lazy="false"
+        section="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop/reviewstatus-view-options"
+        weight="10" />
 
     <web-section name="Issue Status View Options Section"
-            key="issuestatus-view-options"
-            location="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop"
-            weight="30" />
+        key="issuestatus-view-options"
+        location="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop"
+        weight="30" />
 
     <web-item-provider name="Issue Status View Options Factory"
-            class="com.meetme.plugins.jira.gerrit.webpanel.IssueStatusOptionsProvider"
-            key="issuestatus-view-options-factory"
-            lazy="false"
-            section="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop/issuestatus-view-options"
-            weight="10" />
+        class="com.meetme.plugins.jira.gerrit.webpanel.IssueStatusOptionsProvider"
+        key="issuestatus-view-options-factory"
+        lazy="false"
+        section="com.meetme.plugins.jira.gerrit-plugin:gerritreviewsmodule/drop/issuestatus-view-options"
+        weight="10" />
 
     <!-- Workflow Conditions -->
 
     <!-- 1. Must have zero open reviews (or reversed logic) -->
     <workflow-condition class="com.meetme.plugins.jira.gerrit.workflow.NoOpenReviewsConditionFactoryImpl"
-            i18n-name-key="gerrit.workflow.no-open-reviews.label"
-            key="no-open-reviews">
+        i18n-name-key="gerrit.workflow.no-open-reviews.label"
+        key="no-open-reviews">
         <description>Condition to allow a workflow transition based on whether there are open Gerrit reviews.</description>
         <condition-class>com.meetme.plugins.jira.gerrit.workflow.condition.NoOpenReviews</condition-class>
         <resource name="view" location="templates/workflow/no-open-reviews-condition-view.vm" type="velocity" />
@@ -191,8 +191,8 @@
 
     <!-- 2. Must [or not] have [ operator ] N score for [type] -->
     <workflow-condition class="com.meetme.plugins.jira.gerrit.workflow.ApprovalScoreConditionFactoryImpl"
-            i18n-name-key="gerrit.workflow.score-condition.label"
-            key="score-condition">
+        i18n-name-key="gerrit.workflow.score-condition.label"
+        key="score-condition">
         <description>Condition to allow a workflow transition based on existing approval scores.</description>
         <condition-class>com.meetme.plugins.jira.gerrit.workflow.condition.ApprovalScore</condition-class>
         <resource name="view" location="templates/workflow/score-condition-view.vm" type="velocity" />
@@ -204,8 +204,8 @@
     <!-- Workflow Functions -->
 
     <workflow-function class="com.meetme.plugins.jira.gerrit.workflow.ApproveReviewFactoryImpl"
-            i18n-name-key="gerrit.workflow.approve.label"
-            key="gerrit-approve">
+        i18n-name-key="gerrit.workflow.approve.label"
+        key="gerrit-approve">
         <description>Perform Gerrit Review Approval</description>
         <function-class>com.meetme.plugins.jira.gerrit.workflow.function.ApprovalFunction</function-class>
         <orderable>true</orderable>
@@ -226,10 +226,10 @@
       -->
 
     <web-panel name="Gerrit Reviews Agile Details Panel"
-            i18n-name-key="gerrit-reviews-side-panel.name"
-            key="gerrit-reviews-agile-panel"
-            location="atl.gh.issue.details.tab"
-            weight="1000">
+        i18n-name-key="gerrit-reviews-side-panel.name"
+        key="gerrit-reviews-agile-panel"
+        location="atl.gh.issue.details.tab"
+        weight="1000">
         <description key="gerrit-reviews-side-panel.description">Show Gerrit reviews in the Agile Details panel</description>
         <label key="gerrit-reviews-side-panel.label">Gerrit Reviews</label>
         <context-provider class="com.meetme.plugins.jira.gerrit.webpanel.GerritReviewsIssueAgilePanel" />

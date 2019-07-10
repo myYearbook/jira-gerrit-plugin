@@ -13,12 +13,13 @@
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
 
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+import com.meetme.plugins.jira.gerrit.workflow.condition.NoOpenReviews;
+
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
 import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanelModuleDescriptor;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
-import com.meetme.plugins.jira.gerrit.workflow.condition.NoOpenReviews;
 
 import java.util.Date;
 import java.util.List;

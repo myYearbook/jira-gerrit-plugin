@@ -13,15 +13,16 @@
  */
 package com.meetme.plugins.jira.gerrit.workflow.function;
 
+import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
+import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+import com.meetme.plugins.jira.gerrit.workflow.condition.ApprovalScore;
+
 import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.preferences.UserPreferencesManager;
 import com.atlassian.jira.workflow.function.issue.AbstractJiraFunctionProvider;
-import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
-import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
-import com.meetme.plugins.jira.gerrit.workflow.condition.ApprovalScore;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
@@ -38,7 +39,7 @@ import java.util.Map;
  * transition. The input argument is simply a command line argument string (such as "--verified +1",
  * or "--submit", etc). The argument will be appended to the <tt>gerrit review [ChangeId] ...</tt>
  * command line.
- *
+ * <p>
  * This function can be used in combination with {@link ApprovalScore} workflow conditions, such
  * that, e.g., a "Merge Change" workflow transition can be used to automatically "submit" a Gerrit
  * review, iff all of the following conditions are met:
@@ -47,10 +48,10 @@ import java.util.Map;
  * <li>MUST have a Verified score &gt;= 1</li>
  * <li>Must NOT have a Code-Review score &lt; 0</li>
  * </ul>
- *
+ * <p>
  * This ensures that the workflow transition is only available if the "submit" step will be
  * successful.
- *
+ * <p>
  * Another common use for this function would be to automatically provide a "Verified +1" score, via
  * another workflow step, e.g., "Ready for Merge". In that way, a "Ready for Merge" transition may
  * then automatically enable the "Merge Change" transition, as a result of giving the Verified +1

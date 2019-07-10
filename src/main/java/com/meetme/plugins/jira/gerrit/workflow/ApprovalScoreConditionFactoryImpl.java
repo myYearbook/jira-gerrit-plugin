@@ -1,11 +1,11 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,18 +13,19 @@
  */
 package com.meetme.plugins.jira.gerrit.workflow;
 
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.Map;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
+import com.meetme.plugins.jira.gerrit.workflow.condition.ApprovalScore;
 
 import com.atlassian.core.util.map.EasyMap;
 import com.atlassian.jira.plugin.workflow.AbstractWorkflowPluginFactory;
 import com.atlassian.jira.plugin.workflow.WorkflowPluginConditionFactory;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
-import com.meetme.plugins.jira.gerrit.workflow.condition.ApprovalScore;
 import com.opensymphony.workflow.loader.AbstractDescriptor;
 import com.opensymphony.workflow.loader.ConditionDescriptor;
+
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;
 
 public class ApprovalScoreConditionFactoryImpl extends AbstractWorkflowPluginFactory implements WorkflowPluginConditionFactory {
     private static final List<String> ALL_PARAMS = Collections.unmodifiableList(Arrays.asList(ApprovalScore.KEY_NEGATIVE,

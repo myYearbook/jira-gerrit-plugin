@@ -13,46 +13,46 @@
  */
 package com.meetme.plugins.jira.gerrit.webpanel;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.plugin.webfragment.contextproviders.AbstractJiraContextProvider;
 import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
 import com.atlassian.jira.user.ApplicationUser;
-import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class GerritReviewsIssueAgilePanel extends AbstractJiraContextProvider {
-	private static final String KEY_ISSUE = "issue";
-	private static final String KEY_CHANGES = "changes";
-	private static final String KEY_ERROR = "error";
+    private static final String KEY_ISSUE = "issue";
+    private static final String KEY_CHANGES = "changes";
+    private static final String KEY_ERROR = "error";
 
-	private IssueReviewsManager reviewsManager;
+    private IssueReviewsManager reviewsManager;
 
-	public GerritReviewsIssueAgilePanel(IssueReviewsManager reviewsManager) {
-		super();
-		this.reviewsManager = reviewsManager;
-	}
+    public GerritReviewsIssueAgilePanel(IssueReviewsManager reviewsManager) {
+        super();
+        this.reviewsManager = reviewsManager;
+    }
 
-	@Override
-	public Map<String, Object> getContextMap(ApplicationUser user, JiraHelper jiraHelper) {
-		HashMap<String, Object> contextMap = new HashMap<>();
+    @Override
+    public Map<String, Object> getContextMap(ApplicationUser user, JiraHelper jiraHelper) {
+        HashMap<String, Object> contextMap = new HashMap<>();
 
-		Issue currentIssue = (Issue) jiraHelper.getContextParams().get(KEY_ISSUE);
+        Issue currentIssue = (Issue) jiraHelper.getContextParams().get(KEY_ISSUE);
 
-		try {
-			List<GerritChange> changes = reviewsManager.getReviewsForIssue(currentIssue);
-			contextMap.put(KEY_CHANGES, changes);
-			contextMap.put("atl.gh.issue.details.tab.count", (long) changes.size());
-		} catch (GerritQueryException e) {
-			contextMap.put(KEY_ERROR, e.getMessage());
-		}
+        try {
+            List<GerritChange> changes = reviewsManager.getReviewsForIssue(currentIssue);
+            contextMap.put(KEY_CHANGES, changes);
+            contextMap.put("atl.gh.issue.details.tab.count", (long) changes.size());
+        } catch (GerritQueryException e) {
+            contextMap.put(KEY_ERROR, e.getMessage());
+        }
 
-		return contextMap;
-	}
-
+        return contextMap;
+    }
 }

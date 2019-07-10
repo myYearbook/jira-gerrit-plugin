@@ -14,6 +14,7 @@
 package com.meetme.plugins.jira.gerrit.data.dto;
 
 import com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys;
+
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.dto.attr.Change;
 
 import net.sf.json.JSONObject;
@@ -31,8 +32,7 @@ public class GerritChange extends Change implements Comparable<GerritChange> {
      * Gerrit review status enumeration, corresponding to the status string in the Gerrit change
      * payload.
      */
-    public static enum Status
-    {
+    public static enum Status {
         NEW, SUBMITTED, DRAFT, MERGED, ABANDONED
     }
 
@@ -54,7 +54,7 @@ public class GerritChange extends Change implements Comparable<GerritChange> {
 
     /**
      * Sorts {@link GerritChange}s in order by their Gerrit change number.
-     *
+     * <p>
      * TODO: To be completely accurate, the changes should impose a dependency-tree ordering (via
      * <tt>--dependencies</tt> option) to GerritQuery! It is possible for an earlier ChangeId to be
      * refactored such that it is then dependent on a <i>later</i> change!

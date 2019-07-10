@@ -1,17 +1,19 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
 package com.meetme.plugins.jira.gerrit.adminui;
+
+import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 
 import com.atlassian.jira.config.util.JiraHome;
 import com.atlassian.jira.project.Project;
@@ -21,10 +23,10 @@ import com.atlassian.sal.api.user.UserManager;
 import com.atlassian.templaterenderer.TemplateRenderer;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Sets;
-import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryHandler;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
+
 import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.FileItemFactory;
 import org.apache.commons.fileupload.FileUploadException;
@@ -35,10 +37,6 @@ import org.apache.commons.lang.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.servlet.ServletException;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -49,6 +47,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.stream.Collectors;
+
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 public class AdminServlet extends HttpServlet {
     private static final long serialVersionUID = -9175363090552720328L;
@@ -166,12 +169,14 @@ public class AdminServlet extends HttpServlet {
         if (privateKeyPath != null) {
             // We'll store the *path* to the file in ConfigResource, to make it easy to look it
             // up in the future.
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("---- Saved ssh private key at: " + privateKeyPath.toString() + " ----");
+            }
             configurationManager.setSshPrivateKey(privateKeyPath);
         } else if (configurationManager.getSshPrivateKey() != null) {
-            if (log.isDebugEnabled())
+            if (log.isDebugEnabled()) {
                 log.debug("---- Private key is already on file, and not being replaced. ----");
+            }
         } else {
             // TODO: is this a failure?
             log.info("**** No private key was uploaded, and no key currently on file!  Requests will fail. ****");

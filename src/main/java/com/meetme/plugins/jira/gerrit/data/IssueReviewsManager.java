@@ -13,10 +13,10 @@
  */
 package com.meetme.plugins.jira.gerrit.data;
 
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
 import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.project.Project;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryHandler;
 

@@ -21,11 +21,7 @@ import com.atlassian.jira.web.util.OutlookDate;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 
-import java.util.Collections;
-import java.util.Date;
-import java.util.List;
-import java.util.Map;
-import java.util.NoSuchElementException;
+import java.util.*;
 
 public class GerritReviewIssueAction extends AbstractIssueAction implements IssueAction {
     private String baseUrl;

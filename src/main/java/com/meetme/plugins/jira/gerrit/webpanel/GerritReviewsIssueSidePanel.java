@@ -13,17 +13,18 @@
  */
 package com.meetme.plugins.jira.gerrit.webpanel;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.plugin.webfragment.contextproviders.AbstractJiraContextProvider;
 import com.atlassian.jira.plugin.webfragment.model.JiraHelper;
 import com.atlassian.jira.user.ApplicationUser;
-import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @SuppressWarnings("unchecked")
 public class GerritReviewsIssueSidePanel extends AbstractJiraContextProvider {

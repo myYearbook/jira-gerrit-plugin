@@ -15,13 +15,7 @@ package com.meetme.plugins.jira.gerrit.tabpanel;
 
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
-import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel2;
-import com.atlassian.jira.plugin.issuetabpanel.GetActionsReply;
-import com.atlassian.jira.plugin.issuetabpanel.GetActionsRequest;
-import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
-import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel2;
-import com.atlassian.jira.plugin.issuetabpanel.ShowPanelReply;
-import com.atlassian.jira.plugin.issuetabpanel.ShowPanelRequest;
+import com.atlassian.jira.plugin.issuetabpanel.*;
 import com.atlassian.jira.user.ApplicationUser;
 import com.atlassian.jira.user.util.UserManager;
 import com.atlassian.jira.web.util.OutlookDate;

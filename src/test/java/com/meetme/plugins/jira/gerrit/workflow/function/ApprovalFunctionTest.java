@@ -13,12 +13,16 @@
  */
 package com.meetme.plugins.jira.gerrit.workflow.function;
 
-import static org.junit.Assert.*;
-import static org.mockito.Mockito.*;
+import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
+import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+import com.meetme.plugins.jira.gerrit.workflow.AbstractWorkflowTest;
 
-import java.io.IOException;
-import java.util.List;
-import java.util.Map;
+import com.atlassian.core.user.preferences.Preferences;
+import com.atlassian.jira.user.preferences.UserPreferencesManager;
+import com.opensymphony.module.propertyset.PropertySet;
+import com.opensymphony.workflow.WorkflowException;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 import org.junit.After;
 import org.junit.Before;
@@ -26,15 +30,12 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import com.atlassian.core.user.preferences.Preferences;
-import com.atlassian.jira.user.preferences.UserPreferencesManager;
-import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
-import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
-import com.meetme.plugins.jira.gerrit.workflow.AbstractWorkflowTest;
-import com.opensymphony.module.propertyset.PropertySet;
-import com.opensymphony.workflow.WorkflowException;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
+
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 /**
  * @author Joe Hansche

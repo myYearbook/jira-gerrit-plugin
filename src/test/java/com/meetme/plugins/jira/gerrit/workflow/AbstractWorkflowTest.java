@@ -1,31 +1,28 @@
 package com.meetme.plugins.jira.gerrit.workflow;
 
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.mockito.MockitoAnnotations.initMocks;
+import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
+import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
+import com.atlassian.core.util.collection.EasyList;
+import com.atlassian.core.util.map.EasyMap;
+import com.atlassian.jira.component.ComponentAccessor;
+import com.atlassian.jira.issue.MutableIssue;
+import com.atlassian.jira.mock.component.MockComponentWorker;
+import com.atlassian.jira.mock.issue.MockIssue;
+import com.atlassian.jira.user.ApplicationUser;
+import com.opensymphony.workflow.WorkflowContext;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+
+import org.mockito.Mock;
 
 import java.io.File;
 import java.util.List;
 import java.util.Map;
 
-import org.mockito.Mock;
-import org.mockito.Mockito;
-
-import com.atlassian.core.util.collection.EasyList;
-import com.atlassian.core.util.map.EasyMap;
-import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.component.ComponentAccessor;
-import com.atlassian.jira.issue.MutableIssue;
-import com.atlassian.jira.mock.component.MockComponentWorker;
-import com.atlassian.jira.mock.issue.MockIssue;
-import com.atlassian.jira.user.MockUser;
-import com.atlassian.jira.user.util.MockUserManager;
-import com.atlassian.jira.user.util.UserManager;
-import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
-import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
-import com.opensymphony.workflow.WorkflowContext;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.mockito.MockitoAnnotations.initMocks;
 
 /**
  * Base class for setting up mocks
@@ -66,7 +63,7 @@ public abstract class AbstractWorkflowTest {
 
     protected void setUpUser() {
         when(workflowContext.getCaller()).thenReturn(mockUser.getName());
-  }
+    }
 
     private void createMocks() {
         mockComponents = new MockComponentWorker();
@@ -104,5 +101,4 @@ public abstract class AbstractWorkflowTest {
         List reviews = EasyList.build(change);
         when(reviewsManager.getReviewsForIssue(mockIssue)).thenReturn(reviews);
     }
-
 }

@@ -1,11 +1,11 @@
 /*
  * Copyright 2012 MeetMe, Inc.
- * 
+ *
  * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
  * in compliance with the License. You may obtain a copy of the License at
- * 
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software distributed under the License
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
@@ -13,22 +13,17 @@
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.List;
-
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.plugin.issuetabpanel.AbstractIssueTabPanel2;
-import com.atlassian.jira.plugin.issuetabpanel.GetActionsReply;
-import com.atlassian.jira.plugin.issuetabpanel.GetActionsRequest;
-import com.atlassian.jira.plugin.issuetabpanel.IssueAction;
-import com.atlassian.jira.plugin.issuetabpanel.IssueTabPanel2;
-import com.atlassian.jira.plugin.issuetabpanel.ShowPanelReply;
-import com.atlassian.jira.plugin.issuetabpanel.ShowPanelRequest;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.plugin.issuetabpanel.*;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
 
 public class SubtaskReviewsTabPanel extends AbstractIssueTabPanel2 implements IssueTabPanel2 {
     private final GerritConfiguration configuration;

@@ -13,11 +13,12 @@
  */
 package com.meetme.plugins.jira.gerrit.workflow.condition;
 
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.workflow.condition.AbstractJiraCondition;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.workflow.condition.AbstractJiraCondition;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
@@ -30,7 +31,7 @@ import java.util.Map;
 
 /**
  * A workflow condition that requires (or rejects) a certain Gerrit approval score.
- *
+ * <p>
  * An example use case might be to require, for example, "{@literal MUST have a Code-Review score >= 2}", or
  * "{@literal Must NOT have a Code-Review score < 0}" (these could even be combined into a single transition to
  * require both conditions be met).

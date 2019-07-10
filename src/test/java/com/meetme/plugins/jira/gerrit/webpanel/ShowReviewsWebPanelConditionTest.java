@@ -1,15 +1,17 @@
 package com.meetme.plugins.jira.gerrit.webpanel;
 
+import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
+import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.project.MockProject;
 import com.atlassian.jira.project.Project;
 import com.atlassian.jira.project.ProjectManager;
 import com.google.common.collect.Lists;
 import com.google.common.collect.Maps;
-import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
-import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+
 import org.hamcrest.core.Is;
 import org.junit.Assert;
 import org.junit.Before;
@@ -85,7 +87,7 @@ public class ShowReviewsWebPanelConditionTest {
     }
 
     @Test
-    public void shouldDisplayEmptyWhiteList(){
+    public void shouldDisplayEmptyWhiteList() {
         when(gerritConfiguration.getShowsEmptyPanel()).thenReturn(false);
         when(gerritConfiguration.getIdsOfKnownGerritProjects()).thenReturn(Lists.newArrayList());
 
@@ -104,14 +106,13 @@ public class ShowReviewsWebPanelConditionTest {
     @Test
     public void shouldDisplayProjectIsNotOnWhiteList() {
         when(gerritConfiguration.getShowsEmptyPanel()).thenReturn(false);
-        when(gerritConfiguration.getIdsOfKnownGerritProjects()).thenReturn(projects.stream().filter(project -> ! project
+        when(gerritConfiguration.getIdsOfKnownGerritProjects()).thenReturn(projects.stream().filter(project -> !project
                 .getId().equals(1L)).map(project -> project.getId().toString()).collect(Collectors.toList()));
         assertFalse(showReviewsWebPanelCondition.shouldDisplay(singletonMap("issue", issue)));
     }
 
     @Test
     public void shouldDisplayNoConnectionToGerrit() throws GerritQueryException {
-
 
         when(gerritConfiguration.getIdsOfKnownGerritProjects()).thenReturn(projects.stream().map(p -> p.getId()
                 .toString()).collect(Collectors.toList()));

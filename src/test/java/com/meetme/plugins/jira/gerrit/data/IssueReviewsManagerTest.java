@@ -1,30 +1,24 @@
 package com.meetme.plugins.jira.gerrit.data;
 
-import com.atlassian.jira.component.ComponentAccessor;
-import com.atlassian.jira.issue.Issue;
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
-import com.atlassian.jira.junit.rules.MockitoContainer;
-import com.atlassian.jira.mock.MockIssueManager;
-import com.atlassian.jira.mock.component.MockComponentWorker;
-import com.atlassian.jira.mock.issue.MockIssue;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
-import org.junit.Assert;
+
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static org.hamcrest.Matchers.contains;
 import static org.hamcrest.Matchers.containsInAnyOrder;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -43,8 +37,7 @@ import static org.mockito.MockitoAnnotations.initMocks;
  * the License.
  */
 
-public class IssueReviewsManagerTest
-{
+public class IssueReviewsManagerTest {
     public static final String ISSUE_KEY_OLD = "OLD-123";
     private static final String ISSUE_KEY_NEW = "NEW-123";
 
@@ -79,8 +72,8 @@ public class IssueReviewsManagerTest
 
         // mock gerrit review retrieval
         issueReviewsManager = new IssueReviewsImpl(configuration, mockJiraIssueManager) {
-            @Override protected List<GerritChange> getReviewsFromGerrit(String searchQuery) throws GerritQueryException
-            {
+            @Override
+            protected List<GerritChange> getReviewsFromGerrit(String searchQuery) throws GerritQueryException {
                 List<GerritChange> reviews = new ArrayList<>();
 
                 if (searchQuery.contains(ISSUE_KEY_OLD)) {

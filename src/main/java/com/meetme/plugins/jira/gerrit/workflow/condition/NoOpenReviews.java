@@ -13,10 +13,11 @@
  */
 package com.meetme.plugins.jira.gerrit.workflow.condition;
 
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.workflow.condition.AbstractJiraCondition;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.workflow.condition.AbstractJiraCondition;
 import com.opensymphony.module.propertyset.PropertySet;
 import com.opensymphony.workflow.WorkflowException;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
@@ -66,9 +67,9 @@ public class NoOpenReviews extends AbstractJiraCondition {
      *
      * @param reviews a set of Gerrit changes
      * @param isOpen {@code true} to count all open reviews, {@code false} to
-     *               count all non-open reviews.
+     * count all non-open reviews.
      * @return the number of changes within {@code reviews} that match the
-     *         {@code isOpen} flag.
+     * {@code isOpen} flag.
      */
     public static int countReviewStatus(List<GerritChange> reviews, boolean isOpen) {
         int count = 0;
@@ -81,5 +82,4 @@ public class NoOpenReviews extends AbstractJiraCondition {
 
         return count;
     }
-
 }

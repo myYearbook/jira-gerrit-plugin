@@ -13,22 +13,23 @@
  */
 package com.meetme.plugins.jira.gerrit.data;
 
+import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
+
+import com.atlassian.core.user.preferences.Preferences;
+import com.jcraft.jsch.ChannelExec;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshConnection;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshConnectionFactory;
+import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshException;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.atlassian.core.user.preferences.Preferences;
-import com.jcraft.jsch.ChannelExec;
-import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshConnection;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshConnectionFactory;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshException;
 
 public class GerritCommand {
     private static final Logger log = LoggerFactory.getLogger(GerritCommand.class);
@@ -105,8 +106,7 @@ public class GerritCommand {
                 String privateKey = userPreferences.getString("gerrit.privateKey");
                 String username = userPreferences.getString("gerrit.username");
 
-                if (privateKey != null && username != null && !privateKey.isEmpty() && !username.isEmpty())
-                {
+                if (privateKey != null && username != null && !privateKey.isEmpty() && !username.isEmpty()) {
                     File privateKeyFile = new File(privateKey);
 
                     if (privateKeyFile.exists() && privateKeyFile.canRead()) {

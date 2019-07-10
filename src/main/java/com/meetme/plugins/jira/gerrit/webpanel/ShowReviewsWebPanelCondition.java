@@ -1,10 +1,12 @@
 package com.meetme.plugins.jira.gerrit.webpanel;
 
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.plugin.web.Condition;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
+
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.plugin.web.Condition;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -37,26 +39,29 @@ public class ShowReviewsWebPanelCondition implements Condition {
     @Override
     public boolean shouldDisplay(Map<String, Object> map) {
 
-        if (map == null)
+        if (map == null) {
             return false;
+        }
 
         final Issue issue = (Issue) map.get(KEY_ISSUE);
 
-        if (issue == null)
+        if (issue == null) {
             return false;
+        }
 
         // Shall the system use the white list and does the issue belongs to a project, that uses gerrit:
-        if (gerritConfiguration.getUseGerritProjectWhitelist() && ! isGerritProject(issue))
+        if (gerritConfiguration.getUseGerritProjectWhitelist() && !isGerritProject(issue)) {
             return false;
+        }
 
         // Even though there are no reviews, the gerrit panel shall be displayed:
-        if (gerritConfiguration.getShowsEmptyPanel())
+        if (gerritConfiguration.getShowsEmptyPanel()) {
             return true;
+        }
 
         try {
 
-           return ! isEmpty(issueReviewsManager.getReviewsForIssue(issue));
-
+            return !isEmpty(issueReviewsManager.getReviewsForIssue(issue));
         } catch (GerritQueryException gerritQueryException) {
 
             log.warn(gerritQueryException.getLocalizedMessage(), gerritQueryException);
@@ -67,8 +72,7 @@ public class ShowReviewsWebPanelCondition implements Condition {
     private boolean isGerritProject(final Issue issue) {
 
         return issue.getProjectId() != null
-            && !isEmpty(gerritConfiguration.getIdsOfKnownGerritProjects())
-            && gerritConfiguration.getIdsOfKnownGerritProjects().contains(issue.getProjectId().toString());
-
+                && !isEmpty(gerritConfiguration.getIdsOfKnownGerritProjects())
+                && gerritConfiguration.getIdsOfKnownGerritProjects().contains(issue.getProjectId().toString());
     }
 }
