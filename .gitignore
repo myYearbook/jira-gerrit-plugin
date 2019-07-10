@@ -3,9 +3,9 @@ target/
 bin/
 
 #IDE specific files
+projectFilesBackup/
 .project
 .classpath
-.idea
 *.iml
 
 .DS_Store
