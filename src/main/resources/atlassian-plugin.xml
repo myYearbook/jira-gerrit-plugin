@@ -35,7 +35,6 @@
     <component-import interface="com.atlassian.templaterenderer.velocity.one.six.VelocityTemplateRenderer" key="velocity-renderer" />
     <component-import interface="com.atlassian.sal.api.ApplicationProperties" key="applicationProperties" />
     <component-import interface="com.atlassian.sal.api.message.I18nResolver" key="i18nResolver" />
-    <component-import interface="com.atlassian.jira.web.util.OutlookDateManager" key="outlookDateManager" />
 
     <!-- Our Components -->
 

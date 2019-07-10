@@ -13,20 +13,20 @@
  */
 package com.meetme.plugins.jira.gerrit.tabpanel;
 
-import com.atlassian.jira.issue.Issue;
-import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
-import com.atlassian.jira.plugin.issuetabpanel.*;
-import com.atlassian.jira.user.ApplicationUser;
-import com.atlassian.jira.user.util.UserManager;
-import com.atlassian.jira.web.util.OutlookDate;
-import com.atlassian.jira.web.util.OutlookDateManager;
-import com.atlassian.sal.api.ApplicationProperties;
-import com.atlassian.sal.api.message.I18nResolver;
 import com.meetme.plugins.jira.gerrit.data.GerritConfiguration;
 import com.meetme.plugins.jira.gerrit.data.IssueReviewsManager;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritApproval;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 import com.meetme.plugins.jira.gerrit.data.dto.GerritPatchSet;
+
+import com.atlassian.jira.datetime.DateTimeFormatter;
+import com.atlassian.jira.issue.Issue;
+import com.atlassian.jira.issue.tabpanels.GenericMessageAction;
+import com.atlassian.jira.plugin.issuetabpanel.*;
+import com.atlassian.jira.user.ApplicationUser;
+import com.atlassian.jira.user.util.UserManager;
+import com.atlassian.sal.api.ApplicationProperties;
+import com.atlassian.sal.api.message.I18nResolver;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 import org.slf4j.Logger;
@@ -44,19 +44,24 @@ import java.util.List;
 public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements IssueTabPanel2 {
     private static final Logger log = LoggerFactory.getLogger(GerritReviewsTabPanel.class);
 
-    private final OutlookDate dateTimeFormatter;
-    private final UserManager userManager;
+    private final DateTimeFormatter dateTimeFormatter;
     private final ApplicationProperties applicationProperties;
     private final GerritConfiguration configuration;
     private final IssueReviewsManager reviewsManager;
     private final I18nResolver i18n;
 
-    //TODO: Update OutlookDateManager to DateFormatter
-    public GerritReviewsTabPanel(UserManager userManager, OutlookDateManager dateTimeFormatterFactory,
-            ApplicationProperties applicationProperties, GerritConfiguration configuration,
-            IssueReviewsManager reviewsManager, I18nResolver i18n) {
+    private final UserManager userManager;
+
+    public GerritReviewsTabPanel(
+            UserManager userManager,
+            DateTimeFormatter dateTimeFormatter,
+            ApplicationProperties applicationProperties,
+            GerritConfiguration configuration,
+            IssueReviewsManager reviewsManager,
+            I18nResolver i18n
+    ) {
         this.userManager = userManager;
-        this.dateTimeFormatter = dateTimeFormatterFactory.getOutlookDate(null);
+        this.dateTimeFormatter = dateTimeFormatter;
         this.applicationProperties = applicationProperties;
         this.configuration = configuration;
         this.reviewsManager = reviewsManager;
@@ -83,8 +88,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
     public ShowPanelReply showPanel(ShowPanelRequest arg0) {
         boolean isShowing = true;
 
-        if (!isConfigurationReady())
-        {
+        if (!isConfigurationReady()) {
             isShowing = false;
         }
 
@@ -130,8 +134,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
 
         if (email != null) {
             for (ApplicationUser iUser : userManager.getUsers()) {
-                if (email.equalsIgnoreCase(iUser.getEmailAddress()))
-                {
+                if (email.equalsIgnoreCase(iUser.getEmailAddress())) {
                     user = iUser;
                     break;
                 }
