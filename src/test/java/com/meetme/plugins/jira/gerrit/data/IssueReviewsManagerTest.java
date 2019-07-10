@@ -72,7 +72,7 @@ public class IssueReviewsManagerTest
 
         // issue key history
         when(mockJiraIssueManager.getIssueByKeyIgnoreCase(Mockito.anyString())).thenReturn(mockIssue);
-        Set<String> allIssueKeys = new HashSet<String>();
+        Set<String> allIssueKeys = new HashSet<>();
         allIssueKeys.add(ISSUE_KEY_OLD);
         allIssueKeys.add(ISSUE_KEY_NEW);
         when(mockJiraIssueManager.getAllIssueKeys(mockIssue.getId())).thenReturn(allIssueKeys);
@@ -81,7 +81,7 @@ public class IssueReviewsManagerTest
         issueReviewsManager = new IssueReviewsImpl(configuration, mockJiraIssueManager) {
             @Override protected List<GerritChange> getReviewsFromGerrit(String searchQuery) throws GerritQueryException
             {
-                List<GerritChange> reviews = new ArrayList<GerritChange>();
+                List<GerritChange> reviews = new ArrayList<>();
 
                 if (searchQuery.contains(ISSUE_KEY_OLD)) {
                     GerritChange oldChangeMock = mock(GerritChange.class);
@@ -105,7 +105,7 @@ public class IssueReviewsManagerTest
         List<GerritChange> reviewsForIssue = issueReviewsManager.getReviewsForIssue(mockIssue);
         assertEquals(2, reviewsForIssue.size());
 
-        Set<String> reviewSubjects = new HashSet<String>();
+        Set<String> reviewSubjects = new HashSet<>();
         for (GerritChange review : reviewsForIssue) {
             reviewSubjects.add(review.getSubject());
         }

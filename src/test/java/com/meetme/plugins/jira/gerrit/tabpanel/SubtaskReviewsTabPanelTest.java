@@ -75,7 +75,7 @@ public class SubtaskReviewsTabPanelTest {
     }
 
     private List<Issue> setUpSubtasks() {
-        List<Issue> issues = new ArrayList<Issue>();
+        List<Issue> issues = new ArrayList<>();
 
         subtask1 = mock(Issue.class);
         subtask2 = mock(Issue.class);
@@ -134,7 +134,7 @@ public class SubtaskReviewsTabPanelTest {
      */
     @Test
     public void testShowPanelShowPanelRequest_noSubtasks() {
-        when(issue.getSubTaskObjects()).thenReturn(new ArrayList<Issue>());
+        when(issue.getSubTaskObjects()).thenReturn(new ArrayList<>());
 
         SubtaskReviewsTabPanel obj = new SubtaskReviewsTabPanel(configuration, reviewsManager);
         // Returns false because the configuration is empty

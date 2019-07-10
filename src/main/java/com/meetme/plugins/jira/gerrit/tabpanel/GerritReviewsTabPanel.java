@@ -75,7 +75,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
 
         if (configuration.getSshHostname() == null || configuration.getSshUsername() == null || configuration.getSshPrivateKey() == null) {
             // Show not-configured error.
-            issueActions = new ArrayList<IssueAction>();
+            issueActions = new ArrayList<>();
             issueActions.add(new GenericMessageAction("Configure Gerrit in Administration interface first."));
         } else {
             // List of items we will be showing in the tab panel.
@@ -107,7 +107,7 @@ public class GerritReviewsTabPanel extends AbstractIssueTabPanel2 implements Iss
     private List<IssueAction> getActions(Issue issue) {
         log.debug("Getting actions for issue: {0}", issue.getKey());
 
-        List<IssueAction> issueActions = new ArrayList<IssueAction>();
+        List<IssueAction> issueActions = new ArrayList<>();
         List<GerritChange> reviews;
 
         try {

@@ -40,14 +40,14 @@ public class GerritReviewsIssueAgilePanel extends AbstractJiraContextProvider {
 
 	@Override
 	public Map<String, Object> getContextMap(ApplicationUser user, JiraHelper jiraHelper) {
-		HashMap<String, Object> contextMap = new HashMap<String, Object>();
+		HashMap<String, Object> contextMap = new HashMap<>();
 
 		Issue currentIssue = (Issue) jiraHelper.getContextParams().get(KEY_ISSUE);
 
 		try {
 			List<GerritChange> changes = reviewsManager.getReviewsForIssue(currentIssue);
 			contextMap.put(KEY_CHANGES, changes);
-			contextMap.put("atl.gh.issue.details.tab.count", Long.valueOf(changes.size()));
+			contextMap.put("atl.gh.issue.details.tab.count", (long) changes.size());
 		} catch (GerritQueryException e) {
 			contextMap.put(KEY_ERROR, e.getMessage());
 		}

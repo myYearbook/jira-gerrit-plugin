@@ -54,7 +54,7 @@ public class GerritReviewIssueActionTest {
     private static final String TEST_FORMATTED_LAST_UPDATED = "Today 11:16 PM";
     private static final String TEST_ISO_LAST_UPDATED = "2012-06-17T23:16:00-0400";
 
-    private static final ArrayList<GerritApproval> TEST_APPROVALS = new ArrayList<GerritApproval>();
+    private static final ArrayList<GerritApproval> TEST_APPROVALS = new ArrayList<>();
     private static final GerritApproval APPROVAL_NEGATIVE = new GerritApproval();
     private static final GerritApproval APPROVAL_POSITIVE = new GerritApproval();
     private static final GerritApproval APPROVAL_POSITIVE_2 = new GerritApproval();
@@ -143,7 +143,7 @@ public class GerritReviewIssueActionTest {
         // null input = null output
         assertNull(action.getMostSignificantScore(null));
 
-        List<GerritApproval> approvals = new ArrayList<GerritApproval>();
+        List<GerritApproval> approvals = new ArrayList<>();
         // empty input = null output
         assertNull(action.getMostSignificantScore(approvals));
 
@@ -173,7 +173,7 @@ public class GerritReviewIssueActionTest {
 
     @Test
     public void testPopulateVelocityParams() {
-        HashMap<String, Object> velocityParams = new HashMap<String, Object>();
+        HashMap<String, Object> velocityParams = new HashMap<>();
         @SuppressWarnings("rawtypes")
         Map expected = setUpExpectedVelocityParams();
         action.populateVelocityParams(velocityParams);

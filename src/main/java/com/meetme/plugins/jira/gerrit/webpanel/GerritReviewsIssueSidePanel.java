@@ -40,7 +40,7 @@ public class GerritReviewsIssueSidePanel extends AbstractJiraContextProvider {
 
     @Override
     public Map<String, Object> getContextMap(ApplicationUser user, JiraHelper jiraHelper) {
-        HashMap<String, Object> contextMap = new HashMap<String, Object>();
+        HashMap<String, Object> contextMap = new HashMap<>();
 
         Issue currentIssue = (Issue) jiraHelper.getContextParams().get(KEY_ISSUE);
 

@@ -63,13 +63,9 @@ public class GerritCommand {
 
     @SuppressWarnings("deprecation")
     private String getCommand(GerritChange change, String args) {
-        StringBuilder sb = new StringBuilder(BASE_COMMAND);
-        sb.append(' ');
-        sb.append(change.getNumber()).append(',').append(change.getPatchSet().getNumber());
 
         // TODO: escape args? Or build manually with String reviewType,int reviewScore,etc..?
-        sb.append(' ').append(args);
-        return sb.toString();
+        return String.format("%s %s,%s %s", BASE_COMMAND, change.getNumber(), change.getPatchSet().getNumber(), args);
     }
 
     private boolean runCommands(String[] commands) throws IOException {
