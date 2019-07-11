@@ -2,16 +2,18 @@ package com.meetme.plugins.jira.gerrit.data;
 
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 
+import com.atlassian.cache.Cache;
+import com.atlassian.cache.CacheLoader;
+import com.atlassian.cache.CacheManager;
 import com.atlassian.jira.issue.IssueManager;
 import com.atlassian.jira.issue.MutableIssue;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
 
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -19,6 +21,8 @@ import java.util.Set;
 import static org.hamcrest.Matchers.containsInAnyOrder;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertThat;
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.eq;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.mockito.MockitoAnnotations.initMocks;
@@ -50,6 +54,12 @@ public class IssueReviewsManagerTest {
     @Mock
     private IssueManager mockJiraIssueManager;
 
+    @Mock
+    private CacheManager mockCacheManager;
+
+    @Mock
+    private Cache<String, List<GerritChange>> mockCache;
+
     private IssueReviewsManager issueReviewsManager;
 
     @Before
@@ -71,26 +81,23 @@ public class IssueReviewsManagerTest {
         when(mockJiraIssueManager.getAllIssueKeys(mockIssue.getId())).thenReturn(allIssueKeys);
 
         // mock gerrit review retrieval
-        issueReviewsManager = new IssueReviewsImpl(configuration, mockJiraIssueManager) {
-            @Override
-            protected List<GerritChange> getReviewsFromGerrit(String searchQuery) throws GerritQueryException {
-                List<GerritChange> reviews = new ArrayList<>();
+        when(mockCacheManager.getCache(
+                eq("com.meetme.plugins.jira.gerrit.data.IssueReviewsManager.issueChanges.cache"),
+                Mockito.<CacheLoader<String, List<GerritChange>>>any(),
+                any()
+        )).thenReturn(mockCache);
+        issueReviewsManager = new IssueReviewsImpl(configuration, mockJiraIssueManager, mockCacheManager, null);
 
-                if (searchQuery.contains(ISSUE_KEY_OLD)) {
-                    GerritChange oldChangeMock = mock(GerritChange.class);
-                    when(oldChangeMock.getSubject()).thenReturn(ISSUE_KEY_OLD);
-                    reviews.add(oldChangeMock);
-                }
+        GerritChange oldChange = createMockChange(ISSUE_KEY_OLD);
+        GerritChange newChange = createMockChange(ISSUE_KEY_NEW);
+        when(mockCache.get(eq(ISSUE_KEY_OLD))).thenReturn(Collections.singletonList(oldChange));
+        when(mockCache.get(eq(ISSUE_KEY_NEW))).thenReturn(Collections.singletonList(newChange));
+    }
 
-                if (searchQuery.contains(ISSUE_KEY_NEW)) {
-                    GerritChange newChangeMock = mock(GerritChange.class);
-                    when(newChangeMock.getSubject()).thenReturn(ISSUE_KEY_NEW);
-                    reviews.add(newChangeMock);
-                }
-
-                return reviews;
-            }
-        };
+    private GerritChange createMockChange(String key) {
+        GerritChange change = mock(GerritChange.class);
+        when(change.getSubject()).thenReturn(key);
+        return change;
     }
 
     @Test

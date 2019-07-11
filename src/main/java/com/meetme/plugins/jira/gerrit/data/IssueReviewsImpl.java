@@ -15,34 +15,52 @@ package com.meetme.plugins.jira.gerrit.data;
 
 import com.meetme.plugins.jira.gerrit.data.dto.GerritChange;
 
+import com.atlassian.cache.Cache;
+import com.atlassian.cache.CacheException;
+import com.atlassian.cache.CacheManager;
+import com.atlassian.cache.CacheSettingsBuilder;
 import com.atlassian.core.user.preferences.Preferences;
 import com.atlassian.jira.issue.Issue;
 import com.atlassian.jira.issue.IssueManager;
 import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryException;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.GerritQueryHandler;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.Authentication;
-import com.sonyericsson.hudson.plugins.gerrit.gerritevents.ssh.SshException;
-
-import net.sf.json.JSONObject;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
+import java.util.concurrent.TimeUnit;
 
 public class IssueReviewsImpl implements IssueReviewsManager {
     private static final Logger log = LoggerFactory.getLogger(IssueReviewsImpl.class);
-    private final Map<String, List<GerritChange>> lruCache;
+
+    private final Cache<String, List<GerritChange>> cache;
 
     private GerritConfiguration configuration;
 
     private IssueManager jiraIssueManager;
 
-    public IssueReviewsImpl(GerritConfiguration configuration, IssueManager jiraIssueManager) {
+    public IssueReviewsImpl(
+            GerritConfiguration configuration,
+            IssueManager jiraIssueManager,
+            CacheManager cacheManager,
+            IssueReviewsCacheLoader cacheLoader
+    ) {
         this.configuration = configuration;
         this.jiraIssueManager = jiraIssueManager;
-        this.lruCache = IssueReviewsCache.getCache();
+        this.cache = cacheManager.getCache(
+                IssueReviewsManager.class.getName() + ".issueChanges.cache",
+                cacheLoader, //new IssueReviewsCacheLoader(configuration),
+                new CacheSettingsBuilder()
+                        .flushable()
+                        .statisticsEnabled()
+                        .maxEntries(100)
+                        .replicateAsynchronously()
+                        .expireAfterAccess(30, TimeUnit.MINUTES)
+                        .build()
+        );
     }
 
     @Override
@@ -56,60 +74,23 @@ public class IssueReviewsImpl implements IssueReviewsManager {
 
         Set<String> allIssueKeys = getIssueKeys(issue);
         for (String key : allIssueKeys) {
-            List<GerritChange> changes;
+            try {
+                List<GerritChange> changes = cache.get(key);
+                if (changes != null) gerritChanges.addAll(changes);
+            } catch (CacheException exc) {
+                if (exc.getCause() instanceof GerritQueryException) {
+                    // TODO: is this really necessary?
+                    // If we swallow the error, then there's no indication on the UI that an error occurred.
+                    // The CacheLoader has to wrap the underlying exception in CacheException in order to throw it.
+                    throw (GerritQueryException) exc.getCause();
+                }
 
-            if (lruCache.containsKey(key)) {
-                log.debug("Getting issues from cache");
-                changes = lruCache.get(key);
-            } else {
-                log.debug("Getting issues from Gerrit");
-                changes = getReviewsFromGerrit(String.format(configuration.getIssueSearchQuery(), key));
-                lruCache.put(key, changes);
+                log.error("Error fetching from cache", exc);
+                throw exc;
             }
-
-            gerritChanges.addAll(changes);
         }
 
         return gerritChanges;
-    }
-
-    protected List<GerritChange> getReviewsFromGerrit(String searchQuery) throws GerritQueryException {
-        List<GerritChange> changes;
-
-        if (!configuration.isSshValid()) {
-            // return Collections.emptyList();
-            throw new GerritConfiguration.NotConfiguredException("Not configured for SSH access");
-        }
-
-        Authentication auth = new Authentication(configuration.getSshPrivateKey(), configuration.getSshUsername());
-        GerritQueryHandler query = new GerritQueryHandler(configuration.getSshHostname(), configuration.getSshPort(), null, auth);
-        List<JSONObject> reviews;
-
-        try {
-            reviews = query.queryJava(searchQuery, false, true, false);
-        } catch (SshException e) {
-            throw new GerritQueryException("An ssh error occurred while querying for reviews.", e);
-        } catch (IOException e) {
-            throw new GerritQueryException("An error occurred while querying for reviews.", e);
-        }
-
-        changes = new ArrayList<>(reviews.size());
-
-        for (JSONObject obj : reviews) {
-            if (obj.has("type") && "stats".equalsIgnoreCase(obj.getString("type"))) {
-                // The final JSON object in the query results is just a set of statistics
-                if (log.isDebugEnabled()) {
-                    log.trace("Results from QUERY: " + obj.optString("rowCount", "(unknown)") + " rows; runtime: "
-                            + obj.optString("runTimeMilliseconds", "(unknown)") + " ms");
-                }
-                continue;
-            }
-
-            changes.add(new GerritChange(obj));
-        }
-
-        Collections.sort(changes);
-        return changes;
     }
 
     @Override
@@ -128,7 +109,7 @@ public class IssueReviewsImpl implements IssueReviewsManager {
             }
 
             // Something probably changed!
-            lruCache.remove(issueKey);
+            cache.remove(issueKey);
         }
 
         return result;

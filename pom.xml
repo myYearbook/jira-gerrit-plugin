@@ -188,6 +188,7 @@
                     <productVersion>${jira.version}</productVersion>
                     <productDataVersion>${jira.version}</productDataVersion>
                     <log4jProperties>src/aps/resources/log4j.properties</log4jProperties>
+                    <enableQuickReload>true</enableQuickReload>
                     <enableFastdev>false</enableFastdev>
 
                     <pluginArtifacts>

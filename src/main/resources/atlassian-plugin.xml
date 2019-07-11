@@ -48,6 +48,10 @@
         <interface>com.meetme.plugins.jira.gerrit.data.IssueReviewsManager</interface>
     </component>
 
+    <component name="IssueReviews Cache Loader" class="com.meetme.plugins.jira.gerrit.data.IssueReviewsCacheLoader" key="issueReviewsCacheLoader">
+        <description>Populates the cached list of reviews per issue.</description>
+    </component>
+
     <template-context-item name="Application Properties Context Item"
         component-ref="applicationProperties"
         context-key="applicationProperties"
