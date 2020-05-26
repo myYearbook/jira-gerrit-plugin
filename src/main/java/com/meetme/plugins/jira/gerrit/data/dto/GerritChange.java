@@ -28,21 +28,13 @@ import static com.meetme.plugins.jira.gerrit.tabpanel.GerritEventKeys.LAST_UPDAT
  */
 public class GerritChange extends Change implements Comparable<GerritChange> {
 
-    /**
-     * Gerrit review status enumeration, corresponding to the status string in the Gerrit change
-     * payload.
-     */
-    public static enum Status {
-        NEW, SUBMITTED, DRAFT, MERGED, ABANDONED
-    }
-
     private Date lastUpdated;
 
     private GerritPatchSet patchSet;
 
     private boolean isOpen;
 
-    private Status status;
+    private String status;
 
     public GerritChange() {
         super();
@@ -87,7 +79,7 @@ public class GerritChange extends Change implements Comparable<GerritChange> {
         }
 
         if (json.containsKey(GerritEventKeys.STATUS)) {
-            this.setStatus(Status.valueOf(json.getString(GerritEventKeys.STATUS)));
+            this.setStatus(json.getString(GerritEventKeys.STATUS));
         }
 
         this.isOpen = json.getBoolean(GerritEventKeys.OPEN);
@@ -101,7 +93,7 @@ public class GerritChange extends Change implements Comparable<GerritChange> {
         return patchSet;
     }
 
-    public Status getStatus() {
+    public String getStatus() {
         return status;
     }
 
@@ -121,7 +113,7 @@ public class GerritChange extends Change implements Comparable<GerritChange> {
         this.patchSet = patchSet;
     }
 
-    public void setStatus(Status status) {
+    public void setStatus(String status) {
         this.status = status;
     }
 }
