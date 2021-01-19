@@ -24,8 +24,10 @@
         <param name="plugin-logo">images/meetme_75.png</param>
         <param name="vendor-icon">images/meetme_16.png</param>
         <param name="vendor-logo">images/meetme_75.png</param>
+        <param name="plugin-type">both</param>
         <param name="configure.url">/plugins/servlet/gerrit/admin</param>
         <param name="atlassian-data-center-compatible">true</param>
+        <param name="atlassian-data-center-status">compatible</param>
     </plugin-info>
 
     <component-import interface="com.atlassian.sal.api.pluginsettings.PluginSettingsFactory" key="pluginSettingsFactory" />
